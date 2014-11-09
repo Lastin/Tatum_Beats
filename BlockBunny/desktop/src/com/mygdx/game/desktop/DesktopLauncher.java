@@ -2,7 +2,6 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-//import com.mygdx.game.MyGdxGame;
 import com.neet.blockbunny.main.Game;
 
 public class DesktopLauncher {

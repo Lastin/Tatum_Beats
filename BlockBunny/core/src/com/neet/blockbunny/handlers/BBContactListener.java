@@ -42,6 +42,7 @@ public class BBContactListener implements ContactListener {
 		
 		if(fa.getUserData() != null && fa.getUserData().equals("spike")) {
 			playerDead = true;
+
 		}
 		if(fb.getUserData() != null && fb.getUserData().equals("spike")) {
 			playerDead = true;

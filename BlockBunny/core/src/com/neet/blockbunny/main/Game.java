@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.echonest.api.v4.EchoNestException;
 import com.neet.blockbunny.handlers.BBInput;
 import com.neet.blockbunny.handlers.BBInputProcessor;
 import com.neet.blockbunny.handlers.BoundedCamera;
@@ -22,7 +23,8 @@ public class Game implements ApplicationListener {
 	private SpriteBatch sb;
 	private BoundedCamera cam;
 	private OrthographicCamera hudCam;
-	
+
+    private MetaGrabber meta;
 	private GameStateManager gsm;
 	
 	public static Content res;
@@ -46,12 +48,29 @@ public class Game implements ApplicationListener {
 		res.loadSound("res/sfx/hit.wav");
 		res.loadSound("res/sfx/changeblock.wav");
 		
-		res.loadMusic("res/music/bbsong.ogg");
-		res.getMusic("bbsong").setLooping(true);
-		res.getMusic("bbsong").setVolume(0.5f);
-		res.getMusic("bbsong").play();
-		
-		cam = new BoundedCamera();
+		res.loadMusic("test.mp3");
+///*
+        try {
+            final MetaGrabber meta2;
+            meta2 = new MetaGrabber();
+            Thread thread = new Thread(){
+                    public void run(){
+                    meta2.upload();
+            }
+            };
+            thread.run();
+            while(meta2.getUploadProgress().equals("pending")){
+                if(meta2.getUploadProgress().equals("error")){
+                    System.out.println("ERROR");
+                }
+            }
+            meta2.setMeta();
+            meta = meta2;
+        } catch (EchoNestException e) {
+            e.printStackTrace();
+        }
+//*/
+        cam = new BoundedCamera();
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
 		hudCam = new OrthographicCamera();
 		hudCam.setToOrtho(false, V_WIDTH, V_HEIGHT);
@@ -81,6 +100,10 @@ public class Game implements ApplicationListener {
 	public void pause() {}
 	
 	public void resume() {}
+
+    public MetaGrabber getMeta(){
+        return meta;
+    }
 	
 	public SpriteBatch getSpriteBatch() { return sb; }
 	public BoundedCamera getCamera() { return cam; }

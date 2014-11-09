@@ -36,6 +36,7 @@ import com.neet.blockbunny.handlers.Background;
 import com.neet.blockbunny.handlers.BoundedCamera;
 import com.neet.blockbunny.handlers.GameStateManager;
 import com.neet.blockbunny.main.Game;
+import com.neet.blockbunny.main.MetaGrabber;
 
 public class Play extends GameState {
 	
@@ -65,7 +66,8 @@ public class Play extends GameState {
 	public Play(GameStateManager gsm) {
 		
 		super(gsm);
-		
+        gsm.game().res.getMusic("com.neet.blockbunny.main.test").setVolume(0.5f);
+        gsm.game().res.getMusic("com.neet.blockbunny.main.test").play();
 		// set up the box2d world and contact listener
 		world = new World(new Vector2(0, -7f), true);
 		cl = new BBContactListener();
@@ -103,7 +105,8 @@ public class Play extends GameState {
 		b2dCam = new BoundedCamera();
 		b2dCam.setToOrtho(false, Game.V_WIDTH / PPM, Game.V_HEIGHT / PPM);
 		b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
-		
+
+
 	}
 	
 	/**
@@ -183,6 +186,7 @@ public class Play extends GameState {
 		tileMapWidth = (Integer) tileMap.getProperties().get("width");
 		tileMapHeight = (Integer) tileMap.getProperties().get("height");
 		tileSize = (Integer) tileMap.getProperties().get("tilewidth");
+
 		tmRenderer = new OrthogonalTiledMapRenderer(tileMap);
 		
 		// read each of the "red" "green" and "blue" layers
@@ -321,6 +325,8 @@ public class Play extends GameState {
 			player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
 			player.getBody().applyForceToCenter(0, 200, true);
 			Game.res.getSound("jump").play();
+           MetaGrabber meta = game.getMeta();
+            System.out.println(meta.getArtist());
 		}
 	}
 	
@@ -415,14 +421,17 @@ public class Play extends GameState {
 		if(player.getBody().getPosition().y < 0) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+            gsm.game().res.getMusic("com.neet.blockbunny.main.test").stop();
 		}
 		if(player.getBody().getLinearVelocity().x < 0.001f) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+            gsm.game().res.getMusic("com.neet.blockbunny.main.test").stop();
 		}
 		if(cl.isPlayerDead()) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+            gsm.game().res.getMusic("com.neet.blockbunny.main.test").stop();
 		}
 		
 		// update crystals
