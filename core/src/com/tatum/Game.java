@@ -24,10 +24,12 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+        //Initialise size, input processor and load content
         v_width = Gdx.graphics.getWidth();
         v_height = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(new InputProcessor());
         cont = new Content();
+        loadContent();
         //Initialise cameras
         cam = new BoundedCamera();
         cam.setToOrtho(false, v_width, v_height);
@@ -38,14 +40,24 @@ public class Game extends ApplicationAdapter {
         //cam = new BoundedCamera();
 
 	}
+    private void loadContent() {
+        //cont.loadTexture();
+        //cont.loadMusic();
+        //cont.loadSound();
 
-	@Override
-	public void render () {
+    }
 
-	}
-	@Override
-	public void dispose(){
-		if(cont != null)
+
+    //generic staff below
+    @Override
+    public void render () {
+        //gsm.update(Gdx.graphics.getDeltaTime());
+        //gsm.render();
+        Input.update();
+    }
+    @Override
+    public void dispose() {
+        if(cont != null)
             cont.removeAll();
-	}
+    }
 }

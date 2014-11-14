@@ -57,7 +57,8 @@ public class Content {
     }
     private void dispose_objs(HashMap<String, ? extends Disposable> map) {
         for(Disposable o : map.values())
-            o.dispose();
+            if(o != null)
+                o.dispose();
     }
     //END
 }
