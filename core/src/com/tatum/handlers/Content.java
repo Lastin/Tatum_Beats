@@ -2,12 +2,14 @@
 Container for game resources
 *****/
 package com.tatum.handlers;
+import java.util.Collection;
 import java.util.HashMap;
 //gdx stuff
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Disposable;
 
 
 public class Content {
@@ -46,23 +48,16 @@ public class Content {
     }
     //DESTRUCTOR
     public void removeAll() {
-      disposer(textures);
-      disposer(music);
-      disposer(sounds);
-      textures.clear();
-      music.clear();
-      sounds.clear();
+        dispose_objs(textures);
+        dispose_objs(music);
+        dispose_objs(sounds);
+        textures.clear();
+        music.clear();
+        sounds.clear();
     }
-    private void disposer(HashMap<String, ?> map) {
-        //dirty way of iterating through all
-        for(Object o : textures.values()) {
-            if(o instanceof Texture)
-                ((Texture)o).dispose();
-            if(o instanceof Music)
-                ((Music)o).dispose();
-            if(o instanceof Sound)
-                ((Sound)o).dispose();
-        }
+    private void dispose_objs(HashMap<String, ? extends Disposable> map) {
+        for(Disposable o : map.values())
+            o.dispose();
     }
     //END
 }
