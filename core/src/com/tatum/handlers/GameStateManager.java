@@ -22,6 +22,16 @@ public class GameStateManager {
     }
     public void popState() {
         GameState g = gameStates.pop();
-        //g.dispose();
+        g.dispose();
+    }
+    //getters
+    public Game getGame() {
+        return game;
+    }
+    public void update(float dt) {
+        gameStates.peek().update(dt);
+    }
+    public void render() {
+        gameStates.peek().render();
     }
 }

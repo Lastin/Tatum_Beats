@@ -2,7 +2,6 @@
 Container for game resources
 *****/
 package com.tatum.handlers;
-import java.util.Collection;
 import java.util.HashMap;
 //gdx stuff
 import com.badlogic.gdx.Gdx;
