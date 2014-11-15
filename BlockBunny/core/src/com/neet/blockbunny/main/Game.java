@@ -1,15 +1,19 @@
 package com.neet.blockbunny.main;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.echonest.api.v4.EchoNestException;
 import com.neet.blockbunny.handlers.BBInput;
 import com.neet.blockbunny.handlers.BBInputProcessor;
 import com.neet.blockbunny.handlers.BoundedCamera;
 import com.neet.blockbunny.handlers.Content;
 import com.neet.blockbunny.handlers.GameStateManager;
+import com.neet.blockbunny.music.Track;
 
 public class Game implements ApplicationListener {
 	
@@ -24,9 +28,8 @@ public class Game implements ApplicationListener {
 	private OrthographicCamera hudCam;
 	
 	private GameStateManager gsm;
-	
-	public static Content res;
-	
+	private Track track;
+	public static Content res;	
 	public void create() {
 		
 		//Texture.setEnforcePotImages(false);
@@ -60,6 +63,8 @@ public class Game implements ApplicationListener {
 		
 		gsm = new GameStateManager(this);
 		
+		track = new Track("res/music/test.mp3");
+		track.initilize();
 	}
 	
 	public void render() {
@@ -85,5 +90,5 @@ public class Game implements ApplicationListener {
 	public SpriteBatch getSpriteBatch() { return sb; }
 	public BoundedCamera getCamera() { return cam; }
 	public OrthographicCamera getHUDCamera() { return hudCam; }
-	
+	public Track getTrack() {return track;}
 }
