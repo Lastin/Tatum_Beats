@@ -30,8 +30,8 @@ public class Game extends ApplicationAdapter {
         //Initialise cameras
         cam = new BoundedCamera();
         cam.setToOrtho(false, v_width, v_height);
-        //hudCam = new OrthographicCamera();
-        //hudCam.setToOrtho(false, v_width, v_height);
+        hudCam = new OrthographicCamera();
+        hudCam.setToOrtho(false, v_width, v_height);
         //
         sb = new SpriteBatch();
         gsm = new GameStateManager(this);
