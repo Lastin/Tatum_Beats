@@ -61,6 +61,7 @@ public class Play extends GameState {
 	private HUD hud;
 	
 	public static int level;
+	public static String song;
 	
 	public Play(GameStateManager gsm) {
 		
@@ -103,6 +104,11 @@ public class Play extends GameState {
 		b2dCam = new BoundedCamera();
 		b2dCam.setToOrtho(false, Game.V_WIDTH / PPM, Game.V_HEIGHT / PPM);
 		b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
+		
+		gsm.game().res.getMusic(song).setVolume(0.5f);
+		//res.getMusic("bbsong").setVolume(0.5f);
+		gsm.game().res.getMusic(song).play();
+		//res.getMusic("bbsong").play();
 		
 	}
 	
@@ -409,20 +415,28 @@ public class Play extends GameState {
 		if(player.getBody().getPosition().x * PPM > tileMapWidth * tileSize) {
 			Game.res.getSound("levelselect").play();
 			gsm.setState(GameStateManager.LEVEL_SELECT);
+			Game.res.getMusic(song).stop();
+			Game.res.getMusic(song).dispose();
 		}
 		
 		// check player failed
 		if(player.getBody().getPosition().y < 0) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+			Game.res.getMusic(song).stop();
+			Game.res.getMusic(song).dispose();
 		}
 		if(player.getBody().getLinearVelocity().x < 0.001f) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+			Game.res.getMusic(song).stop();
+			Game.res.getMusic(song).dispose();
 		}
 		if(cl.isPlayerDead()) {
 			Game.res.getSound("hit").play();
 			gsm.setState(GameStateManager.MENU);
+			Game.res.getMusic(song).stop();
+			Game.res.getMusic(song).dispose();
 		}
 		
 		// update crystals
@@ -479,7 +493,9 @@ public class Play extends GameState {
 		}
 		
 	}
-	
+	public void setMap(TiledMap map){
+		tileMap = map;
+	}
 	public void dispose() {
 		// everything is in the resource manager com.neet.blockbunny.handlers.Content
 	}

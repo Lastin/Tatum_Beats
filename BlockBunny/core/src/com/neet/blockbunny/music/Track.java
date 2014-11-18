@@ -72,6 +72,11 @@ public class Track {
 		fileUploader = new FileUploaderGDX(trackPath);
 
 	}
+	public void setTrack(String trackPath){
+
+		fileUploader = new FileUploaderGDX(trackPath);
+
+	}
 	
 	public void initilize(){
 		try {
@@ -86,7 +91,7 @@ public class Track {
 			List<JsonObject> Jtatums = getAsList(trackInformation.get("Tatums"));
 			List<JsonObject> Jsections = getAsList(trackInformation.get("Sections"));
 			List<JsonObject> Jsegments = getAsList(trackInformation.get("Segments"));
-			
+			// get all json objects
 			this.trackPath = meta.getString("filename");
 			this.artistName = meta.getString("artist");
 			this.trackName = meta.getString("title");
@@ -328,7 +333,7 @@ public class Track {
 	  
 	  public ArrayList<Section> getSections() {return sections;}
 
-
+	  public FileUploaderGDX getUploader() {return fileUploader;}
 }
 
 

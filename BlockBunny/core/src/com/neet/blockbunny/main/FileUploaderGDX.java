@@ -31,7 +31,7 @@ import com.echonest.api.v4.Track;
 
 public class FileUploaderGDX {
 	private EchoNestAPI en;
-
+	private Track track;
 	private String trackPath;
 	//-F "api_key=FILDTEOIK2HBORODV" -F "filetype=mp3" -F "track=@audio.mp3" 
 	HashMap<String, Object> trackInformation;
@@ -43,13 +43,14 @@ public class FileUploaderGDX {
 		en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
 		en.setTraceSends(true);
 		en.setTraceRecvs(false);
-		Track track = null;
+		track = null;
 
 		track = en.uploadTrack(file);
 		while(track.getStatus() == Track.AnalysisStatus.PENDING){
 			//do nothing
 		}
-
+		
+		
 		System.out.println(track.getOriginalID()); // weird stuff
 		System.out.println(track.getSongID()); // SOMBINS136004B720
 		System.out.println(track.getAudioUrl()); // NULL
@@ -148,4 +149,24 @@ public class FileUploaderGDX {
 	}
 	public void setPath(String trackPath){this.trackPath=trackPath;}
 	public HashMap<String, Object> getJsonMap(){return trackInformation;}
+	public String getUploadProgress() throws EchoNestException{
+
+
+	    if (track.getStatus() == Track.AnalysisStatus.COMPLETE){
+	      return "complete";
+	    }
+	    else if (track.getStatus() == Track.AnalysisStatus.ERROR){
+	      return "error";
+	    }
+	    else if (track.getStatus() == Track.AnalysisStatus.PENDING){
+	      return "pending";
+	    }
+	    else if (track.getStatus() == Track.AnalysisStatus.UNAVAILABLE){
+	      return "unavailable";
+	    }
+	    else return "unknown";
+
+
+	  }
+
 }

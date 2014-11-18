@@ -27,6 +27,7 @@ public class Game implements ApplicationListener {
 	private BoundedCamera cam;
 	private OrthographicCamera hudCam;
 	
+	
 	private GameStateManager gsm;
 	private Track track;
 	public static Content res;	
@@ -42,6 +43,9 @@ public class Game implements ApplicationListener {
 		res.loadTexture("res/images/bunny.png");
 		res.loadTexture("res/images/crystal.png");
 		res.loadTexture("res/images/spikes.png");
+		res.loadTexture("res/images/play.png");
+		res.loadTexture("res/images/leader.png");
+		res.loadTexture("res/images/track.png");
 		
 		res.loadSound("res/sfx/jump.wav");
 		res.loadSound("res/sfx/crystal.wav");
@@ -49,10 +53,12 @@ public class Game implements ApplicationListener {
 		res.loadSound("res/sfx/hit.wav");
 		res.loadSound("res/sfx/changeblock.wav");
 		
-		res.loadMusic("res/music/bbsong.ogg");
-		res.getMusic("bbsong").setLooping(true);
-		res.getMusic("bbsong").setVolume(0.5f);
-		res.getMusic("bbsong").play();
+		
+		
+		//res.loadMusic("res/music/bbsong.ogg");
+		//res.getMusic("bbsong").setLooping(true);
+		//res.getMusic("bbsong").setVolume(0.5f);
+		//res.getMusic("bbsong").play();
 		
 		cam = new BoundedCamera();
 		cam.setToOrtho(false, V_WIDTH, V_HEIGHT);
@@ -62,9 +68,18 @@ public class Game implements ApplicationListener {
 		sb = new SpriteBatch();
 		
 		gsm = new GameStateManager(this);
-		
-		track = new Track("res/music/test.mp3");
-		track.initilize();
+		try{
+		Thread thread = new Thread(){
+			public void run(){
+				track = new Track("res/music/test.mp3");
+				track.initilize();
+			}
+		};
+		thread.start();
+		}
+		catch(Exception e){
+			
+		}
 	}
 	
 	public void render() {

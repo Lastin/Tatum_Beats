@@ -10,6 +10,7 @@ public class Section extends TimedEvent {
 	private double modeConfidence;
 	private int timeSignature;
 	private double timeSignatureConfidence;
+	private String stringKey;
 	
 	public Section(double start, double duration, double confidence,double loudness,double tempo,
 				   double tempoConfidence, int key, double keyConfidence, int mode, double modeConfidence,
@@ -25,9 +26,12 @@ public class Section extends TimedEvent {
 		this.setModeConfidence(modeConfidence);
 		this.setTimeSignature(timeSignature);
 		this.setTimeSignatureConfidence(timeSignatureConfidence);
+		setKeyString();
 
 	}
-
+	public String getStringKey(){
+		return stringKey;
+	}
 	public double getLoudness() {
 		return loudness;
 	}
@@ -99,5 +103,46 @@ public class Section extends TimedEvent {
 	private void setTimeSignatureConfidence(double timeSignatureConfidence) {
 		this.timeSignatureConfidence = timeSignatureConfidence;
 	}
+	 private void setKeyString() {
+
+		    switch(key){
+
+		      case 0: stringKey = "c";
+		              return;
+
+		      case 1: stringKey = "c#";
+		              return;
+
+		      case 2: stringKey = "d";
+		              return;
+
+		      case 3: stringKey = "d#";
+		              return;
+
+		      case 4: stringKey = "e";
+		              return;
+
+		      case 5: stringKey = "f";
+		              return;
+
+		      case 6: stringKey = "f#";
+		              return;
+
+		      case 7: stringKey = "g";
+		              return;
+
+		      case 8: stringKey = "g#";
+		              return;
+
+		      case 9: stringKey = "a";
+		              return;
+
+		      case 10: stringKey = "a#";
+		              return;
+
+		      case 11: stringKey = "b";
+		              return;
+		    }
+		  }
 
 }
