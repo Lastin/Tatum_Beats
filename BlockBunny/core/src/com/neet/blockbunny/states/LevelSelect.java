@@ -1,5 +1,8 @@
 package com.neet.blockbunny.states;
 
+import java.awt.FileDialog;
+import java.awt.Frame;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -51,7 +54,35 @@ public class LevelSelect extends GameState {
 							Thread thread = new Thread(){
 							public void run(){
 							System.out.println("choosing");
-							JFileChooser chooser = new JFileChooser();
+							Frame yourJFrame = new Frame();;
+							FileDialog fd = new FileDialog(yourJFrame , "Choose a file", FileDialog.LOAD);
+							fd.setDirectory("C:\\");
+							fd.setFile("*.mp3");
+							fd.setVisible(true);
+							String filename = fd.getFile();
+							
+							if (filename == null){
+							  System.out.println("You cancelled the choice");
+							}
+							else{
+							  System.out.println("You chose " + filename);
+							  gsm.game().res.loadMusic(fd.getDirectory()+filename);
+							  Play.song= filename.substring(0,filename.length()-4);
+							  gsm.game().getTrack().setTrack(fd.getDirectory()+filename);
+								
+								
+								try{
+									Thread thread = new Thread(){
+										public void run(){
+											gsm.game().getTrack().initilize();
+										}
+									};
+									thread.start();
+								}
+								catch(Exception e){	}
+							}
+							
+							/*JFileChooser chooser = new JFileChooser();
 							FileNameExtensionFilter filter = new FileNameExtensionFilter(
 									"MP3 & WAV Images", "mp3", "wav");
 							chooser.setFileFilter(filter);
@@ -63,6 +94,8 @@ public class LevelSelect extends GameState {
 								Play.song= temp.substring(0,temp.length()-4);
 								System.out.println(Play.song);
 								gsm.game().getTrack().setTrack(chooser.getSelectedFile().getAbsolutePath());
+								
+							
 								try{
 									Thread thread = new Thread(){
 										public void run(){
@@ -73,7 +106,8 @@ public class LevelSelect extends GameState {
 								}
 								catch(Exception e){	}
 							}
-						}
+						*/}
+						
 							};
 							thread.start();
 						}
@@ -85,7 +119,8 @@ public class LevelSelect extends GameState {
 						}
 
 						else{
-							Play.level = row * buttons[0].length + col + 1;
+							//Play.level = row * buttons[0].length + col + 1;
+							Play.level = 5;
 							//Play.tileMap = makeMap();
 							Game.res.getSound("levelselect").play();
 							gsm.setState(GameStateManager.PLAY);

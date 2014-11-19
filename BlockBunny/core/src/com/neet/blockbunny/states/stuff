@@ -1,0 +1,13 @@
+/*JFileChooser chooser = new JFileChooser();
+							FileNameExtensionFilter filter = new FileNameExtensionFilter(
+									"MP3 & WAV Images", "mp3", "wav");
+							chooser.setFileFilter(filter);
+							int returnVal = chooser.showDialog(null, "choose song");
+							if(returnVal == JFileChooser.APPROVE_OPTION) {
+								chooser.getSelectedFile().getName();
+								gsm.game().res.loadMusic(chooser.getSelectedFile().getAbsolutePath());
+								String temp =chooser.getSelectedFile().getName();
+								Play.song= temp.substring(0,temp.length()-4);
+								System.out.println(Play.song);
+								gsm.game().getTrack().setTrack(chooser.getSelectedFile().getAbsolutePath());
+								*/

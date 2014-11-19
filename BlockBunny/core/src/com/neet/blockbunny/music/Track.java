@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.swing.JOptionPane;
 
 import com.echonest.api.v4.EchoNestException;
 import com.neet.blockbunny.main.FileUploaderGDX;
@@ -29,31 +30,31 @@ public class Track {
 	private double loudness; //done
 	private double valence; //done
 	private double instrumentalness; //done
-	
+
 	private int bitrate;//done
 	private int sampleRate; //done
 
 	private int key; //done
 	private double keyConf;//done
 	private String stringKey; //done
-	
+
 	private int mode; //done
 	private double modeConf;//done
 	private String stringMode; //done
-	
+
 	private double tempo; //done
 	private double tempoConf;//done
-	
+
 	private int timeSig; //done
 	private double timeSigConf;//done
-	
+
 	private double endFade;//done
 	private double startFade;//done
-	
+
 	private ArrayList<TimedEvent> bars;
 	private ArrayList<TimedEvent> beats;
 	private ArrayList<TimedEvent> tatums;
-	
+
 	private ArrayList<Section> sections;
 	private ArrayList<Segment> segments;
 
@@ -77,11 +78,11 @@ public class Track {
 		fileUploader = new FileUploaderGDX(trackPath);
 
 	}
-	
+
 	public void initilize(){
 		try {
 			fileUploader.uploadGDX();
-			
+
 			trackInformation = fileUploader.getJsonMap();
 			JsonObject meta = (JsonObject) trackInformation.get("Meta");
 			JsonObject track = (JsonObject) trackInformation.get("Track");
@@ -92,41 +93,45 @@ public class Track {
 			List<JsonObject> Jsections = getAsList(trackInformation.get("Sections"));
 			List<JsonObject> Jsegments = getAsList(trackInformation.get("Segments"));
 			// get all json objects
-			this.trackPath = meta.getString("filename");
-			this.artistName = meta.getString("artist");
-			this.trackName = meta.getString("title");
-			this.albumName = meta.getString("album");
-			this.genre = meta.getString("genre");
-			
-			this.bitrate = meta.getInt("bitrate");
-			this.sampleRate = meta.getInt( "sample_rate");
-			this.dancebility = audio.getJsonNumber("danceability").doubleValue();
-			
-			this.duration = audio.getJsonNumber("duration").doubleValue();
-			this.energy =  audio.getJsonNumber("energy").doubleValue();
-			
-			this.loudness = audio.getJsonNumber("loudness").doubleValue();
-			this.speechiness = audio.getJsonNumber("speechiness").doubleValue();
-			this.acousticness =  audio.getJsonNumber("acousticness").doubleValue();
-			this.valence = audio.getJsonNumber("valence").doubleValue();
-			this.instrumentalness =  audio.getJsonNumber("instrumentalness").doubleValue();
-			
-			this.liveness =  audio.getJsonNumber("liveness").doubleValue();
-			this.tempo = audio.getJsonNumber("tempo").doubleValue();
-			
-			this.key = audio.getInt("key");
-			setKeyString();
-			this.mode = audio.getInt("mode");
-			setModeString();
-			this.timeSig = audio.getInt("time_signature");
-			
-			this.endFade = track.getJsonNumber("end_of_fade_in").doubleValue();
-			this.startFade =  track.getJsonNumber("start_of_fade_out").doubleValue();
-			this.tempoConf = track.getJsonNumber("tempo_confidence").doubleValue();
-			this.timeSigConf = track.getJsonNumber("time_signature_confidence").doubleValue();
-			this.keyConf =  track.getJsonNumber("key_confidence").doubleValue();
-			this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
-			
+			try{
+				this.trackPath = meta.getString("filename");
+				this.artistName = meta.getString("artist");
+				System.out.println(this.artistName);
+				this.trackName = meta.getString("title");
+				this.albumName = meta.getString("album");
+				this.genre = meta.getString("genre");
+
+				this.bitrate = meta.getInt("bitrate");
+				this.sampleRate = meta.getInt( "sample_rate");
+				this.dancebility = audio.getJsonNumber("danceability").doubleValue();
+
+				this.duration = audio.getJsonNumber("duration").doubleValue();
+				this.energy =  audio.getJsonNumber("energy").doubleValue();
+				this.loudness = 0;
+				try{this.loudness = audio.getJsonNumber("loudness").doubleValue();}catch(NullPointerException e){}
+				this.speechiness = audio.getJsonNumber("speechiness").doubleValue();
+				this.acousticness =  audio.getJsonNumber("acousticness").doubleValue();
+				this.valence = audio.getJsonNumber("valence").doubleValue();
+				this.instrumentalness =  audio.getJsonNumber("instrumentalness").doubleValue();
+
+				this.liveness =  audio.getJsonNumber("liveness").doubleValue();
+				this.tempo = audio.getJsonNumber("tempo").doubleValue();
+
+				this.key = audio.getInt("key");
+				setKeyString();
+				this.mode = audio.getInt("mode");
+				setModeString();
+				this.timeSig = audio.getInt("time_signature");
+
+				this.endFade = track.getJsonNumber("end_of_fade_in").doubleValue();
+				this.startFade =  track.getJsonNumber("start_of_fade_out").doubleValue();
+				this.tempoConf = track.getJsonNumber("tempo_confidence").doubleValue();
+				this.timeSigConf = track.getJsonNumber("time_signature_confidence").doubleValue();
+				this.keyConf =  track.getJsonNumber("key_confidence").doubleValue();
+				this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
+			}catch(NullPointerException e){
+				JOptionPane.showMessageDialog(null,"not possible to use this file");
+			}
 			bars = new ArrayList<>();
 			for(JsonObject object: Jbars){
 				double start = object.getJsonNumber("start").doubleValue();
@@ -153,15 +158,24 @@ public class Track {
 				double start = object.getJsonNumber("start").doubleValue();
 				double duration = object.getJsonNumber("duration").doubleValue();
 				double confidence = object.getJsonNumber("confidence").doubleValue();
-				double loudness = object.getJsonNumber("loudness").doubleValue();
-				double tempo = object.getJsonNumber("tempo").doubleValue();
-				double tempoConf = object.getJsonNumber("tempo_confidence").doubleValue();
-				int key = object.getInt("key");
-				double keyConf = object.getJsonNumber("key_confidence").doubleValue();
-				int mode = object.getInt("mode");
-				double modeConf = object.getJsonNumber("mode_confidence").doubleValue();
-				int timeSig = object.getInt("time_signature");
-				double timeSigConf = object.getJsonNumber("time_signature_confidence").doubleValue();
+				double loudness =0;
+				try{loudness = object.getJsonNumber("loudness").doubleValue();}catch(NullPointerException e){}
+				double tempo = this.tempo;
+				try{tempo = object.getJsonNumber("tempo").doubleValue();}catch(NullPointerException e){}
+				double tempoConf = this.tempoConf;
+				try{tempoConf = object.getJsonNumber("tempo_confidence").doubleValue();}catch(NullPointerException e){}
+				int key = this.key;
+				try{key = object.getInt("key");}catch(NullPointerException e){}
+				double keyConf = this.keyConf;
+				try{keyConf = object.getJsonNumber("key_confidence").doubleValue();}catch(NullPointerException e){}
+				int mode = this.mode;
+				try{mode = object.getInt("mode");}catch(NullPointerException e){}
+				double modeConf = this.modeConf;
+				try{modeConf = object.getJsonNumber("mode_confidence").doubleValue();}catch(NullPointerException e){}
+				int timeSig = this.timeSig;
+				try{timeSig = object.getInt("time_signature");}catch(NullPointerException e){}
+				double timeSigConf = this.timeSigConf;
+				try{ timeSigConf = object.getJsonNumber("time_signature_confidence").doubleValue();}catch(NullPointerException e){}
 				sections.add(new Section(start, duration, confidence,loudness,tempo,tempoConf,key,keyConf,mode,modeConf,timeSig,timeSigConf));
 			}
 			segments = new ArrayList<>();
@@ -180,7 +194,7 @@ public class Track {
 						pitchArray.add(Double.parseDouble(pitches.get(i).toString()));
 						i++;
 					}
-				
+
 				}
 				catch(IndexOutOfBoundsException e){
 					//end of array because I am a lazy bastard and can't be bothered to find out how to get the length
@@ -193,147 +207,147 @@ public class Track {
 						timbreArray.add(Double.parseDouble(timbres.get(i).toString()));
 						i++;
 					}
-				
+
 				}
 				catch(IndexOutOfBoundsException e){
 					//end of array because I am a lazy bastard and can't be bothered to find out how to get the length
 				}
-				
+
 				segments.add(new Segment(start,duration,confidence,loudness_start,loudness_max_time,loudness_max,pitchArray, timbreArray));
 			}
-			
+
 		} catch (EchoNestException | IOException e) {
 			e.printStackTrace();
 		} 
 	}
-	
+
 	public List<JsonObject> getAsList(Object array) {
 		if(array instanceof JsonArray)
 			return ((JsonArray) array).getValuesAs(JsonObject.class);
 		return null;
 	}
-	
+
 	public static void main(String... args) {
 		new Track("test.mp3").initilize();
 	}
-	  private void setModeString(){
+	private void setModeString(){
 
-	    if(mode == 0){
-	      stringMode = "minor";
-	    }
-	    else stringMode = "major";
+		if(mode == 0){
+			stringMode = "minor";
+		}
+		else stringMode = "major";
 
-	  }
-	  
-	  private void setKeyString() {
+	}
 
-	    switch(key){
+	private void setKeyString() {
 
-	      case 0: stringKey = "c";
-	              return;
+		switch(key){
 
-	      case 1: stringKey = "c#";
-	              return;
+		case 0: stringKey = "c";
+		return;
 
-	      case 2: stringKey = "d";
-	              return;
+		case 1: stringKey = "c#";
+		return;
 
-	      case 3: stringKey = "d#";
-	              return;
+		case 2: stringKey = "d";
+		return;
 
-	      case 4: stringKey = "e";
-	              return;
+		case 3: stringKey = "d#";
+		return;
 
-	      case 5: stringKey = "f";
-	              return;
+		case 4: stringKey = "e";
+		return;
 
-	      case 6: stringKey = "f#";
-	              return;
+		case 5: stringKey = "f";
+		return;
 
-	      case 7: stringKey = "g";
-	              return;
+		case 6: stringKey = "f#";
+		return;
 
-	      case 8: stringKey = "g#";
-	              return;
+		case 7: stringKey = "g";
+		return;
 
-	      case 9: stringKey = "a";
-	              return;
+		case 8: stringKey = "g#";
+		return;
 
-	      case 10: stringKey = "a#";
-	              return;
+		case 9: stringKey = "a";
+		return;
 
-	      case 11: stringKey = "b";
-	              return;
-	    }
-	  }
-	  
-	  public String getArtist(){ return artistName;}
+		case 10: stringKey = "a#";
+		return;
 
-	  public String getSongName(){  return trackName;}
-	  
-	  public String getAlbumName() { return albumName;}
-	  
-	  public String getTrackPath() {return trackPath;}
-	  
-	  public String getGenre() {return genre;}
-	  
-	  public double getAcousticness() {return acousticness;}
-	  
-	  public double getValence() {return valence;}
-	  
-	  public double getInstrumentalness() {return instrumentalness;}
-	  
-	  public int getBitRate(){ return bitrate;}
-	  
-	  public int getSampleRate() {return sampleRate;}
+		case 11: stringKey = "b";
+		return;
+		}
+	}
 
-	  public double getDanceability(){  return dancebility;}
+	public String getArtist(){ return artistName;}
 
-	  public double getSpeechiness(){ return speechiness;}
+	public String getSongName(){  return trackName;}
 
-	  public double getLiveness(){ return liveness;}
+	public String getAlbumName() { return albumName;}
 
-	  public double getEnergy(){  return energy;}
+	public String getTrackPath() {return trackPath;}
 
-	  public double getDuration(){ return duration;}
+	public String getGenre() {return genre;}
 
-	  public double getLoudness(){ return loudness;}
+	public double getAcousticness() {return acousticness;}
 
-	  public int getKeyInt(){ return key;}
+	public double getValence() {return valence;}
 
-	  public String getKeyString(){return stringKey;}
+	public double getInstrumentalness() {return instrumentalness;}
 
-	  public int getModeInt(){ return mode;}
+	public int getBitRate(){ return bitrate;}
 
-	  public String getModeString(){ return stringMode;}
+	public int getSampleRate() {return sampleRate;}
 
-	  public double getTempo(){return tempo;}
+	public double getDanceability(){  return dancebility;}
 
-	  public int getTimeSignature(){return timeSig;}
-	  
-	  public double getEndFade(){return endFade;}
+	public double getSpeechiness(){ return speechiness;}
 
-	  public double getStartFade(){return startFade;}
-	  
-	  public double getKeyConfidence(){return keyConf;}
-	  
-	  public double getModeConfidence(){return modeConf;}
-	  
-	  public double getTempoConfidence(){return tempoConf;}
-	  
-	  public double getTimeSignatureConfidence(){return timeSigConf;}
+	public double getLiveness(){ return liveness;}
 
-	  public ArrayList<TimedEvent> getBars() {return bars;}
-	  
-	  public ArrayList<TimedEvent> getBeats() {return beats;}
-	  
-	  public ArrayList<TimedEvent> getTatums() { return tatums;}
-	  
-	  public ArrayList<Segment> getSegments() {return segments;}
-	  
-	  public ArrayList<Section> getSections() {return sections;}
+	public double getEnergy(){  return energy;}
 
-	  public FileUploaderGDX getUploader() {return fileUploader;}
+	public double getDuration(){ return duration;}
+
+	public double getLoudness(){ return loudness;}
+
+	public int getKeyInt(){ return key;}
+
+	public String getKeyString(){return stringKey;}
+
+	public int getModeInt(){ return mode;}
+
+	public String getModeString(){ return stringMode;}
+
+	public double getTempo(){return tempo;}
+
+	public int getTimeSignature(){return timeSig;}
+
+	public double getEndFade(){return endFade;}
+
+	public double getStartFade(){return startFade;}
+
+	public double getKeyConfidence(){return keyConf;}
+
+	public double getModeConfidence(){return modeConf;}
+
+	public double getTempoConfidence(){return tempoConf;}
+
+	public double getTimeSignatureConfidence(){return timeSigConf;}
+
+	public ArrayList<TimedEvent> getBars() {return bars;}
+
+	public ArrayList<TimedEvent> getBeats() {return beats;}
+
+	public ArrayList<TimedEvent> getTatums() { return tatums;}
+
+	public ArrayList<Segment> getSegments() {return segments;}
+
+	public ArrayList<Section> getSections() {return sections;}
+
+	public FileUploaderGDX getUploader() {return fileUploader;}
 }
 
 
