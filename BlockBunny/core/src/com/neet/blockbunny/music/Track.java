@@ -96,7 +96,6 @@ public class Track {
 			try{
 				this.trackPath = meta.getString("filename");
 				this.artistName = meta.getString("artist");
-				System.out.println(this.artistName);
 				this.trackName = meta.getString("title");
 				this.albumName = meta.getString("album");
 				this.genre = meta.getString("genre");
@@ -215,10 +214,11 @@ public class Track {
 
 				segments.add(new Segment(start,duration,confidence,loudness_start,loudness_max_time,loudness_max,pitchArray, timbreArray));
 			}
-
+			
 		} catch (EchoNestException | IOException e) {
 			e.printStackTrace();
 		} 
+
 	}
 
 	public List<JsonObject> getAsList(Object array) {
@@ -227,9 +227,6 @@ public class Track {
 		return null;
 	}
 
-	public static void main(String... args) {
-		new Track("test.mp3").initilize();
-	}
 	private void setModeString(){
 
 		if(mode == 0){
@@ -279,6 +276,218 @@ public class Track {
 		case 11: stringKey = "b";
 		return;
 		}
+	}
+	public int getBarIn(double time){
+		if(time==0) return 1;
+		if(time<0) return -1;
+		TimedEvent timeBar = bars.get(bars.size()-1);
+		if(time > timeBar.getStart()+timeBar.getduration()) return -1;
+		int bar = 0;
+
+		int midpoint = bars.size()/2;
+		int start = 0;
+		int end = bars.size();
+		
+		int count = 0;
+		while(true){
+			System.out.println("Count:" + count);
+			try{
+			 timeBar = bars.get(midpoint);
+
+			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+				bar = midpoint;
+				break;
+			}
+			else if(time<timeBar.getStart()){
+				end = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else if (time > timeBar.getStart()+timeBar.getduration()){
+				start = midpoint;
+				midpoint = (start+end)/2;
+			}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("error bars "+ midpoint);
+				midpoint--;
+			}
+			count++;
+
+		}
+		System.out.println("bars");
+		System.out.println(time);
+		System.out.println(bar);
+		System.out.println(timeBar.getStart());
+		System.out.println(timeBar.getduration());
+
+		return bar;
+	}
+	public int getBeatIn(double time){
+		if(time==0) return 1;
+		if(time<0) return -1;
+		TimedEvent timeBar = beats.get(beats.size()-1);
+		if(time > timeBar.getStart()+timeBar.getduration()) return -1;
+		int beat = 0;
+		int count = 0;
+		int midpoint = beats.size()/2;
+		int start = 0;
+		int end = beats.size();
+
+		while(true){
+			System.out.println("Count:" + count);
+			try{
+			timeBar = beats.get(midpoint);
+
+			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+				beat = midpoint;
+				break;
+			}
+			else if(time<timeBar.getStart()){
+				end = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else if (time > timeBar.getStart()+timeBar.getduration()){
+				start = midpoint;
+				midpoint = (start+end)/2;
+			}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("error beats"+midpoint);
+				midpoint--;
+			}
+			count++;
+		}
+		System.out.println("beats");
+		System.out.println(time);
+		System.out.println(beat);
+		System.out.println(timeBar.getStart());
+		System.out.println(timeBar.getduration());
+		return beat;
+	}
+	public int getTatumIn(double time){
+		if(time==0) return 1;
+		if(time<0) return -1;
+		TimedEvent timeBar = tatums.get(tatums.size()-1);
+		if(time > timeBar.getStart()+timeBar.getduration()) return -1;
+		int bar = 0;
+		int count =0;
+		int midpoint = tatums.size()/2;
+		int start = 0;
+		int end = tatums.size();
+
+		while(true){
+
+			System.out.println("Count:" + count);
+			try{
+			timeBar = tatums.get(midpoint);
+
+			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+				bar = midpoint;
+				break;
+			}
+			else if(time<timeBar.getStart()){
+				end = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else if (time > timeBar.getStart()+timeBar.getduration()){
+				start = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else {bar= -1;
+				break;
+			}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("error tatums"+midpoint);
+				midpoint--;
+			}
+			count++;
+		}
+		System.out.println("tatums");
+		System.out.println(time);
+		System.out.println(bar);
+		System.out.println(timeBar.getStart());
+		System.out.println(timeBar.getduration());
+		return bar;
+	}
+	public int getSectionIn(double time){
+		if(time==0) return 1;
+		if(time<0) return -1;
+		TimedEvent timeBar = sections.get(sections.size()-1);
+		if(time > timeBar.getStart()+timeBar.getduration()) return -1;
+		int bar = 0;
+		int midpoint = sections.size()/2;
+		int start = 0;
+		int end = sections.size();
+		int count =0;
+		while(true){
+			System.out.println("Count:" + count);
+			try{
+			timeBar = sections.get(midpoint);
+
+			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+				bar = midpoint;
+				break;
+			}
+			else if(time<timeBar.getStart()){
+				end = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else if (time > timeBar.getStart()+timeBar.getduration()){
+				start = midpoint;
+				midpoint = (start+end)/2;
+			}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("error sections "+ midpoint);
+				midpoint--;
+			}
+			count++;
+
+		}
+		System.out.println("sections");
+		System.out.println(time);
+		System.out.println(bar);
+		System.out.println(timeBar.getStart());
+		System.out.println(timeBar.getduration());
+		return bar;
+	}
+	public int getSegmentIn(double time){
+		if(time==0) return 1;
+		if(time<0) return -1;
+		TimedEvent timeBar = segments.get(segments.size()-1);
+		if(time > timeBar.getStart()+timeBar.getduration()) return -1;
+		int bar = 0;
+		int midpoint = segments.size()/2;
+		int start = 0;
+		int end = segments.size();
+		int count = 0;
+		while(true){
+
+			System.out.println("Count:" + count);
+			try{
+			timeBar = segments.get(midpoint);
+
+			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+				bar = midpoint;
+				break;
+			}
+			else if(time<timeBar.getStart()){
+				end = midpoint;
+				midpoint = (start+end)/2;
+			}
+			else if (time > timeBar.getStart()+timeBar.getduration()){
+				start = midpoint;
+				midpoint = (start+end)/2;
+			}
+			}catch(IndexOutOfBoundsException e){
+				System.out.println("error segments "+midpoint);
+				midpoint--;
+			}
+			count++;
+		}
+		System.out.println("segments");
+		System.out.println(time);
+		System.out.println(bar);
+		System.out.println(timeBar.getStart());
+		System.out.println(timeBar.getduration());
+		return bar;
 	}
 
 	public String getArtist(){ return artistName;}

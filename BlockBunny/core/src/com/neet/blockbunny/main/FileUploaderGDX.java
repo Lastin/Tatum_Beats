@@ -38,7 +38,7 @@ public class FileUploaderGDX {
 	public void uploadGDX() throws EchoNestException, IOException {
 
 		File file = new File(trackPath);
-		System.out.println(file.getAbsolutePath());
+		//System.out.println(file.getAbsolutePath());
 		//Long fileSize = file.getTotalSpace();
 		en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
 		en.setTraceSends(true);
@@ -51,11 +51,11 @@ public class FileUploaderGDX {
 		}
 		
 		
-		System.out.println(track.getOriginalID()); // weird stuff
-		System.out.println(track.getSongID()); // SOMBINS136004B720
-		System.out.println(track.getAudioUrl()); // NULL
-		System.out.println(track.getForeignID()); // NULL
-		System.out.println(track.getID()); // THIS ONE!! Track ID, TRAESKT145E82A824C for test
+		//System.out.println(track.getOriginalID()); // weird stuff
+		//System.out.println(track.getSongID()); // SOMBINS136004B720
+		//System.out.println(track.getAudioUrl()); // NULL
+		//System.out.println(track.getForeignID()); // NULL
+		//System.out.println(track.getID()); // THIS ONE!! Track ID, TRAESKT145E82A824C for test
 		
 		URL url = null;
 		trackInformation = new HashMap<String, Object>();
