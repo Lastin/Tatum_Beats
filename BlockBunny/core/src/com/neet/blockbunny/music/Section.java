@@ -1,5 +1,7 @@
 package com.neet.blockbunny.music;
 
+import java.util.ArrayList;
+
 public class Section extends TimedEvent {
 	private double loudness;
 	private double tempo;
@@ -14,9 +16,9 @@ public class Section extends TimedEvent {
 	
 	public Section(double start, double duration, double confidence,double loudness,double tempo,
 				   double tempoConfidence, int key, double keyConfidence, int mode, double modeConfidence,
-			       int timeSignature, double timeSignatureConfidence) {
+			       int timeSignature, double timeSignatureConfidence,ArrayList<TimedEvent> array) {
 		
-		super(start, duration, confidence);
+		super(start, duration, confidence,array);
 		this.setLoudness(loudness);
 		this.setTempo(tempo);
 		this.setTempoConfidence(tempoConfidence);

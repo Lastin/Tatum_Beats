@@ -124,11 +124,9 @@ public class LevelSelect extends GameState {
 							//Play.tileMap = makeMap();
 							Game.res.getSound("levelselect").play();
 							gsm.setState(GameStateManager.PLAY);
-							gsm.game().getTrack().getTatumIn(-1);
-							gsm.game().getTrack().getBeatIn(-1);
-							gsm.game().getTrack().getBarIn(-1);
-							gsm.game().getTrack().getSectionIn(-11);
-							gsm.game().getTrack().getSegmentIn(-1);
+							int num = gsm.game().getTrack().getTatumIn(100);
+							gsm.game().getTrack().getBeatIn(100);
+							System.out.println(gsm.game().getTrack().getTatums().get(num).getContainedIn());
 							
 
 						}

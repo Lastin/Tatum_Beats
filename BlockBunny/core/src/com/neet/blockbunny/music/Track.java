@@ -131,31 +131,127 @@ public class Track {
 			}catch(NullPointerException e){
 				JOptionPane.showMessageDialog(null,"not possible to use this file");
 			}
-			bars = new ArrayList<>();
-			for(JsonObject object: Jbars){
-				double start = object.getJsonNumber("start").doubleValue();
-				double duration = object.getJsonNumber("duration").doubleValue();
+			tatums = new ArrayList<>();
+
+			for(JsonObject object: Jtatums){
+				double start = (double) Math.floor(object.getJsonNumber("start").doubleValue()*100)/100;
+				double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue()*100)/100;
 				double confidence = object.getJsonNumber("confidence").doubleValue();
-				bars.add(new TimedEvent(start, duration, confidence));
+				tatums.add(new TimedEvent(start, duration, confidence,new ArrayList<TimedEvent>()));
 			}
 			beats = new ArrayList<>();
+			int tatumsCount = 0;
 			for(JsonObject object: Jbeats){
-				double start = object.getJsonNumber("start").doubleValue();
-				double duration = object.getJsonNumber("duration").doubleValue();
+				double start = (double) Math.floor(object.getJsonNumber("start").doubleValue()*100)/100;
+				double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue()*100)/100;
 				double confidence = object.getJsonNumber("confidence").doubleValue();
-				beats.add(new TimedEvent(start, duration, confidence));
+				ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
+				while(true){
+					try{
+					TimedEvent unit = tatums.get(tatumsCount);
+					if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
+						array.add(unit);
+						unit.setContainedIn(beats.size());
+						int count = beats.size()+1;
+						System.out.println("Added tatum "+tatumsCount +" to beat "+ count);
+						tatumsCount++;
+					}
+					else if(unit.getStart()>=start+duration){
+						break;
+					}
+					//else if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()>start+duration)){
+					else{
+						double unitDur = unit.getStart()+unit.getduration();
+						double startDur = (start+duration);
+						//System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
+						if((unit.getStart()+0.0001>=start+duration)){
+
+						//	System.out.println("break inner");
+							break;
+						}
+						if((unit.getStart()>=start-0.0001)){
+							int count = beats.size()+1;
+							unit.setContainedIn(beats.size());
+							System.out.println("Added tatum "+tatumsCount +" to beat "+ count);
+							array.add(unit);
+						}
+
+						else{
+							int count = beats.size()+1;
+							System.out.println("NOT Added tatum "+tatumsCount +" to beat "+ count);
+						}
+						tatumsCount++;
+					}
+
+				}catch(IndexOutOfBoundsException e){
+					break;
+				}
+					}
+				beats.add(new TimedEvent(start, duration, confidence,array));
+
 			}
-			tatums = new ArrayList<>();
-			for(JsonObject object: Jtatums){
-				double start = object.getJsonNumber("start").doubleValue();
-				double duration = object.getJsonNumber("duration").doubleValue();
+			bars = new ArrayList<>();
+			tatumsCount = 0;
+			for(JsonObject object: Jbars){
+				double start = (double) Math.floor(object.getJsonNumber("start").doubleValue()*100)/100;
+				double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue()*100)/100;
 				double confidence = object.getJsonNumber("confidence").doubleValue();
-				tatums.add(new TimedEvent(start, duration, confidence));
+				ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
+				int Testcount =0;
+				while(true){
+					try{
+					TimedEvent unit = beats.get(tatumsCount);
+					if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
+						array.add(unit);
+						unit.setContainedIn(bars.size());
+						int count = bars.size()+1;
+						System.out.println("Added beat "+tatumsCount +" to bar "+ count);
+						tatumsCount++;
+					}
+					else if(unit.getStart()>=start+duration){
+						break;
+					}
+					else{
+						double unitDur = unit.getStart()+unit.getduration();
+						double startDur = (start+duration);
+						//System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
+						if((unit.getStart()+0.0001>=start+duration)){
+
+						//	System.out.println("break inner");
+							break;
+						}
+						if((unit.getStart()>=start-0.0001)){
+							int count = bars.size()+1;
+
+							unit.setContainedIn(bars.size());
+							System.out.println("Added beat "+tatumsCount +" to bar "+ count);
+							array.add(unit);
+						}
+						//if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
+
+						//}
+						else{
+							int count = bars.size()+1;
+							System.out.println("NOT Added beat "+tatumsCount +" to bar "+ count);
+						}
+						tatumsCount++;
+					}
+					Testcount ++;
+				}catch(IndexOutOfBoundsException e){
+					break;
+				}
+					}
+				if(Testcount!=3){
+					System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+				}
+				bars.add(new TimedEvent(start, duration, confidence,array));
 			}
+
 			sections = new ArrayList<>();
+			tatumsCount = 0;
 			for(JsonObject object: Jsections){
-				double start = object.getJsonNumber("start").doubleValue();
-				double duration = object.getJsonNumber("duration").doubleValue();
+				double start = (double) Math.floor(object.getJsonNumber("start").doubleValue()*100)/100;
+				double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue()*100)/100;
 				double confidence = object.getJsonNumber("confidence").doubleValue();
 				double loudness =0;
 				try{loudness = object.getJsonNumber("loudness").doubleValue();}catch(NullPointerException e){}
@@ -175,7 +271,51 @@ public class Track {
 				try{timeSig = object.getInt("time_signature");}catch(NullPointerException e){}
 				double timeSigConf = this.timeSigConf;
 				try{ timeSigConf = object.getJsonNumber("time_signature_confidence").doubleValue();}catch(NullPointerException e){}
-				sections.add(new Section(start, duration, confidence,loudness,tempo,tempoConf,key,keyConf,mode,modeConf,timeSig,timeSigConf));
+				
+				ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
+				while(true){
+					try{
+					TimedEvent unit = bars.get(tatumsCount);
+					if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
+						array.add(unit);
+						int count = sections.size()+1;
+						System.out.println("Added bar "+tatumsCount +" to section "+ count);
+						double unitDur = unit.getStart()+unit.getduration();
+						double startDur = (start+duration);
+						//System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
+						
+						tatumsCount++;
+					}
+					else if(unit.getStart()>=start+duration){
+						break;
+					}
+					else{
+						
+						if((unit.getStart()+0.0001>=start+duration)){
+
+						//	System.out.println("break inner");
+							break;
+						}
+						if((unit.getStart()>=start-0.0001)){
+							int count = sections.size()+1;
+							System.out.println("Added bar "+tatumsCount +" to section "+ count +"dsas");
+							array.add(unit);
+						}
+						//if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
+
+						//}
+						else{
+							int count = sections.size()+1;
+							System.out.println("NOT Added bar "+tatumsCount +" to section "+ count);
+						}
+						tatumsCount++;
+					}
+				}catch(IndexOutOfBoundsException e){
+					break;
+				}
+				
+			}
+				sections.add(new Section(start, duration, confidence,loudness,tempo,tempoConf,key,keyConf,mode,modeConf,timeSig,timeSigConf,array));
 			}
 			segments = new ArrayList<>();
 			for(JsonObject object: Jsegments){
@@ -214,7 +354,7 @@ public class Track {
 
 				segments.add(new Segment(start,duration,confidence,loudness_start,loudness_max_time,loudness_max,pitchArray, timbreArray));
 			}
-			
+
 		} catch (EchoNestException | IOException e) {
 			e.printStackTrace();
 		} 
@@ -287,25 +427,25 @@ public class Track {
 		int midpoint = bars.size()/2;
 		int start = 0;
 		int end = bars.size();
-		
+
 		int count = 0;
 		while(true){
 			System.out.println("Count:" + count);
 			try{
-			 timeBar = bars.get(midpoint);
+				timeBar = bars.get(midpoint);
 
-			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
-				bar = midpoint;
-				break;
-			}
-			else if(time<timeBar.getStart()){
-				end = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else if (time > timeBar.getStart()+timeBar.getduration()){
-				start = midpoint;
-				midpoint = (start+end)/2;
-			}
+				if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+					bar = midpoint;
+					break;
+				}
+				else if(time<timeBar.getStart()){
+					end = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else if (time > timeBar.getStart()+timeBar.getduration()){
+					start = midpoint;
+					midpoint = (start+end)/2;
+				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("error bars "+ midpoint);
 				midpoint--;
@@ -335,20 +475,20 @@ public class Track {
 		while(true){
 			System.out.println("Count:" + count);
 			try{
-			timeBar = beats.get(midpoint);
+				timeBar = beats.get(midpoint);
 
-			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
-				beat = midpoint;
-				break;
-			}
-			else if(time<timeBar.getStart()){
-				end = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else if (time > timeBar.getStart()+timeBar.getduration()){
-				start = midpoint;
-				midpoint = (start+end)/2;
-			}
+				if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+					beat = midpoint;
+					break;
+				}
+				else if(time<timeBar.getStart()){
+					end = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else if (time > timeBar.getStart()+timeBar.getduration()){
+					start = midpoint;
+					midpoint = (start+end)/2;
+				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("error beats"+midpoint);
 				midpoint--;
@@ -377,23 +517,23 @@ public class Track {
 
 			System.out.println("Count:" + count);
 			try{
-			timeBar = tatums.get(midpoint);
+				timeBar = tatums.get(midpoint);
 
-			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
-				bar = midpoint;
+				if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+					bar = midpoint;
+					break;
+				}
+				else if(time<timeBar.getStart()){
+					end = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else if (time > timeBar.getStart()+timeBar.getduration()){
+					start = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else {bar= -1;
 				break;
-			}
-			else if(time<timeBar.getStart()){
-				end = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else if (time > timeBar.getStart()+timeBar.getduration()){
-				start = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else {bar= -1;
-				break;
-			}
+				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("error tatums"+midpoint);
 				midpoint--;
@@ -420,20 +560,20 @@ public class Track {
 		while(true){
 			System.out.println("Count:" + count);
 			try{
-			timeBar = sections.get(midpoint);
+				timeBar = sections.get(midpoint);
 
-			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
-				bar = midpoint;
-				break;
-			}
-			else if(time<timeBar.getStart()){
-				end = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else if (time > timeBar.getStart()+timeBar.getduration()){
-				start = midpoint;
-				midpoint = (start+end)/2;
-			}
+				if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+					bar = midpoint;
+					break;
+				}
+				else if(time<timeBar.getStart()){
+					end = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else if (time > timeBar.getStart()+timeBar.getduration()){
+					start = midpoint;
+					midpoint = (start+end)/2;
+				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("error sections "+ midpoint);
 				midpoint--;
@@ -462,20 +602,20 @@ public class Track {
 
 			System.out.println("Count:" + count);
 			try{
-			timeBar = segments.get(midpoint);
+				timeBar = segments.get(midpoint);
 
-			if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
-				bar = midpoint;
-				break;
-			}
-			else if(time<timeBar.getStart()){
-				end = midpoint;
-				midpoint = (start+end)/2;
-			}
-			else if (time > timeBar.getStart()+timeBar.getduration()){
-				start = midpoint;
-				midpoint = (start+end)/2;
-			}
+				if((time>=timeBar.getStart())&&(time<=timeBar.getStart()+timeBar.getduration())){
+					bar = midpoint;
+					break;
+				}
+				else if(time<timeBar.getStart()){
+					end = midpoint;
+					midpoint = (start+end)/2;
+				}
+				else if (time > timeBar.getStart()+timeBar.getduration()){
+					start = midpoint;
+					midpoint = (start+end)/2;
+				}
 			}catch(IndexOutOfBoundsException e){
 				System.out.println("error segments "+midpoint);
 				midpoint--;
@@ -489,6 +629,8 @@ public class Track {
 		System.out.println(timeBar.getduration());
 		return bar;
 	}
+
+
 
 	public String getArtist(){ return artistName;}
 
