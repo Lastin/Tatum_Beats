@@ -10,6 +10,7 @@ import com.tatum.Game;
 public abstract class GameState {
     protected GameStateManager gsm;
     protected Game game;
+    protected Content cont;
     protected SpriteBatch sb;
     protected BoundedCamera cam;
     protected OrthographicCamera hudCam;
@@ -17,11 +18,11 @@ public abstract class GameState {
     public GameState(GameStateManager gsm) {
         this.gsm = gsm;
         game = gsm.getGame();
+        cont = game.get_content();
         sb = game.getSpriteBatch();
         cam = game.getCamera();
         hudCam = game.getHUDCamera();
     }
-
     public abstract void handleInput();
     public abstract void update(float dt);
     public abstract void render();

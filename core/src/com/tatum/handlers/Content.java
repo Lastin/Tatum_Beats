@@ -45,6 +45,16 @@ public class Content {
         }
         return path.substring(++slashIndex, dotIndex);
     }
+    //GETTERS
+    public Texture getTexture(String key) {
+        return textures.get(key);
+    }
+    public Music getMusic(String key) {
+        return music.get(key);
+    }
+    public Sound getSound(String key) {
+        return sounds.get(key);
+    }
     //DESTRUCTOR
     public void removeAll() {
         dispose_objs(textures);

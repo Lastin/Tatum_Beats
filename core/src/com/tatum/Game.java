@@ -9,10 +9,10 @@ import com.tatum.handlers.*;
 
 public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
-    public static int v_width;
-    public static int v_height;
     public static final int SCALE = 2;
     public static final float STEP = 1/60f;
+    private int v_width;
+    private int v_height;
 	private SpriteBatch sb;
 	private BoundedCamera cam;
     private OrthographicCamera hudCam;
@@ -62,6 +62,15 @@ public class Game extends ApplicationAdapter {
     public void dispose() {
         if(cont != null)
             cont.removeAll();
+    }
+    public int get_width() {
+        return v_width;
+    }
+    public int get_height() {
+        return v_height;
+    }
+    public Content get_content(){
+        return cont;
     }
     //resize, pause and resume not in use, skipped for now
 }
