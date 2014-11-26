@@ -37,9 +37,6 @@ public class Content {
         Sound s = Gdx.audio.newSound(Gdx.files.internal(path));
         sounds.put(makeKey(path), s);
     }
-    public void loadAllTracks() {
-
-    }
     //unified method for all above to produce a key
     private String makeKey(String path) {
         int slashIndex = path.lastIndexOf('/');

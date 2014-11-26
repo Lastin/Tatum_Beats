@@ -6,7 +6,7 @@ import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.Content;
 import com.tatum.Game;
-import com.tatum.music.Track;
+import com.tatum.music.TrackData;
 
 public class LevelSelect extends GameState {
     private Game game;
