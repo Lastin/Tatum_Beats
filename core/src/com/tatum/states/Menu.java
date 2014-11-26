@@ -12,7 +12,7 @@ public class Menu extends GameState{
     }
 
     private void loadContent(){
-        cont.loadTexture("res/images/TatumLogo.png");
+        //cont.loadTexture("images/tatumLogo.png");
 
     }
 

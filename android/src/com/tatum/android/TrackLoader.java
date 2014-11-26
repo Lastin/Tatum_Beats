@@ -17,13 +17,17 @@ public class TrackLoader{
     public TrackLoader(){
         musicFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
         loadSongs(musicFolder);
-        for(Song s : songs)
-            Log.d("Song: ", s.getTitle());
+        //for(Song s : songs)
+           // Log.d("Song: ", s.getTitle());
     }
 
     private void loadSongs(File musicFolder) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        for (File f : musicFolder.listFiles()) {
+        File[] fileList = musicFolder.listFiles();
+        if(fileList == null)
+            Log.d("DEBUG:", "file list is null");
+        /*for (File f : musicFolder.listFiles()) {
+            Log.d("INFO:", "INSIDE THE LOOP");
             retriever.setDataSource(musicFolder + "/" + f.getName());
             int secs = Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
             int mins= secs / 60;
@@ -38,6 +42,6 @@ public class TrackLoader{
             String path = f.getAbsolutePath();
             Song s = new Song(title, duration, artist, path);
             songs.add(s);
-        }
+        }*/
     }
 }
