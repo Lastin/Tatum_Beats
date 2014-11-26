@@ -15,6 +15,7 @@ public class Content {
     private HashMap<String, Texture> textures;
     private HashMap<String, Music> music;
     private HashMap<String, Sound> sounds;
+    private HashMap<String, Music> tracks = new HashMap<String, Music>();
     public Content() {
       textures = new HashMap<String, Texture>();
       music = new HashMap<String, Music>();
@@ -35,6 +36,9 @@ public class Content {
     public void loadSound(String path) {
         Sound s = Gdx.audio.newSound(Gdx.files.internal(path));
         sounds.put(makeKey(path), s);
+    }
+    public void loadAllTracks() {
+
     }
     //unified method for all above to produce a key
     private String makeKey(String path) {
