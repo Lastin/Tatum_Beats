@@ -1,18 +1,18 @@
 package com.tatum;
-//libgdx stuff
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-//local stuff
+
 import com.tatum.handlers.*;
 
 public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
     public static final int SCALE = 2;
     public static final float STEP = 1/60f;
-    private int v_width;
-    private int v_height;
+    private int vWidth;
+    private int vHeight;
 	private SpriteBatch sb;
 	private BoundedCamera cam;
     private OrthographicCamera hudCam;
@@ -21,56 +21,54 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-        //Initialise size, input processor and load the content
-        v_width = Gdx.graphics.getWidth();
-        v_height = Gdx.graphics.getHeight();
+        vWidth = Gdx.graphics.getWidth();
+        vHeight = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(new InputProcessor());
         cont = new Content();
-        loadContent();
-        //Initialise cameras
+        //Cameras
         cam = new BoundedCamera();
-        cam.setToOrtho(false, v_width, v_height);
+        cam.setToOrtho(false, vWidth, vHeight);
         hudCam = new OrthographicCamera();
-        hudCam.setToOrtho(false, v_width, v_height);
+        hudCam.setToOrtho(false, vWidth, vHeight);
         //
         sb = new SpriteBatch();
         gsm = new GameStateManager(this);
 	}
-    private void loadContent() {
-        //cont.loadTexture();
-        //cont.loadMusic();
-        //cont.loadSound();
-    }
-    //getters
+
     public SpriteBatch getSpriteBatch() {
         return sb;
     }
+
     public OrthographicCamera getHUDCamera() {
         return hudCam;
     }
+
     public BoundedCamera getCamera() {
         return cam;
     }
-    //generic staff below
+
     @Override
     public void render () {
         gsm.update(Gdx.graphics.getDeltaTime());
         gsm.render();
         Input.update();
     }
+
     @Override
     public void dispose() {
         if(cont != null)
             cont.removeAll();
     }
+
     public int get_width() {
-        return v_width;
+        return vWidth;
     }
+
     public int get_height() {
-        return v_height;
+        return vHeight;
     }
+
     public Content get_content(){
         return cont;
     }
-    //resize, pause and resume not in use, skipped for now
 }

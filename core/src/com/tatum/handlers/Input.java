@@ -2,16 +2,11 @@ package com.tatum.handlers;
 
 public class Input {
 
-    public static int x;
-    public static int y;
-    public static boolean down;
-    public static boolean pdown;
-
-    public static boolean[] keys;
-    public static boolean[] pkeys;
+    public static int x, y;
+    public static boolean down, pdown;
+    public static boolean[] keys, pkeys;
     private static final int NUM_KEYS = 2;
-    public static final int BUTTON1 = 0;
-    public static final int BUTTON2 = 1;
+    public static final int BUTTON1 = 0, BUTTON2 = 1;
 
     static {
         keys = new boolean[NUM_KEYS];
@@ -20,7 +15,7 @@ public class Input {
 
     public static void update() {
         pdown = down;
-        for(int i = 0; i < NUM_KEYS; i++) {
+        for (int i = 0; i < NUM_KEYS; i++) {
             pkeys[i] = keys[i];
         }
     }

@@ -6,11 +6,10 @@ import com.tatum.states.*;
 
 public class GameStateManager {
     private Game game;
-    private Stack<GameState> gameStates;
+    private Stack<GameState> gameStates = new Stack<GameState>();
 
     public GameStateManager(Game game) {
         this.game = game;
-        gameStates = new Stack<GameState>();
         pushState(new Menu(this));
     }
     public void pushState(GameState state) {
@@ -21,8 +20,7 @@ public class GameStateManager {
         pushState(state);
     }
     public void popState() {
-        GameState g = gameStates.pop();
-        g.dispose();
+        gameStates.pop().dispose();
     }
     //getters
     public Game getGame() {
