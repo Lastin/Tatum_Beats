@@ -5,11 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.tatum.Game;
 
 public class GameButton {
-
-    Game game;
     Content cont;
     // center at x, y
     private float x;
@@ -23,9 +20,8 @@ public class GameButton {
     private String text;
     private TextureRegion[] font;
 
-    public GameButton(Game game, TextureRegion reg, float x, float y, OrthographicCamera cam) {
-        this.game = game;
-        this.cont = game.get_content();
+    public GameButton(Content cont, TextureRegion reg, float x, float y, OrthographicCamera cam) {
+        this.cont = cont;
         this.reg = reg;
         this.x = x;
         this.y = y;

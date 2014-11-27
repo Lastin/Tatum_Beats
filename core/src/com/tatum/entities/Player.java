@@ -3,17 +3,14 @@ package com.tatum.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.tatum.Game;
 import com.tatum.handlers.Content;
 
 public class Player extends B2DSprite {
-    private Content cont;
     private int numCrystals;
     private int totalCrystals;
 
-    public Player(Game game, Body body) {
-        super(body);
-        this.cont = game.get_content();
+    public Player(Body body, Content cont) {
+        super(body, cont);
 
         Texture tex = cont.getTexture("bunny");
         TextureRegion[] sprites = new TextureRegion[4];

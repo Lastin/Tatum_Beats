@@ -23,7 +23,7 @@ public class LevelSelect extends GameState {
         buttons = new GameButton[5][5];
         for(int row = 0; row < 1; row++) {
             for(int col = 0; col < 2; col++) {
-                buttons[row][col] = new GameButton(game, buttonReg, 80 + col * 40, 200 - row * 40, cam);
+                buttons[row][col] = new GameButton(cont, buttonReg, 80 + col * 40, 200 - row * 40, cam);
                 buttons[row][col].setText(row * buttons[0].length + col + 1 + "");
             }
         }

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Content;
-import com.tatum.Game;
 
 public class HUD {
 
@@ -16,8 +15,8 @@ public class HUD {
     private TextureRegion crystal;
     private TextureRegion[] font;
 
-    public HUD(Game game, Player player) {
-        this.cont = game.get_content();
+    public HUD(Content cont, Player player) {
+        this.cont = cont;
         this.player = player;
 
         Texture tex = cont.getTexture("hud");
