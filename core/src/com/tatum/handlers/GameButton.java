@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 public class GameButton {
-    Content cont;
+    ContentManager cont;
     // center at x, y
     private float x;
     private float y;
@@ -20,7 +20,7 @@ public class GameButton {
     private String text;
     private TextureRegion[] font;
 
-    public GameButton(Content cont, TextureRegion reg, float x, float y, OrthographicCamera cam) {
+    public GameButton(ContentManager cont, TextureRegion reg, float x, float y, OrthographicCamera cam) {
         this.cont = cont;
         this.reg = reg;
         this.x = x;

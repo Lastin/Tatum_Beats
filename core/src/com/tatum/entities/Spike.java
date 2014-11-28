@@ -3,11 +3,11 @@ package com.tatum.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.tatum.handlers.Content;
+import com.tatum.handlers.ContentManager;
 
 public class Spike extends B2DSprite {
 
-    public Spike(Body body, Content cont) {
+    public Spike(Body body, ContentManager cont) {
         super(body, cont);
 
         Texture tex = cont.getTexture("spikes");

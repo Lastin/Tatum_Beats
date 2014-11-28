@@ -195,9 +195,9 @@ public class Menu extends GameState {
         cont.loadTexture("res/images/bunny.png");
         cont.loadTexture("res/images/crystal.png");
         cont.loadTexture("res/images/spikes.png");
-        cont.loadTexture("res/images/play.png");
-        cont.loadTexture("res/images/leader.png");
-        cont.loadTexture("res/images/track.png");
+        cont.loadTexture("res/images/Play.png");
+        cont.loadTexture("res/images/Leader.png");
+        cont.loadTexture("res/images/Track.png");
 
         cont.loadSound("res/sfx/jump.wav");
         cont.loadSound("res/sfx/crystal.wav");

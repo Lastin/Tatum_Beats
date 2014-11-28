@@ -4,18 +4,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.tatum.handlers.B2DVars;
-import com.tatum.handlers.Content;
+import com.tatum.handlers.ContentManager;
 
 public class HUD {
 
     private Player player;
-    private Content cont;
+    private ContentManager cont;
     private TextureRegion container;
     private TextureRegion[] blocks;
     private TextureRegion crystal;
     private TextureRegion[] font;
 
-    public HUD(Content cont, Player player) {
+    public HUD(ContentManager cont, Player player) {
         this.cont = cont;
         this.player = player;
 

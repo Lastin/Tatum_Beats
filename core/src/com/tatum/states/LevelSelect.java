@@ -2,15 +2,14 @@ package com.tatum.states;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 //import com.echonest.api.v4.EchoNestException;
+import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.Content;
 import com.tatum.Game;
-import com.tatum.music.TrackData;
 
 public class LevelSelect extends GameState {
     private Game game;
-    private Content cont;
+    private ContentManager cont;
     private TextureRegion reg;
     private GameButton[][] buttons;
     public LevelSelect(GameStateManager gsm) {

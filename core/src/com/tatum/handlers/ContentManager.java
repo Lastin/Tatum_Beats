@@ -11,12 +11,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
 
 
-public class Content {
+public class ContentManager {
     private HashMap<String, Texture> textures;
     private HashMap<String, Music> music;
     private HashMap<String, Sound> sounds;
     private HashMap<String, Music> tracks = new HashMap<String, Music>();
-    public Content() {
+    public ContentManager() {
       textures = new HashMap<String, Texture>();
       music = new HashMap<String, Music>();
       sounds = new HashMap<String, Sound>();
@@ -24,16 +24,19 @@ public class Content {
 
     //Textures
     public void loadTexture(String path) {
-        Texture t = new Texture(Gdx.files.internal(path));
+        if(Gdx.files.internal(path) == null) return;
+        Texture t = new Texture(path);
         textures.put(makeKey(path), t);
     }
     //Music
     public void loadMusic(String path) {
+        if(Gdx.files.internal(path) == null) return;
         Music m = Gdx.audio.newMusic(Gdx.files.internal(path));
         music.put(makeKey(path), m);
     }
     //SFX
     public void loadSound(String path) {
+        if(Gdx.files.internal(path) == null) return;
         Sound s = Gdx.audio.newSound(Gdx.files.internal(path));
         sounds.put(makeKey(path), s);
     }

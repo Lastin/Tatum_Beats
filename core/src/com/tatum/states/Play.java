@@ -60,7 +60,7 @@ public class Play extends GameState {
     private Background[] backgrounds;
     private HUD hud;
 
-    public static int level;
+    public static int level = 1;
     public static String song;
 
     public Play(GameStateManager gsm) {

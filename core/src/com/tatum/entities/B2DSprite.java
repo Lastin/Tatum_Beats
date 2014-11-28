@@ -6,20 +6,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
-import com.tatum.handlers.Content;
+import com.tatum.handlers.ContentManager;
+
 /**
  * Attaches animated sprites to box2d bodies
  */
 public class B2DSprite {
-    protected Content cont;
+    protected ContentManager cont;
     protected Body body;
     protected Animation animation;
     protected float width;
     protected float height;
 
-    public B2DSprite(Body body, Content cont) {
+    public B2DSprite(Body body, ContentManager cont) {
         this.body = body;
         this.cont = cont;
+        animation = new Animation();
     }
 
     public void setAnimation(TextureRegion reg, float delay) {
@@ -37,8 +39,6 @@ public class B2DSprite {
     }
 
     public void render(SpriteBatch sb) {
-        if(animation == null)
-            return;
         sb.begin();
         sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
         sb.end();

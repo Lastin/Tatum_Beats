@@ -10,7 +10,7 @@ import com.tatum.Game;
 public abstract class GameState {
     protected GameStateManager gsm;
     protected Game game;
-    protected Content cont;
+    protected ContentManager cont;
     protected SpriteBatch sb;
     protected BoundedCamera cam;
     protected OrthographicCamera hudCam;

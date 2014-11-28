@@ -3,10 +3,10 @@ package com.tatum.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.tatum.handlers.Content;
+import com.tatum.handlers.ContentManager;
 
 public class Crystal extends B2DSprite {
-    public Crystal(Body body, Content cont) {
+    public Crystal(Body body, ContentManager cont) {
         super(body, cont);
         Texture tex = cont.getTexture("crystal");
         TextureRegion[] sprites = TextureRegion.split(tex, 16, 16)[0];

@@ -17,14 +17,14 @@ public class Game extends ApplicationAdapter {
 	private BoundedCamera cam;
     private OrthographicCamera hudCam;
     private GameStateManager gsm;
-	private static Content cont;
+	private static ContentManager cont;
 
 	@Override
 	public void create () {
         vWidth = Gdx.graphics.getWidth();
         vHeight = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(new InputProcessor());
-        cont = new Content();
+        cont = new ContentManager();
         //Cameras
         cam = new BoundedCamera();
         cam.setToOrtho(false, vWidth, vHeight);
@@ -68,7 +68,7 @@ public class Game extends ApplicationAdapter {
         return vHeight;
     }
 
-    public Content get_content(){
+    public ContentManager get_content(){
         return cont;
     }
 }

@@ -9,6 +9,9 @@ public class Animation {
     private int currentFrame;
     private int timesPlayed;
 
+    public Animation() {
+        //This got to be removed later somehow, otherwise it will always end up in null pointer expcetion.
+    }
 
     public Animation(TextureRegion[] frames) {
         this(frames, 1 / 12f);

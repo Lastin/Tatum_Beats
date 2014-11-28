@@ -3,13 +3,14 @@ package com.tatum.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.tatum.handlers.Content;
+import com.tatum.handlers.Animation;
+import com.tatum.handlers.ContentManager;
 
 public class Player extends B2DSprite {
     private int numCrystals;
     private int totalCrystals;
 
-    public Player(Body body, Content cont) {
+    public Player(Body body, ContentManager cont) {
         super(body, cont);
 
         Texture tex = cont.getTexture("bunny");
@@ -17,7 +18,7 @@ public class Player extends B2DSprite {
         for(int i = 0; i < sprites.length; i++) {
             sprites[i] = new TextureRegion(tex, i * 32, 0, 32, 32);
         }
-
+        animation = new Animation(sprites);
         animation.setFrames(sprites, 1 / 12f);
 
         width = sprites[0].getRegionWidth();
