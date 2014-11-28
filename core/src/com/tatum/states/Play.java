@@ -35,6 +35,7 @@ import com.tatum.handlers.Input;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.BoundedCamera;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
 
 public class Play extends GameState {
@@ -180,15 +181,16 @@ public class Play extends GameState {
 
         // load tile map and map renderer
         try {
-            tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
+            //tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
+            tileMap = new LevelGenerator(cont).makeMap();
         }
         catch(Exception e) {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
-        tileMapWidth = (Integer) tileMap.getProperties().get("width");
-        tileMapHeight = (Integer) tileMap.getProperties().get("height");
-        tileSize = (Integer) tileMap.getProperties().get("tilewidth");
+        tileMapWidth = 500*32;//(Integer) tileMap.getProperties().get("width");
+        tileMapHeight = 10*32;//(Integer) tileMap.getProperties().get("height");
+        tileSize = 32;//(Integer) tileMap.getProperties().get("tilewidth");
         tmRenderer = new OrthogonalTiledMapRenderer(tileMap);
 
         // read each of the "red" "green" and "blue" layers
