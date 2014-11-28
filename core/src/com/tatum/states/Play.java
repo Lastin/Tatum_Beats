@@ -188,9 +188,10 @@ public class Play extends GameState {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
-        tileMapWidth = 500*32;//(Integer) tileMap.getProperties().get("width");
-        tileMapHeight = 10*32;//(Integer) tileMap.getProperties().get("height");
-        tileSize = 32;//(Integer) tileMap.getProperties().get("tilewidth");
+        System.out.println(tileMap.getProperties().get("width"));
+        tileMapWidth = (Integer) tileMap.getProperties().get("width");
+        tileMapHeight = (Integer) tileMap.getProperties().get("height");
+        tileSize = (Integer) tileMap.getProperties().get("tilewidth");
         tmRenderer = new OrthogonalTiledMapRenderer(tileMap);
 
         // read each of the "red" "green" and "blue" layers
