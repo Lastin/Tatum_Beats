@@ -8,13 +8,12 @@ import com.tatum.handlers.ContentManager;
 public class Crystal extends B2DSprite {
     public Crystal(Body body, ContentManager cont) {
         super(body, cont);
+        cont.loadTexture("res/images/crystal.png");
         Texture tex = cont.getTexture("crystal");
         TextureRegion[] sprites = TextureRegion.split(tex, 16, 16)[0];
         animation.setFrames(sprites, 1 / 30f);
-
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
-
     }
 
 }

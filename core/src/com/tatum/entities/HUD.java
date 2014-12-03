@@ -18,9 +18,8 @@ public class HUD {
     public HUD(ContentManager cont, Player player) {
         this.cont = cont;
         this.player = player;
-
+        cont.loadTexture("res/images/hud.png");
         Texture tex = cont.getTexture("hud");
-
         container = new TextureRegion(tex, 0, 0, 32, 32);
 
         blocks = new TextureRegion[3];

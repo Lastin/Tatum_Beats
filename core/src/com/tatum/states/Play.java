@@ -106,9 +106,9 @@ public class Play extends GameState {
         b2dCam.setToOrtho(false, game.get_width() / PPM, game.get_height() / PPM);
         b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
 
-        cont.getMusic(song).setVolume(0.5f);
+        //cont.getMusic(song).setVolume(0.5f);
         //res.getMusic("bbsong").setVolume(0.5f);
-        cont.getMusic(song).play();
+        //cont.getMusic(song).play();
         //res.getMusic("bbsong").play();
 
     }
@@ -181,14 +181,13 @@ public class Play extends GameState {
 
         // load tile map and map renderer
         try {
-            //tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
+            tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
             tileMap = new LevelGenerator(cont).makeMap();
         }
         catch(Exception e) {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
-        System.out.println(tileMap.getProperties().get("width"));
         tileMapWidth = (Integer) tileMap.getProperties().get("width");
         tileMapHeight = (Integer) tileMap.getProperties().get("height");
         tileSize = (Integer) tileMap.getProperties().get("tilewidth");
@@ -196,12 +195,12 @@ public class Play extends GameState {
 
         // read each of the "red" "green" and "blue" layers
         TiledMapTileLayer layer;
-        layer = (TiledMapTileLayer) tileMap.getLayers().get("red");
-        createBlocks(layer, B2DVars.BIT_RED_BLOCK);
-        layer = (TiledMapTileLayer) tileMap.getLayers().get("green");
-        createBlocks(layer, B2DVars.BIT_GREEN_BLOCK);
-        layer = (TiledMapTileLayer) tileMap.getLayers().get("blue");
-        createBlocks(layer, B2DVars.BIT_BLUE_BLOCK);
+        //layer = (TiledMapTileLayer) tileMap.getLayers().get("red");
+        //createBlocks(layer, B2DVars.BIT_RED_BLOCK);
+        //layer = (TiledMapTileLayer) tileMap.getLayers().get("green");
+        //createBlocks(layer, B2DVars.BIT_GREEN_BLOCK);
+        //layer = (TiledMapTileLayer) tileMap.getLayers().get("blue");
+        //createBlocks(layer, B2DVars.BIT_BLUE_BLOCK);
 
     }
 
@@ -462,7 +461,7 @@ public class Play extends GameState {
 
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
-        for(int i = 0; i < backgrounds.length; i++) {
+        for (int i = 0; i < backgrounds.length; i++) {
             backgrounds[i].render(sb);
         }
 

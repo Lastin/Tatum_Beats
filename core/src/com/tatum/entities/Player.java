@@ -12,15 +12,17 @@ public class Player extends B2DSprite {
 
     public Player(Body body, ContentManager cont) {
         super(body, cont);
-
+        cont.loadTexture("res/images/bunny.png");
         Texture tex = cont.getTexture("bunny");
+        TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[0];
+        /*
         TextureRegion[] sprites = new TextureRegion[4];
         for(int i = 0; i < sprites.length; i++) {
             sprites[i] = new TextureRegion(tex, i * 32, 0, 32, 32);
         }
+        */
         animation = new Animation(sprites);
         animation.setFrames(sprites, 1 / 12f);
-
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
 

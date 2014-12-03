@@ -2,6 +2,7 @@ package com.tatum.handlers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -31,9 +32,13 @@ public class LevelGenerator {
         MapLayers layers = map.getLayers();
         layers.add(makeLayer());
         //tiledMapTileLayer();
+        MapProperties properties = map.getProperties();
+        properties.put("width", 16000);
+        properties.put("height", 200);
+        properties.put("tilewidth", 32);
         return map;
     }
-    private TiledMapTileLayer makeLayer (){
+    private MapLayer makeLayer (){
         int cellsize = 32;
         int minh = 64;
         TiledMapTileLayer l = new TiledMapTileLayer(32*20, 32*501, 32, 32);
@@ -45,6 +50,10 @@ public class LevelGenerator {
         for(int i = 0; i < 500; i++){
             l.setCell(i * 32, i % 3 * 32 + minh, cell_a);
         }
+        System.out.println(l.getTileHeight());
+        System.out.println(l.getTileWidth());
+        System.out.println(l.getWidth());
+        System.out.println(l.getHeight());
         return l;
     }
     private void nextCell(TiledMapTileLayer l, int r, Cell c){
