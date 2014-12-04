@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.tatum.entities.B2DSprite;
+import com.tatum.entities.Player;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
@@ -24,7 +25,7 @@ import com.tatum.handlers.GameStateManager;
 public class Menu extends GameState {
     private boolean debug = false;
     private Background bg;
-    private Animation animation;
+    private Animation bunnyAnimation;
     private GameButton playButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -32,21 +33,17 @@ public class Menu extends GameState {
 
     public Menu(GameStateManager gsm) {
         super(gsm);
+
         loadContent();
-        Texture tex = cont.getTexture("menu");
-        bg = new Background(game, new TextureRegion(tex), cam, 1f);
+
+        Texture menu = cont.getTexture("menu");
+        bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-
-        tex = cont.getTexture("bunny");
-        TextureRegion[] reg = new TextureRegion[4];
-        for(int i = 0; i < reg.length; i++) {
-            reg[i] = new TextureRegion(tex, i * 32, 0, 32, 32);
-        }
-        animation = new Animation(reg, 1 / 12f);
-
-        tex = cont.getTexture("hud");
-        playButton = new GameButton(cont, new TextureRegion(tex, 0, 34, 58, 27), 160, 100, cam);
-
+        Texture bunny = cont.getTexture("bunny");
+        TextureRegion[] bunnySprite = TextureRegion.split(bunny, 32, 32)[0];
+        bunnyAnimation = new Animation(bunnySprite, 1/12f);
+        Texture hud = cont.getTexture("hud");
+        playButton = new GameButton(cont, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
         cam.setToOrtho(false, game.get_width(), game.get_height());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -166,18 +163,17 @@ public class Menu extends GameState {
         handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
-        animation.update(dt);
+        bunnyAnimation.update(dt);
         playButton.update(dt);
 
     }
 
     public void render() {
-
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
         playButton.render(sb);
         sb.begin();
-        sb.draw(animation.getFrame(), 146, 31);
+        sb.draw(bunnyAnimation.getFrame(), 146, 31);
         sb.end();
         if (debug) {
             cam.setToOrtho(false, game.get_width() / PPM, game.get_height() / PPM);
@@ -194,7 +190,8 @@ public class Menu extends GameState {
         cont.loadTexture("res/images/hud.png");
         cont.loadTexture("res/images/bunny.png");
         cont.loadTexture("res/images/crystal.png");
-        cont.loadTexture("res/images/spikes.png");
+        cont.loadTexture("res/images/blocks.png");
+        //cont.loadTexture("res/images/spikes.png");
         cont.loadTexture("res/images/Play.png");
         cont.loadTexture("res/images/Leader.png");
         cont.loadTexture("res/images/Track.png");

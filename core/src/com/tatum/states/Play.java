@@ -181,13 +181,14 @@ public class Play extends GameState {
 
         // load tile map and map renderer
         try {
-            tileMap = new TmxMapLoader().load("res/maps/level" + level + ".tmx");
-            tileMap = new LevelGenerator(cont).makeMap();
+            tileMap = new TmxMapLoader().load("res/maps/level" + 1 + ".tmx");
+
         }
         catch(Exception e) {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
+        tileMap = new LevelGenerator(cont).makeMap();
         tileMapWidth = (Integer) tileMap.getProperties().get("width");
         tileMapHeight = (Integer) tileMap.getProperties().get("height");
         tileSize = (Integer) tileMap.getProperties().get("tilewidth");
@@ -195,8 +196,8 @@ public class Play extends GameState {
 
         // read each of the "red" "green" and "blue" layers
         TiledMapTileLayer layer;
-        //layer = (TiledMapTileLayer) tileMap.getLayers().get("red");
-        //createBlocks(layer, B2DVars.BIT_RED_BLOCK);
+        layer = (TiledMapTileLayer) tileMap.getLayers().get("red");
+        createBlocks(layer, B2DVars.BIT_RED_BLOCK);
         //layer = (TiledMapTileLayer) tileMap.getLayers().get("green");
         //createBlocks(layer, B2DVars.BIT_GREEN_BLOCK);
         //layer = (TiledMapTileLayer) tileMap.getLayers().get("blue");
@@ -223,7 +224,8 @@ public class Play extends GameState {
 
                 // get cell
                 Cell cell = layer.getCell(col, row);
-
+                if(cell != null)
+                    System.out.println(row + " : " + col);
                 // check that there is a cell
                 if(cell == null) continue;
                 if(cell.getTile() == null) continue;
@@ -425,20 +427,20 @@ public class Play extends GameState {
         if(player.getBody().getPosition().y < 0) {
             cont.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            cont.getMusic(song).stop();
-            cont.getMusic(song).dispose();
+            //cont.getMusic(song).stop();
+            //cont.getMusic(song).dispose();
         }
         if(player.getBody().getLinearVelocity().x < 0.001f) {
             cont.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            cont.getMusic(song).stop();
-            cont.getMusic(song).dispose();
+            //cont.getMusic(song).stop();
+            //cont.getMusic(song).dispose();
         }
         if(cl.isPlayerDead()) {
             cont.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            cont.getMusic(song).stop();
-            cont.getMusic(song).dispose();
+            //cont.getMusic(song).stop();
+            //cont.getMusic(song).dispose();
         }
 
         // update crystals

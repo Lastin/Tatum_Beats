@@ -33,8 +33,8 @@ public class LevelGenerator {
         layers.add(makeLayer());
         //tiledMapTileLayer();
         MapProperties properties = map.getProperties();
-        properties.put("width", 16000);
-        properties.put("height", 200);
+        properties.put("width", 500);
+        properties.put("height", 320);
         properties.put("tilewidth", 32);
         return map;
     }
@@ -42,13 +42,14 @@ public class LevelGenerator {
         int cellsize = 32;
         int minh = 64;
         TiledMapTileLayer l = new TiledMapTileLayer(32*20, 32*501, 32, 32);
-        Texture cell_t = cont.getTexture("crystal");
-        TextureRegion cell_tr = new TextureRegion(cell_t, 0, 0, 32, 32);
+        l.setName("red");
+        Texture cell_t = cont.getTexture("blocks");
+        TextureRegion[] cell_tr = TextureRegion.split(cell_t, 32, 32)[0];
         Cell cell_a = new Cell();
-        StaticTiledMapTile stmt = new StaticTiledMapTile(cell_tr);
+        StaticTiledMapTile stmt = new StaticTiledMapTile(cell_tr[0]);
         cell_a.setTile(stmt);
         for(int i = 0; i < 500; i++){
-            l.setCell(i * 32, i % 3 * 32 + minh, cell_a);
+            l.setCell(i, 0, cell_a);
         }
         System.out.println(l.getTileHeight());
         System.out.println(l.getTileWidth());

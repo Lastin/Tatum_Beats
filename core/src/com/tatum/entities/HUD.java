@@ -7,7 +7,6 @@ import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 
 public class HUD {
-
     private Player player;
     private ContentManager cont;
     private TextureRegion container;
@@ -40,30 +39,20 @@ public class HUD {
     }
 
     public void render(SpriteBatch sb) {
-
         sb.begin();
-
-        // draw container
         sb.draw(container, 32, 200);
-
-        // draw blocks
         short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
-        if((bits & B2DVars.BIT_RED_BLOCK) != 0) {
+        if ((bits & B2DVars.BIT_RED_BLOCK) != 0) {
             sb.draw(blocks[0], 40, 208);
         }
-        else if((bits & B2DVars.BIT_GREEN_BLOCK) != 0) {
+        else if ((bits & B2DVars.BIT_GREEN_BLOCK) != 0) {
             sb.draw(blocks[1], 40, 208);
         }
-        else if((bits & B2DVars.BIT_BLUE_BLOCK) != 0) {
+        else if ((bits & B2DVars.BIT_BLUE_BLOCK) != 0) {
             sb.draw(blocks[2], 40, 208);
         }
-
-        // draw crystal
         sb.draw(crystal, 100, 208);
-
-        // draw crystal amount
         drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), 132, 211);
-
         sb.end();
 
     }
@@ -78,4 +67,10 @@ public class HUD {
         }
     }
 
+    public TextureRegion getCrystal() {
+        return crystal;
+    }
+    public TextureRegion[] getBlocks() {
+        return blocks;
+    }
 }
