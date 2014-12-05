@@ -13,10 +13,10 @@ public class Player extends B2DSprite {
     public Player(Body body, ContentManager cont) {
         super(body, cont);
         cont.loadTexture("res/images/bunny.png");
-        cont.loadTexture("res/images/dickbutt.png");
-        //Texture tex = cont.getTexture("bunny");
-        Texture tex = cont.getTexture("dickbutt");
-        TextureRegion[] sprites = TextureRegion.split(tex, 107, 106)[0];
+        //cont.loadTexture("res/images/dickbutt.png");
+        Texture tex = cont.getTexture("bunny");
+        //Texture tex = cont.getTexture("dickbutt");
+        TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[0];
         animation = new Animation(sprites);
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();

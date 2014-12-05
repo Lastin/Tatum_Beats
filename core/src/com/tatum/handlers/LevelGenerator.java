@@ -49,7 +49,7 @@ public class LevelGenerator {
         StaticTiledMapTile stmt = new StaticTiledMapTile(cell_tr[0]);
         cell_a.setTile(stmt);
         for(int i = 0; i < 500; i++){
-            l.setCell(i, 0, cell_a);
+            l.setCell(i, i%2, cell_a);
         }
         System.out.println(l.getTileHeight());
         System.out.println(l.getTileWidth());

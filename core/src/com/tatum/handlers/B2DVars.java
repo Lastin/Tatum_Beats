@@ -2,7 +2,7 @@ package com.tatum.handlers;
 
 public class B2DVars {
     // pixels per meter
-    public static final float PPM = 100;
+    public static final float PPM = 200;
 
     // collision bit filters
     public static final short BIT_PLAYER = 2;
