@@ -3,18 +3,22 @@ package com.tatum.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import com.tatum.Game;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 
 public class HUD {
     private Player player;
     private ContentManager cont;
+    private Game game;
     private TextureRegion container;
     private TextureRegion[] blocks;
     private TextureRegion crystal;
     private TextureRegion[] font;
 
-    public HUD(ContentManager cont, Player player) {
+    public HUD(ContentManager cont, Game game, Player player) {
+        this.game = game;
         this.cont = cont;
         this.player = player;
         cont.loadTexture("res/images/hud.png");
@@ -40,19 +44,19 @@ public class HUD {
 
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(container, 32, 200);
+        sb.draw(container, 32, game.getHeight()-50);
         short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
         if ((bits & B2DVars.BIT_RED_BLOCK) != 0) {
-            sb.draw(blocks[0], 40, 208);
+            sb.draw(blocks[0], 40, game.getHeight()-42);
         }
         else if ((bits & B2DVars.BIT_GREEN_BLOCK) != 0) {
-            sb.draw(blocks[1], 40, 208);
+            sb.draw(blocks[1], 40, game.getHeight()-42);
         }
         else if ((bits & B2DVars.BIT_BLUE_BLOCK) != 0) {
-            sb.draw(blocks[2], 40, 208);
+            sb.draw(blocks[2], 40, game.getHeight()-42);
         }
-        sb.draw(crystal, 100, 208);
-        drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), 132, 211);
+        sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
+        drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
         sb.end();
 
     }

@@ -99,11 +99,11 @@ public class Play extends GameState {
         backgrounds[2] = new Background(game, mountains, cam, 0.2f);
 
         // create hud
-        hud = new HUD(cont, player);
+        hud = new HUD(cont, game, player);
 
         // set up box2d cam
         b2dCam = new BoundedCamera();
-        b2dCam.setToOrtho(false, game.get_width() / PPM, game.get_height() / PPM);
+        b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
         b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
 
         //cont.getMusic(song).setVolume(0.5f);
@@ -458,7 +458,7 @@ public class Play extends GameState {
     public void render() {
 
         // camera follow player
-        cam.setPosition(player.getPosition().x * PPM + game.get_width() / 4, game.get_height() / 2);
+        cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight()/3);
         cam.update();
 
         // draw bgs
@@ -491,7 +491,7 @@ public class Play extends GameState {
 
         // debug draw box2d
         if(debug) {
-            b2dCam.setPosition(player.getPosition().x + game.get_width() / 4 / PPM, game.get_height() / 2 / PPM);
+            b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);
             b2dCam.update();
             b2dRenderer.render(world, b2dCam.combined);
         }

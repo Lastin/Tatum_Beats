@@ -11,8 +11,8 @@ public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
     public static final int SCALE = 2;
     public static final float STEP = 1/60f;
-    private int vWidth;
-    private int vHeight;
+    private int width;
+    private int height;
 	private SpriteBatch sb;
 	private BoundedCamera cam;
     private OrthographicCamera hudCam;
@@ -21,15 +21,15 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-        vWidth = 320;//Gdx.graphics.getWidth();
-        vHeight = 240;//Gdx.graphics.getHeight();
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(new InputProcessor());
         cont = new ContentManager();
         //Cameras
         cam = new BoundedCamera();
-        cam.setToOrtho(false, vWidth, vHeight);
+        cam.setToOrtho(false, width, height);
         hudCam = new OrthographicCamera();
-        hudCam.setToOrtho(false, vWidth, vHeight);
+        hudCam.setToOrtho(false, width, height);
         //
         sb = new SpriteBatch();
         gsm = new GameStateManager(this);
@@ -60,12 +60,12 @@ public class Game extends ApplicationAdapter {
             cont.removeAll();
     }
 
-    public int get_width() {
-        return vWidth;
+    public int getWidth() {
+        return width;
     }
 
-    public int get_height() {
-        return vHeight;
+    public int getHeight() {
+        return height;
     }
 
     public ContentManager get_content(){

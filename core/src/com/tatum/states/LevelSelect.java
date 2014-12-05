@@ -27,7 +27,7 @@ public class LevelSelect extends GameState {
             }
         }
 
-        cam.setToOrtho(false, game.get_width(), game.get_height());
+        cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
     }
 

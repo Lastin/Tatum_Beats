@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.tatum.entities.B2DSprite;
-import com.tatum.entities.Player;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
@@ -44,10 +43,10 @@ public class Menu extends GameState {
         bunnyAnimation = new Animation(bunnySprite, 1/12f);
         Texture hud = cont.getTexture("hud");
         playButton = new GameButton(cont, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
-        cam.setToOrtho(false, game.get_width(), game.get_height());
+        cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
-        //world = new World(new Vector2(0, 0), true);
+        //world = new World(new Vector2(10, 10), true);
         b2dRenderer = new Box2DDebugRenderer();
 
         createTitleBodies();
@@ -176,9 +175,9 @@ public class Menu extends GameState {
         sb.draw(bunnyAnimation.getFrame(), 146, 31);
         sb.end();
         if (debug) {
-            cam.setToOrtho(false, game.get_width() / PPM, game.get_height() / PPM);
+            cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
             b2dRenderer.render(world, cam.combined);
-            cam.setToOrtho(false, game.get_width(), game.get_height());
+            cam.setToOrtho(false, game.getWidth(), game.getHeight());
         }
         for (int i = 0; i < blocks.size; i++) {
             blocks.get(i).render(sb);
