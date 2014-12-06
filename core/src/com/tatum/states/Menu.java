@@ -35,14 +35,14 @@ public class Menu extends GameState {
 
         loadContent();
 
-        Texture menu = cont.getTexture("menu");
+        Texture menu = resources.getTexture("menu");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-        Texture bunny = cont.getTexture("bunny");
+        Texture bunny = resources.getTexture("bunny");
         TextureRegion[] bunnySprite = TextureRegion.split(bunny, 32, 32)[0];
         bunnyAnimation = new Animation(bunnySprite, 1/12f);
-        Texture hud = cont.getTexture("hud");
-        playButton = new GameButton(cont, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
+        Texture hud = resources.getTexture("hud");
+        playButton = new GameButton(resources, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -96,7 +96,7 @@ public class Menu extends GameState {
         bpbody.createFixture(bpfdef);
         bpshape.dispose();
 
-        Texture tex = cont.getTexture("hud");
+        Texture tex = resources.getTexture("hud");
         TextureRegion[] blockSprites = new TextureRegion[3];
         for(int i = 0; i < blockSprites.length; i++) {
             blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
@@ -119,7 +119,7 @@ public class Menu extends GameState {
                 tbbody.createFixture(tbfdef);
                 tbshape.dispose();
                 if(spellBlock[row][col] == 1) {
-                    B2DSprite sprite = new B2DSprite(tbbody, cont);
+                    B2DSprite sprite = new B2DSprite(tbbody, resources);
                     sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
                     blocks.add(sprite);
                 }
@@ -143,7 +143,7 @@ public class Menu extends GameState {
                 bbbody.createFixture(bbfdef);
                 bbshape.dispose();
                 if(spellBunny[row][col] == 1) {
-                    B2DSprite sprite = new B2DSprite(bbbody, cont);
+                    B2DSprite sprite = new B2DSprite(bbbody, resources);
                     sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
                     blocks.add(sprite);
                 }
@@ -153,7 +153,7 @@ public class Menu extends GameState {
 
     public void handleInput() {
         if (playButton.isClicked()) {
-            cont.getSound("crystal").play();
+            resources.getSound("crystal").play();
             gsm.setState(new Play(gsm));
         }
     }
@@ -184,22 +184,22 @@ public class Menu extends GameState {
         }
     }
     private void loadContent(){
-        cont.loadTexture("res/images/menu.png");
-        cont.loadTexture("res/images/bgs.png");
-        cont.loadTexture("res/images/hud.png");
-        cont.loadTexture("res/images/bunny.png");
-        cont.loadTexture("res/images/crystal.png");
-        cont.loadTexture("res/images/blocks.png");
-        //cont.loadTexture("res/images/spikes.png");
-        cont.loadTexture("res/images/Play.png");
-        cont.loadTexture("res/images/Leader.png");
-        cont.loadTexture("res/images/Track.png");
+        resources.loadTexture("res/images/menu.png");
+        resources.loadTexture("res/images/bgs.png");
+        resources.loadTexture("res/images/hud.png");
+        resources.loadTexture("res/images/bunny.png");
+        resources.loadTexture("res/images/crystal.png");
+        resources.loadTexture("res/images/blocks.png");
+        //resources.loadTexture("res/images/spikes.png");
+        resources.loadTexture("res/images/Play.png");
+        resources.loadTexture("res/images/Leader.png");
+        resources.loadTexture("res/images/Track.png");
 
-        cont.loadSound("res/sfx/jump.wav");
-        cont.loadSound("res/sfx/crystal.wav");
-        cont.loadSound("res/sfx/levelselect.wav");
-        cont.loadSound("res/sfx/hit.wav");
-        cont.loadSound("res/sfx/changeblock.wav");
+        resources.loadSound("res/sfx/jump.wav");
+        resources.loadSound("res/sfx/crystal.wav");
+        resources.loadSound("res/sfx/levelselect.wav");
+        resources.loadSound("res/sfx/hit.wav");
+        resources.loadSound("res/sfx/changeblock.wav");
     }
     public void dispose(){
 

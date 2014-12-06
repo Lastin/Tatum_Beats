@@ -1,6 +1,6 @@
 package com.tatum.states;
 
-import static com.tatum.handlers.B2DVars.PPM;
+import static com.tatum.handlers.B2DVars.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,7 +40,7 @@ import com.tatum.Game;
 
 public class Play extends GameState {
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -65,31 +65,27 @@ public class Play extends GameState {
     public static String song;
 
     public Play(GameStateManager gsm) {
-
         super(gsm);
-
         // set up the box2d world and contact listener
-        world = new World(new Vector2(0, -7f), true);
+        world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
-        b2dRenderer = new Box2DDebugRenderer();
-
-        // create player
         createPlayer();
-
-        // create walls
         createWalls();
-        cam.setBounds(0, tileMapWidth * tileSize, 0, tileMapHeight * tileSize);
-
-        // create crystals
         createCrystals();
-        player.setTotalCrystals(crystals.size);
-
-        // create spikes
         createSpikes();
-
-        // create backgrounds
-        Texture bgs = cont.getTexture("bgs");
+        createBackground();
+        cam.setBounds(0, tileMapWidth * tileSize, 0, tileMapHeight * tileSize);
+        player.setTotalCrystals(crystals.size);
+        hud = new HUD(resources, game, player);
+        // set up box2d cam
+        b2dCam = new BoundedCamera();
+        b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
+        b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
+        b2dRenderer = new Box2DDebugRenderer();
+    }
+    private void createBackground() {
+        Texture bgs = resources.getTexture("bgs");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
         TextureRegion clouds = new TextureRegion(bgs, 0, 240, 320, 240);
         TextureRegion mountains = new TextureRegion(bgs, 0, 480, 320, 240);
@@ -97,26 +93,8 @@ public class Play extends GameState {
         backgrounds[0] = new Background(game, sky, cam, 0f);
         backgrounds[1] = new Background(game, clouds, cam, 0.1f);
         backgrounds[2] = new Background(game, mountains, cam, 0.2f);
-
-        // create hud
-        hud = new HUD(cont, game, player);
-
-        // set up box2d cam
-        b2dCam = new BoundedCamera();
-        b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
-        b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
-
-        //cont.getMusic(song).setVolume(0.5f);
-        //res.getMusic("bbsong").setVolume(0.5f);
-        //cont.getMusic(song).play();
-        //res.getMusic("bbsong").play();
-
     }
 
-    /**
-     * Creates the player.
-     * Sets up the box2d body and sprites.
-     */
     private void createPlayer() {
 
         // create bodydef
@@ -160,7 +138,7 @@ public class Play extends GameState {
         shape.dispose();
 
         // create new player
-        player = new Player(body, cont);
+        player = new Player(body, resources);
         body.setUserData(player);
 
         // final tweaks, manually set the player body mass to 1 kg
@@ -173,10 +151,6 @@ public class Play extends GameState {
 
     }
 
-    /**
-     * Sets up the tile map collidable tiles.
-     * Reads in tile map layers and sets up box2d bodies.
-     */
     private void createWalls() {
 
         // load tile map and map renderer
@@ -188,7 +162,10 @@ public class Play extends GameState {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
-        tileMap = new LevelGenerator(cont).makeMap();
+        LevelGenerator generator = new LevelGenerator(resources);
+        tileMap = generator.makeMap(500, 200);
+        generator.addLayer(tileMap, "red", 500, 200, generator.getCells()[0]);
+
         tileMapWidth = (Integer) tileMap.getProperties().get("width");
         tileMapHeight = (Integer) tileMap.getProperties().get("height");
         tileSize = (Integer) tileMap.getProperties().get("tilewidth");
@@ -205,14 +182,6 @@ public class Play extends GameState {
 
     }
 
-    /**
-     * Creates box2d bodies for all non-null tiles
-     * in the specified layer and assigns the specified
-     * category bits.
-     *
-     * @param layer the layer being read
-     * @param bits category bits assigned to fixtures
-     */
     private void createBlocks(TiledMapTileLayer layer, short bits) {
 
         // tile size
@@ -224,9 +193,6 @@ public class Play extends GameState {
 
                 // get cell
                 Cell cell = layer.getCell(col, row);
-                if(cell != null)
-                    System.out.println(row + " : " + col);
-                // check that there is a cell
                 if(cell == null) continue;
                 if(cell.getTile() == null) continue;
 
@@ -253,9 +219,6 @@ public class Play extends GameState {
 
     }
 
-    /**
-     * Set up box2d bodies for crystals in tile map "crystals" layer
-     */
     private void createCrystals() {
 
         // create list of crystals
@@ -282,16 +245,13 @@ public class Play extends GameState {
             cfdef.filter.categoryBits = B2DVars.BIT_CRYSTAL;
             cfdef.filter.maskBits = B2DVars.BIT_PLAYER;
             body.createFixture(cfdef).setUserData("crystal");
-            Crystal c = new Crystal(body, cont);
+            Crystal c = new Crystal(body, resources);
             body.setUserData(c);
             crystals.add(c);
             cshape.dispose();
         }
     }
 
-    /**
-     * Set up box2d bodies for spikes in "spikes" layer
-     */
     private void createSpikes() {
 
         spikes = new Array<Spike>();
@@ -314,7 +274,7 @@ public class Play extends GameState {
             cfdef.filter.categoryBits = B2DVars.BIT_SPIKE;
             cfdef.filter.maskBits = B2DVars.BIT_PLAYER;
             body.createFixture(cfdef).setUserData("spike");
-            Spike s = new Spike(body, cont);
+            Spike s = new Spike(body, resources);
             body.setUserData(s);
             spikes.add(s);
             cshape.dispose();
@@ -322,23 +282,15 @@ public class Play extends GameState {
 
     }
 
-
-    /**
-     * Apply upward force to player body.
-     */
     private void playerJump() {
         if(cl.playerCanJump()) {
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);
-            cont.getSound("jump").play();
+            resources.getSound("jump").play();
         }
     }
 
-    /**
-     * Switch player mask bits to next block.
-     */
     private void switchBlocks() {
-
         // get player foot mask bits
         Filter filter = player.getBody().getFixtureList().get(1).getFilterData();
         short bits = filter.maskBits;
@@ -365,7 +317,7 @@ public class Play extends GameState {
         player.getBody().getFixtureList().get(0).setFilterData(filter);
 
         // play sound
-        cont.getSound("changeblock").play();
+        resources.getSound("changeblock").play();
 
     }
 
@@ -408,7 +360,7 @@ public class Play extends GameState {
             crystals.removeValue((Crystal) b.getUserData(), true);
             world.destroyBody(bodies.get(i));
             player.collectCrystal();
-            cont.getSound("crystal").play();
+            resources.getSound("crystal").play();
         }
         bodies.clear();
 
@@ -417,30 +369,30 @@ public class Play extends GameState {
 
         // check player win
         if(player.getBody().getPosition().x * PPM > tileMapWidth * tileSize) {
-            cont.getSound("levelselect").play();
+            resources.getSound("levelselect").play();
             gsm.setState(new LevelSelect(gsm));
-            cont.getMusic(song).stop();
-            cont.getMusic(song).dispose();
+            resources.getMusic(song).stop();
+            resources.getMusic(song).dispose();
         }
 
         // check player failed
         if(player.getBody().getPosition().y < 0) {
-            cont.getSound("hit").play();
+            resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //cont.getMusic(song).stop();
-            //cont.getMusic(song).dispose();
+            //resources.getMusic(song).stop();
+            //resources.getMusic(song).dispose();
         }
         if(player.getBody().getLinearVelocity().x < 0.001f) {
-            cont.getSound("hit").play();
+            resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //cont.getMusic(song).stop();
-            //cont.getMusic(song).dispose();
+            //resources.getMusic(song).stop();
+            //resources.getMusic(song).dispose();
         }
         if(cl.isPlayerDead()) {
-            cont.getSound("hit").play();
+            resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //cont.getMusic(song).stop();
-            //cont.getMusic(song).dispose();
+            //resources.getMusic(song).stop();
+            //resources.getMusic(song).dispose();
         }
 
         // update crystals
@@ -456,21 +408,17 @@ public class Play extends GameState {
     }
 
     public void render() {
-
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight()/3);
         cam.update();
-
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         for (int i = 0; i < backgrounds.length; i++) {
             backgrounds[i].render(sb);
         }
-
         // draw tilemap
         tmRenderer.setView(cam);
         tmRenderer.render();
-
         // draw player
         sb.setProjectionMatrix(cam.combined);
         player.render(sb);

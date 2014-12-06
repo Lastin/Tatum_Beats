@@ -4,46 +4,35 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.tatum.handlers.ContentManager;
+
 public class LevelGenerator {
-    private TiledMap map;
-    //Jump data
-    private int cell_side = 32;
-    private int lastcell_x = 0;
-    private int lastcell_y = 0;
-    private int jump_limit = 2;
-    private int progress_counter = 0;
-    private double gravity = 40;//9.8;
-    //
-    private double speed = 48.0;
-    private double jump_degree = 45.0;
-    private ContentManager cont;
-    public LevelGenerator(ContentManager cont){
-        this.cont = cont;
+    private ContentManager resources;
+    private Cell[] cells;
+    private int cellSide = 32;
+
+    public LevelGenerator(ContentManager resources){
+        this.resources = resources;
+        loadCells();
     }
-    public TiledMap makeMap(){
-        map = new TiledMap();
-        MapLayers layers = map.getLayers();
-        layers.add(makeLayer());
-        //tiledMapTileLayer();
+    public TiledMap makeMap(int width, int height){
+        TiledMap map = new TiledMap();
         MapProperties properties = map.getProperties();
-        properties.put("width", 500);
-        properties.put("height", 320);
-        properties.put("tilewidth", 32);
+        properties.put("width", width);
+        properties.put("height", height);
+        properties.put("tilewidth", cellSide);
         return map;
     }
     private MapLayer makeLayer (){
-        int cellsize = 32;
+        /*int cellsize = 32;
         int minh = 64;
         TiledMapTileLayer l = new TiledMapTileLayer(32*20, 32*501, 32, 32);
         l.setName("red");
-        Texture cell_t = cont.getTexture("blocks");
+        Texture cell_t = resources.getTexture("blocks");
         TextureRegion[] cell_tr = TextureRegion.split(cell_t, 32, 32)[0];
         Cell cell_a = new Cell();
         StaticTiledMapTile stmt = new StaticTiledMapTile(cell_tr[0]);
@@ -56,13 +45,31 @@ public class LevelGenerator {
         System.out.println(l.getWidth());
         System.out.println(l.getHeight());
         return l;
+        */
+        return null;
     }
-    private void nextCell(TiledMapTileLayer l, int r, Cell c){
-        progress_counter +=32;
-        if(r == 0 && isWithinRange())
-            return;
 
-        //l.setCell(x,yc)
+    public void addLayer(TiledMap map, String name, int width, int height, Cell cell) {
+        TiledMapTileLayer layer = new TiledMapTileLayer(width, height, cellSide, cellSide);
+        layer.setName(name);
+        for(int i=0; i<width; i++) {
+            layer.setCell(i, i%1, cell);
+        }
+        map.getLayers().add(layer);
+    }
+
+    private void loadCells() {
+        Texture blocks_texture = resources.getTexture("blocks");
+        if(blocks_texture == null) {
+            resources.loadTexture("res/images/blocks.png");
+            blocks_texture = resources.getTexture("blocks");
+        }
+        TextureRegion[] blocks_textures = TextureRegion.split(blocks_texture, 32, 32)[0];
+        cells = new Cell[blocks_textures.length-1];
+        for(int i=0; i<cells.length; i++){
+            cells[i] = new Cell();
+            cells[i].setTile(new StaticTiledMapTile(blocks_textures[i]));
+        }
     }
     private boolean isWithinRange(){
         //range: [speed^2 * sin(2degree)]/grav
@@ -71,10 +78,7 @@ public class LevelGenerator {
         return false;
     }
 
+    public Cell[] getCells() {
+        return cells;
+    }
 }
-
-/***********
- TODO:
- * Find a way to find all x and y that are in range of jump
- *
- ***********/

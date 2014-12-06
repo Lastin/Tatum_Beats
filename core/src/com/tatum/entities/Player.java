@@ -10,12 +10,12 @@ public class Player extends B2DSprite {
     private int numCrystals;
     private int totalCrystals;
 
-    public Player(Body body, ContentManager cont) {
-        super(body, cont);
-        cont.loadTexture("res/images/bunny.png");
-        //cont.loadTexture("res/images/dickbutt.png");
-        Texture tex = cont.getTexture("bunny");
-        //Texture tex = cont.getTexture("dickbutt");
+    public Player(Body body, ContentManager resources) {
+        super(body, resources);
+        resources.loadTexture("res/images/bunny.png");
+        //resources.loadTexture("res/images/dickbutt.png");
+        Texture tex = resources.getTexture("bunny");
+        //Texture tex = resources.getTexture("dickbutt");
         TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[0];
         animation = new Animation(sprites);
         animation.setFrames(sprites, 1 / 12f);

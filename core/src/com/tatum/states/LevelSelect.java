@@ -15,7 +15,7 @@ public class LevelSelect extends GameState {
     public LevelSelect(GameStateManager gsm) {
         super(gsm);
         game = gsm.getGame();
-        cont = game.get_content();
+        cont = game.getResources();
         reg = new TextureRegion(cont.getTexture("bgs"), 0, 0, 320, 240);
 
         TextureRegion buttonReg = new TextureRegion(cont.getTexture("hud"), 0, 0, 32, 32);
