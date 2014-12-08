@@ -21,8 +21,8 @@ public class Game extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
+        width = 320;//Gdx.graphics.getWidth();
+        height = 240; //Gdx.graphics.getHeight();
         Gdx.input.setInputProcessor(new InputProcessor());
         resources = new ContentManager();
         //Cameras

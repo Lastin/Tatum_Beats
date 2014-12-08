@@ -37,6 +37,7 @@ import com.tatum.handlers.BoundedCamera;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
+import com.tatum.music.TrackData;
 
 public class Play extends GameState {
 
@@ -48,6 +49,7 @@ public class Play extends GameState {
     private BoundedCamera b2dCam;
 
     private Player player;
+    private TrackData track;
 
     private TiledMap tileMap;
     private int tileMapWidth;
@@ -75,6 +77,7 @@ public class Play extends GameState {
         createCrystals();
         createSpikes();
         createBackground();
+        loadTrack();
         cam.setBounds(0, tileMapWidth * tileSize, 0, tileMapHeight * tileSize);
         player.setTotalCrystals(crystals.size);
         hud = new HUD(resources, game, player);
@@ -83,6 +86,21 @@ public class Play extends GameState {
         b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
         b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
+    }
+
+    private void loadTrack() {
+        try{
+            Thread thread = new Thread(){
+                public void run(){
+                    track = new TrackData("res/music/test.mp3");
+                    track.initilize();
+                }
+            };
+            thread.start();
+        }
+        catch(Exception e){
+
+        }
     }
     private void createBackground() {
         Texture bgs = resources.getTexture("bgs");
