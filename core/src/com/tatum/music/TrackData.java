@@ -84,7 +84,6 @@ public class TrackData {
     public void initilize() {
         try {
             fileUploader.uploadGDX();
-
             trackInformation = fileUploader.getJsonMap();
             JsonObject meta = (JsonObject) trackInformation.get("Meta");
             JsonObject track = (JsonObject) trackInformation.get("Track");
@@ -377,7 +376,6 @@ public class TrackData {
 
                 segments.add(new Segment(start, duration, confidence, loudness_start, loudness_max_time, loudness_max, pitchArray, timbreArray));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

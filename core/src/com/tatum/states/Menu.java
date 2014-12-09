@@ -200,6 +200,8 @@ public class Menu extends GameState {
         resources.loadSound("res/sfx/levelselect.wav");
         resources.loadSound("res/sfx/hit.wav");
         resources.loadSound("res/sfx/changeblock.wav");
+
+        resources.loadFile("res/music/test.mp3");
     }
     public void dispose(){
 

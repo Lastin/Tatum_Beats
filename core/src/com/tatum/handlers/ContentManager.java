@@ -2,6 +2,7 @@
 Container for game resources
 *****/
 package com.tatum.handlers;
+import java.io.File;
 import java.util.HashMap;
 //gdx stuff
 import com.badlogic.gdx.Gdx;
@@ -15,11 +16,12 @@ public class ContentManager {
     private HashMap<String, Texture> textures;
     private HashMap<String, Music> music;
     private HashMap<String, Sound> sounds;
-    private HashMap<String, Music> tracks = new HashMap<String, Music>();
+    private HashMap<String, File> files;
     public ContentManager() {
       textures = new HashMap<String, Texture>();
       music = new HashMap<String, Music>();
       sounds = new HashMap<String, Sound>();
+      files = new HashMap<String, File>();
     }
 
     //Textures
@@ -40,6 +42,12 @@ public class ContentManager {
         Sound s = Gdx.audio.newSound(Gdx.files.internal(path));
         sounds.put(makeKey(path), s);
     }
+    //Other files
+    public void loadFile(String path) {
+        if(Gdx.files.internal(path) == null) return;
+        File f = Gdx.files.internal(path).file();
+        files.put(makeKey(path), f);
+    }
     //unified method for all above to produce a key
     private String makeKey(String path) {
         int slashIndex = path.lastIndexOf('/');
@@ -58,6 +66,9 @@ public class ContentManager {
     }
     public Sound getSound(String key) {
         return sounds.get(key);
+    }
+    public File getFile(String key) {
+        return files.get(key);
     }
     //DESTRUCTOR
     public void removeAll() {

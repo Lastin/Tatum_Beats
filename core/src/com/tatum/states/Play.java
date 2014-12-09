@@ -3,6 +3,8 @@ package com.tatum.states;
 import static com.tatum.handlers.B2DVars.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -38,6 +40,9 @@ import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
 import com.tatum.music.TrackData;
+
+import java.io.File;
+
 
 public class Play extends GameState {
 
@@ -92,7 +97,9 @@ public class Play extends GameState {
         try{
             Thread thread = new Thread(){
                 public void run(){
-                    track = new TrackData("res/music/test.mp3");
+                    String path = "res/music/test.mp3";
+                    FileHandle fh = Gdx.files.internal(path);
+                    track = new TrackData(fh.path());
                     track.initilize();
                 }
             };

@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.net.HttpParametersUtils;
 import com.echonest.api.v4.EchoNestAPI;
 import com.echonest.api.v4.EchoNestException;
@@ -36,9 +37,8 @@ public class FileUploaderGDX {
     HashMap<String, Object> trackInformation;
 
     public void uploadGDX() throws EchoNestException, IOException {
-
         File file = new File(trackPath);
-        //System.out.println(file.getAbsolutePath());
+        //System.out.println(path);
         //Long fileSize = file.getTotalSpace();
         en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
         en.setTraceSends(true);
@@ -66,7 +66,6 @@ public class FileUploaderGDX {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        //TODO: convert it to be compatible with android!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         try {
             InputStream is = url.openStream();
             JsonReader rdr = Json.createReader(is);
@@ -87,6 +86,7 @@ public class FileUploaderGDX {
 
             trackInformation.put("audio_summary", track1.getJsonObject("audio_summary"));
         } catch (Exception e) {
+            System.out.println("Error line 90");
             e.printStackTrace(); //catching any error, not a good habit, but whatever
         }
 
@@ -99,6 +99,7 @@ public class FileUploaderGDX {
 
         try { //changed, because it seems that android does not support try with resources
             InputStream is = url.openStream();
+
             JsonReader rdr = Json.createReader(is);
             JsonObject struct = rdr.readObject();
             trackInformation.put("Meta", struct.getJsonObject("meta"));
@@ -111,6 +112,7 @@ public class FileUploaderGDX {
             // above returns a java List type containing all JsonObjects in our JsonArray!
 
         } catch (Exception e) {
+            System.out.println("Error line 116");
             e.printStackTrace();
         }
 
