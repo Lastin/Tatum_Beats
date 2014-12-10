@@ -22,6 +22,7 @@ public class TrackData {
     private String albumName; //done
     private String genre; //done
 
+    private int length;
     private double dancebility; //done
     private double speechiness; //done
     private double liveness; //done
@@ -93,6 +94,7 @@ public class TrackData {
             List<JsonObject> Jtatums = getAsList(trackInformation.get("Tatums"));
             List<JsonObject> Jsections = getAsList(trackInformation.get("Sections"));
             List<JsonObject> Jsegments = getAsList(trackInformation.get("Segments"));
+
             // get all json objects
             try {
                 this.trackPath = meta.getString("filename");

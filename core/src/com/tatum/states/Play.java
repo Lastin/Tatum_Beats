@@ -3,7 +3,6 @@ package com.tatum.states;
 import static com.tatum.handlers.B2DVars.*;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -39,9 +38,10 @@ import com.tatum.handlers.BoundedCamera;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
+import com.tatum.music.Section;
 import com.tatum.music.TrackData;
 
-import java.io.File;
+import java.util.ArrayList;
 
 
 public class Play extends GameState {
@@ -55,11 +55,11 @@ public class Play extends GameState {
 
     private Player player;
     private TrackData track;
-
-    private TiledMap tileMap;
-    private int tileMapWidth;
-    private int tileMapHeight;
+    private TiledMap tiledMap;
+    private int mapWidth;
+    private int mapHeight;
     private int tileSize;
+    private int walkSpeed;
     private OrthogonalTiledMapRenderer tmRenderer;
 
     private Array<Crystal> crystals;
@@ -70,6 +70,7 @@ public class Play extends GameState {
 
     public static int level = 1;
     public static String song;
+    private LevelGenerator generator;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -77,38 +78,65 @@ public class Play extends GameState {
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
+        //
+        loadTrackData();
+        utiliseTrackData();
+        //up to this point map should be generated, otherwise might throw errors
         createPlayer();
-        createWalls();
+        //createWalls();
         createCrystals();
         createSpikes();
         createBackground();
-        loadTrack();
-        cam.setBounds(0, tileMapWidth * tileSize, 0, tileMapHeight * tileSize);
+        cam.setBounds(0, mapWidth * tileSize, 0, mapHeight * tileSize);
         player.setTotalCrystals(crystals.size);
         hud = new HUD(resources, game, player);
         // set up box2d cam
         b2dCam = new BoundedCamera();
         b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
-        b2dCam.setBounds(0, (tileMapWidth * tileSize) / PPM, 0, (tileMapHeight * tileSize) / PPM);
+        b2dCam.setBounds(0, (mapWidth * tileSize) / PPM, 0, (mapHeight * tileSize) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
+        resources.getMusic(song).play();
     }
 
-    private void loadTrack() {
+    private void utiliseTrackData() {
+        generator = new LevelGenerator(resources, world);
+        mapWidth = (int)track.getDuration();
+        mapHeight = 200;
+        tileSize = 32;
+        tiledMap = generator.makeMap(mapWidth, mapHeight);
+        System.out.println();
+        tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        ArrayList<Section> sections = track.getSections();
+        int section = 0;
+        int sectionBeginning = 0;
+        for(Section each : sections){
+            int sectionDuration = (int)Math.round(each.getduration());
+            createBlocks(section, sectionDuration, sectionBeginning, (int)each.getTempo(), mapHeight);
+            section++;
+            sectionBeginning += sectionDuration;
+        }
+    }
+
+    private void loadTrackData() {
         try{
+            String path = "res/music/test.mp3";
+            song = resources.loadMusic(path);
+            FileHandle fh = Gdx.files.internal(path);
+            System.out.println(fh.file().getAbsolutePath());
+            track = new TrackData(fh.path());
+            track.initilize();
             Thread thread = new Thread(){
                 public void run(){
-                    String path = "res/music/test.mp3";
-                    FileHandle fh = Gdx.files.internal(path);
-                    track = new TrackData(fh.path());
-                    track.initilize();
+                    //do nothing for now
                 }
             };
             thread.start();
         }
         catch(Exception e){
-
+            System.out.println("Song data not loaded.");
         }
     }
+
     private void createBackground() {
         Texture bgs = resources.getTexture("bgs");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -177,34 +205,53 @@ public class Play extends GameState {
     }
 
     private void createWalls() {
+        /***
+        This method should be deprecated
+         ***/
 
         // load tile map and map renderer
         try {
-            tileMap = new TmxMapLoader().load("res/maps/level" + 1 + ".tmx");
+            tiledMap = new TmxMapLoader().load("res/maps/level" + 1 + ".tmx");
 
         }
         catch(Exception e) {
             System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
             Gdx.app.exit();
         }
-        LevelGenerator generator = new LevelGenerator(resources);
-        tileMap = generator.makeMap(500, 200);
-        generator.addLayer(tileMap, "red", 500, 200, generator.getCells()[0]);
 
-        tileMapWidth = (Integer) tileMap.getProperties().get("width");
-        tileMapHeight = (Integer) tileMap.getProperties().get("height");
-        tileSize = (Integer) tileMap.getProperties().get("tilewidth");
-        tmRenderer = new OrthogonalTiledMapRenderer(tileMap);
+        tiledMap = generator.makeMap(500, 200);
+        //generator.addLayer(tiledMap, "red", 500, 200, generator.getCells()[0]);
+
+        mapWidth = (Integer) tiledMap.getProperties().get("width");
+        mapHeight = (Integer) tiledMap.getProperties().get("height");
+        tileSize = (Integer) tiledMap.getProperties().get("tilewidth");
+        tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         // read each of the "red" "green" and "blue" layers
         TiledMapTileLayer layer;
-        layer = (TiledMapTileLayer) tileMap.getLayers().get("red");
+        layer = (TiledMapTileLayer) tiledMap.getLayers().get("red");
         createBlocks(layer, B2DVars.BIT_RED_BLOCK);
-        //layer = (TiledMapTileLayer) tileMap.getLayers().get("green");
+        //layer = (TiledMapTileLayer) tiledMap.getLayers().get("green");
         //createBlocks(layer, B2DVars.BIT_GREEN_BLOCK);
-        //layer = (TiledMapTileLayer) tileMap.getLayers().get("blue");
+        //layer = (TiledMapTileLayer) tiledMap.getLayers().get("blue");
         //createBlocks(layer, B2DVars.BIT_BLUE_BLOCK);
 
+    }
+
+    private void createBlocks(int counter, int sectionDuration, int sectionBeginning, int tempo, int mapHeight){
+        int cellsSize = generator.getCells().length;
+        Cell cell = generator.getCells()[counter%cellsSize];
+        System.out.println(counter%cellsSize);
+        TiledMapTileLayer layer = generator.makeLayer(sectionDuration, mapHeight, sectionBeginning, cell);
+        tiledMap.getLayers().add(layer);
+        short block = 4;
+        switch(counter%cellsSize) {
+            case 1: block = 8;
+                    break;
+            case 2: block = 16;
+                    break;
+        }
+        generator.createBlocks(layer, block, tempo);
     }
 
     private void createBlocks(TiledMapTileLayer layer, short bits) {
@@ -252,7 +299,7 @@ public class Play extends GameState {
         // get all crystals in "crystals" layer,
         // create bodies for each, and add them
         // to the crystals list
-        MapLayer ml = tileMap.getLayers().get("crystals");
+        MapLayer ml = tiledMap.getLayers().get("crystals");
         if(ml == null) return;
 
         for(MapObject mo : ml.getObjects()) {
@@ -281,7 +328,7 @@ public class Play extends GameState {
 
         spikes = new Array<Spike>();
 
-        MapLayer ml = tileMap.getLayers().get("spikes");
+        MapLayer ml = tiledMap.getLayers().get("spikes");
         if(ml == null) return;
 
         for(MapObject mo : ml.getObjects()) {
@@ -347,7 +394,6 @@ public class Play extends GameState {
     }
 
     public void handleInput() {
-
         // keyboard input
         if(Input.isPressed(Input.BUTTON1)) {
             playerJump();
@@ -393,7 +439,7 @@ public class Play extends GameState {
         player.update(dt);
 
         // check player win
-        if(player.getBody().getPosition().x * PPM > tileMapWidth * tileSize) {
+        if(player.getBody().getPosition().x * PPM > mapWidth * tileSize) {
             resources.getSound("levelselect").play();
             gsm.setState(new LevelSelect(gsm));
             resources.getMusic(song).stop();
@@ -404,20 +450,20 @@ public class Play extends GameState {
         if(player.getBody().getPosition().y < 0) {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //resources.getMusic(song).stop();
-            //resources.getMusic(song).dispose();
+            resources.getMusic(song).stop();
+            resources.getMusic(song).dispose();
         }
         if(player.getBody().getLinearVelocity().x < 0.001f) {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //resources.getMusic(song).stop();
-            //resources.getMusic(song).dispose();
+            resources.getMusic(song).stop();
+            resources.getMusic(song).dispose();
         }
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
-            //resources.getMusic(song).stop();
-            //resources.getMusic(song).dispose();
+            resources.getMusic(song).stop();
+            resources.getMusic(song).dispose();
         }
 
         // update crystals
@@ -471,7 +517,7 @@ public class Play extends GameState {
 
     }
     public void setMap(TiledMap map){
-        tileMap = map;
+        tiledMap = map;
     }
     public void dispose() {
         // everything is in the resource manager com.tatum.handlers.Content

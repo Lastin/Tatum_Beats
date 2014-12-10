@@ -31,10 +31,12 @@ public class ContentManager {
         textures.put(makeKey(path), t);
     }
     //Music
-    public void loadMusic(String path) {
-        if(Gdx.files.internal(path) == null) return;
+    public String loadMusic(String path) {
+        if(Gdx.files.internal(path) == null) return "";
         Music m = Gdx.audio.newMusic(Gdx.files.internal(path));
-        music.put(makeKey(path), m);
+        String key = makeKey(path);
+        music.put(key, m);
+        return key;
     }
     //SFX
     public void loadSound(String path) {

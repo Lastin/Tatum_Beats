@@ -13,6 +13,7 @@ public class Section extends TimedEvent {
 	private int timeSignature;
 	private double timeSignatureConfidence;
 	private String stringKey;
+    private int length;
 	
 	public Section(double start, double duration, double confidence,double loudness,double tempo,
 				   double tempoConfidence, int key, double keyConfidence, int mode, double modeConfidence,
