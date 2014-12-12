@@ -41,6 +41,7 @@ import com.tatum.Game;
 import com.tatum.music.Section;
 import com.tatum.music.TrackData;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -59,7 +60,6 @@ public class Play extends GameState {
     private int mapWidth;
     private int mapHeight;
     private int tileSize;
-    private int walkSpeed;
     private OrthogonalTiledMapRenderer tmRenderer;
 
     private Array<Crystal> crystals;
@@ -80,7 +80,7 @@ public class Play extends GameState {
         world.setContactListener(cl);
         //
         loadTrackData();
-        utiliseTrackData();
+        tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         //up to this point map should be generated, otherwise might throw errors
         createPlayer();
         //createWalls();
@@ -98,14 +98,12 @@ public class Play extends GameState {
         resources.getMusic(song).play();
     }
 
-    private void utiliseTrackData() {
+    private void composeTrackMap() {
         generator = new LevelGenerator(resources, world);
         mapWidth = (int)track.getDuration();
         mapHeight = 200;
         tileSize = 32;
         tiledMap = generator.makeMap(mapWidth, mapHeight);
-        System.out.println();
-        tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         ArrayList<Section> sections = track.getSections();
         int section = 0;
         int sectionBeginning = 0;
@@ -118,13 +116,22 @@ public class Play extends GameState {
     }
 
     private void loadTrackData() {
+        //testAndroidStorage();
         try{
-            String path = "res/music/test.mp3";
+            String path = "/storage/sdcard1/ALarum/01 The Box.mp3";
+            //String path = "res/music/test.mp3";
+            String key = resources.makeKey(path);
             song = resources.loadMusic(path);
-            FileHandle fh = Gdx.files.internal(path);
-            System.out.println(fh.file().getAbsolutePath());
-            track = new TrackData(fh.path());
-            track.initilize();
+            track = resources.getTrackData(key);
+            if(track == null){
+                FileHandle fh = Gdx.files.internal(path);
+                //System.out.println(fh.file().getAbsolutePath());
+                track = new TrackData(path);
+                track.initilize();
+                resources.addTrackData(key, track);
+            }
+            composeTrackMap();
+            //resources.addMap(tiledMap, key);
             Thread thread = new Thread(){
                 public void run(){
                     //do nothing for now
@@ -133,10 +140,17 @@ public class Play extends GameState {
             thread.start();
         }
         catch(Exception e){
+            e.printStackTrace();
             System.out.println("Song data not loaded.");
         }
     }
 
+    private void testAndroidStorage(){
+        File f = new File("/storage/sdcard1/ALarum/01 The Box.mp3");
+        if(f == null)
+            System.out.println("File is null");
+        System.out.println(f.getAbsolutePath());
+    }
     private void createBackground() {
         Texture bgs = resources.getTexture("bgs");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -155,7 +169,7 @@ public class Play extends GameState {
         bdef.type = BodyType.DynamicBody;
         bdef.position.set(60 / PPM, 120 / PPM);
         bdef.fixedRotation = true;
-        bdef.linearVelocity.set(1f, 0f);
+        bdef.linearVelocity.set(0.6f, 0f);
 
         // create body from bodydef
         Body body = world.createBody(bdef);
@@ -187,7 +201,7 @@ public class Play extends GameState {
         fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK;
 
         // create player foot fixture
-        body.createFixture(fdef).setUserData("foot");;
+        body.createFixture(fdef).setUserData("foot");
         shape.dispose();
 
         // create new player
@@ -371,12 +385,15 @@ public class Play extends GameState {
         // red -> green -> blue
         if(bits == B2DVars.BIT_RED_BLOCK) {
             bits = B2DVars.BIT_GREEN_BLOCK;
+            player.getBody().setLinearVelocity(0.6f, 0f);
         }
         else if(bits == B2DVars.BIT_GREEN_BLOCK) {
             bits = B2DVars.BIT_BLUE_BLOCK;
+            player.getBody().setLinearVelocity(0.6f, 0f);
         }
         else if(bits == B2DVars.BIT_BLUE_BLOCK) {
             bits = B2DVars.BIT_RED_BLOCK;
+            player.getBody().setLinearVelocity(0.6f, 0f);
         }
 
         // set player foot mask bits
@@ -522,5 +539,4 @@ public class Play extends GameState {
     public void dispose() {
         // everything is in the resource manager com.tatum.handlers.Content
     }
-
 }

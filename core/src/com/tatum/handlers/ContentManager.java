@@ -9,7 +9,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Disposable;
+import com.tatum.music.TrackData;
 
 
 public class ContentManager {
@@ -17,20 +19,23 @@ public class ContentManager {
     private HashMap<String, Music> music;
     private HashMap<String, Sound> sounds;
     private HashMap<String, File> files;
+    private HashMap<String, TiledMap> maps;
+    private HashMap<String, TrackData> tracksData;
     public ContentManager() {
       textures = new HashMap<String, Texture>();
       music = new HashMap<String, Music>();
       sounds = new HashMap<String, Sound>();
       files = new HashMap<String, File>();
+      maps = new HashMap<String, TiledMap>();
+      tracksData = new HashMap<String, TrackData>();
     }
 
-    //Textures
+    //Setters
     public void loadTexture(String path) {
         if(Gdx.files.internal(path) == null) return;
         Texture t = new Texture(path);
         textures.put(makeKey(path), t);
     }
-    //Music
     public String loadMusic(String path) {
         if(Gdx.files.internal(path) == null) return "";
         Music m = Gdx.audio.newMusic(Gdx.files.internal(path));
@@ -38,20 +43,24 @@ public class ContentManager {
         music.put(key, m);
         return key;
     }
-    //SFX
     public void loadSound(String path) {
         if(Gdx.files.internal(path) == null) return;
         Sound s = Gdx.audio.newSound(Gdx.files.internal(path));
         sounds.put(makeKey(path), s);
     }
-    //Other files
     public void loadFile(String path) {
         if(Gdx.files.internal(path) == null) return;
         File f = Gdx.files.internal(path).file();
         files.put(makeKey(path), f);
     }
+    public void addMap(String key, TiledMap map){
+        maps.put(key, map);
+    }
+    public void addTrackData(String key, TrackData track){
+        tracksData.put(key, track);
+    }
     //unified method for all above to produce a key
-    private String makeKey(String path) {
+    public String makeKey(String path) {
         int slashIndex = path.lastIndexOf('/');
         int dotIndex = path.lastIndexOf('.');
         if(slashIndex < 0) {
@@ -71,6 +80,12 @@ public class ContentManager {
     }
     public File getFile(String key) {
         return files.get(key);
+    }
+    public TiledMap getMap(String key){
+        return maps.get(key);
+    }
+    public TrackData getTrackData(String key){
+        return tracksData.get(key);
     }
     //DESTRUCTOR
     public void removeAll() {
