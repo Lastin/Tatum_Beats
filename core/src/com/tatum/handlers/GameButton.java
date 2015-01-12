@@ -29,7 +29,7 @@ public class GameButton {
         width = reg.getRegionWidth();
         height = reg.getRegionHeight();
         vec = new Vector3();
-        Texture tex = cont.getTexture("hud");
+        Texture tex = cont.getTexture("hud2");
         font = new TextureRegion[11];
         for(int i = 0; i < 6; i++) {
             font[i] = new TextureRegion(tex, 32 + i * 9, 16, 9, 9);

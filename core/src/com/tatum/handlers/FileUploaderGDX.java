@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,9 +39,110 @@ public class FileUploaderGDX {
     HashMap<String, Object> trackInformation;
 
     public void uploadGDX() throws EchoNestException, IOException {
-        File file = new File(trackPath);
-        //System.out.println(path);
+        FileHandle fH = Gdx.files.external(trackPath);
+        File file = fH.file();
+        System.out.println(file+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println(file+"£££££££££££££££££££££££££££££££££££££££");
+        System.out.println(trackPath+"£££££££££££££££££££££££££££££££££££££££");
+        System.out.println(Gdx.files.internal(""));
+        String extRoot = Gdx.files.getExternalStoragePath();
+        System.out.println(extRoot);
+        String locRoot = Gdx.files.getLocalStoragePath();
+        System.out.println(locRoot);
         //Long fileSize = file.getTotalSpace();
+        String trackName = trackPath.replaceAll("/","");
+
+        //trackName = trackName.replaceAll(".","");
+
+        File dirCheck = Gdx.files.external("musicdata/"+trackName).file();
+
+        trackInformation = new HashMap<String, Object>();
+        if(dirCheck.exists()) {
+            /*
+            InputStream is = new FileInputStream("musicdata/"+trackName+"/meta.json");
+            JsonReader rdr = Json.createReader(is);
+            JsonObject meta = rdr.readObject();
+            System.out.println(meta);
+            is = new FileInputStream("musicdata/"+trackName+"/track.json");
+            rdr = Json.createReader(is);
+            JsonObject track = rdr.readObject();
+
+            is = new FileInputStream("musicdata/"+trackName+"/audioSum.json");
+            rdr = Json.createReader(is);
+            JsonObject audio = rdr.readObject();
+
+            is = new FileInputStream("musicdata/"+trackName+"/bars.json");
+            rdr = Json.createReader(is);
+            JsonArray bars = rdr.readArray();
+
+            is = new FileInputStream("musicdata/"+trackName+"/beats.json");
+            rdr = Json.createReader(is);
+            JsonArray beats = rdr.readArray();
+
+            is = new FileInputStream("musicdata/"+trackName+"/tatums.json");
+            rdr = Json.createReader(is);
+            JsonArray tatums = rdr.readArray();
+
+            is = new FileInputStream("musicdata/"+trackName+"/sections.json");
+            rdr = Json.createReader(is);
+            JsonArray sections = rdr.readArray();
+
+            is = new FileInputStream("musicdata/"+trackName+"/segments.json");
+            rdr = Json.createReader(is);
+            JsonArray segments = rdr.readArray();
+            */
+
+            InputStream is = Gdx.files.external("musicdata/"+trackName+"/meta.json").read();
+            JsonReader rdr = Json.createReader(is);
+            JsonObject meta = rdr.readObject();
+            System.out.println(meta);
+
+            is = Gdx.files.external("musicdata/"+trackName+"/track.json").read();
+            rdr = Json.createReader(is);
+            JsonObject track = rdr.readObject();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/audioSum.json").read();
+            rdr = Json.createReader(is);
+            JsonObject audio = rdr.readObject();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/bars.json").read();
+            rdr = Json.createReader(is);
+            JsonArray bars = rdr.readArray();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/beats.json").read();
+            rdr = Json.createReader(is);
+            JsonArray beats = rdr.readArray();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/tatums.json").read();
+            rdr = Json.createReader(is);
+            JsonArray tatums = rdr.readArray();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/sections.json").read();
+            rdr = Json.createReader(is);
+            JsonArray sections = rdr.readArray();
+
+            is = Gdx.files.external("musicdata/"+trackName+"/segments.json").read();
+            rdr = Json.createReader(is);
+            JsonArray segments = rdr.readArray();
+
+            trackInformation.put("Meta", meta);
+            trackInformation.put("Track", track);
+            trackInformation.put("audio_summary", audio);
+            trackInformation.put("Bars", bars);
+            trackInformation.put("Beats", beats);
+            trackInformation.put("Tatums", tatums);
+            trackInformation.put("Sections", sections);
+            trackInformation.put("Segments", segments);
+        }
+        else{
+
+            realUpload(file);
+
+        }
+
+    }
+    private void realUpload(File file) throws EchoNestException, IOException {
+
         en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
         en.setTraceSends(true);
         en.setTraceRecvs(false);
@@ -111,6 +214,92 @@ public class FileUploaderGDX {
             trackInformation.put("Segments", struct.getJsonArray("segments"));
             // above returns a java List type containing all JsonObjects in our JsonArray!
 
+            String trackname = trackPath.replaceAll("/","");
+            //trackname = trackname.replaceAll(".","");
+            FileHandle ff = Gdx.files.internal("");
+            boolean exists = Gdx.files.external("doitexist.txt").exists();
+            boolean isDirectory = Gdx.files.external("test/").isDirectory();
+            File fff = Gdx.files.external("musicData").file();
+            if(!fff.exists()){
+                fff.mkdir();
+              System.out.println("BEEP BEEP BEPP");
+            } /// if music directory does not exist create
+
+            boolean test = (Gdx.files.external("musicdata/"+trackname).file()).mkdir();
+            if(test) System.out.println("good shit fam"); //make directory for song
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/meta.json");
+            OutputStream OS = ff.write(false);
+            OS.write(trackInformation.get("Meta").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/track.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Track").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/bars.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Bars").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/beats.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Beats").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/tatums.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Tatums").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/sections.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Sections").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/segments.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("Segments").toString().getBytes());
+            OS.close();
+
+            ff = Gdx.files.external("musicdata/"+trackname+"/audioSum.json");
+            OS = ff.write(false);
+            OS.write(trackInformation.get("audio_summary").toString().getBytes());
+            OS.close();
+            //out = new PrintWriter(ff.file());
+            //out.println(trackInformation.get("Meta").toString());
+           // out.close(); // save metaData to file
+            /*
+            PrintWriter  out = new PrintWriter("musicdata/"+trackname+"/track.json");
+            out.println(trackInformation.get("Track").toString());
+            out.close(); // track data to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/bars.json");
+            out.println(trackInformation.get("Bars").toString());
+            out.close(); // bars data to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/beats.json");
+            out.println(trackInformation.get("Beats").toString());
+            out.close(); //beats data to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/tatums.json");
+            out.println(trackInformation.get("Tatums").toString());
+            out.close(); //tatums to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/sections.json");
+            out.println(trackInformation.get("Sections").toString());
+            out.close(); // sections to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/segments.json");
+            out.println(trackInformation.get("Segments").toString());
+            out.close();  //segments to file
+
+            out = new PrintWriter("musicdata/"+trackname+"/audioSum.json");
+            out.println(trackInformation.get("audio_summary").toString());
+            out.close();  //segments to file
+            */
+
         } catch (Exception e) {
             System.out.println("Error line 116");
             e.printStackTrace();
@@ -159,9 +348,7 @@ public class FileUploaderGDX {
             }
         });
 		 */
-
     }
-
     public FileUploaderGDX(String trackPath) {
         this.trackPath = trackPath;
     }

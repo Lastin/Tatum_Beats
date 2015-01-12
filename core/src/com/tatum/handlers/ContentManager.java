@@ -4,6 +4,8 @@ Container for game resources
 package com.tatum.handlers;
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 //gdx stuff
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -32,13 +34,14 @@ public class ContentManager {
 
     //Setters
     public void loadTexture(String path) {
+
         if(Gdx.files.internal(path) == null) return;
         Texture t = new Texture(path);
         textures.put(makeKey(path), t);
     }
     public String loadMusic(String path) {
-        if(Gdx.files.internal(path) == null) return "";
-        Music m = Gdx.audio.newMusic(Gdx.files.internal(path));
+        if(Gdx.files.external(path) == null) return "";
+        Music m = Gdx.audio.newMusic(Gdx.files.external(path));
         String key = makeKey(path);
         music.put(key, m);
         return key;
@@ -100,6 +103,13 @@ public class ContentManager {
         for(Disposable o : map.values())
             if(o != null)
                 o.dispose();
+    }
+    public void printKeys(){
+        Set<String> h =  textures.keySet();
+        System.out.println("KEYS KEYS KEYS");
+        for(String s : h ){
+            System.out.println(s);
+        }
     }
     //END
 }

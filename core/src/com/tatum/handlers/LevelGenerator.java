@@ -70,10 +70,10 @@ public class LevelGenerator {
     }
 
     private void loadCells() {
-        Texture blocks_texture = resources.getTexture("blocks");
+        Texture blocks_texture = resources.getTexture("blocks2");
         if(blocks_texture == null) {
-            resources.loadTexture("res/images/blocks.png");
-            blocks_texture = resources.getTexture("blocks");
+            resources.loadTexture("res/images/blocks2.png");
+            blocks_texture = resources.getTexture("blocks2");
         }
         TextureRegion[] blocks_textures = TextureRegion.split(blocks_texture, 32, 32)[0];
         cells = new Cell[blocks_textures.length];

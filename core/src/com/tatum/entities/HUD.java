@@ -16,20 +16,38 @@ public class HUD {
     private TextureRegion[] blocks;
     private TextureRegion crystal;
     private TextureRegion[] font;
+    private TextureRegion[] fullFont;
+    TextureRegion[] blockSprites;
 
     public HUD(ContentManager cont, Game game, Player player) {
         this.game = game;
         this.cont = cont;
         this.player = player;
-        cont.loadTexture("res/images/hud.png");
-        Texture tex = cont.getTexture("hud");
+        cont.loadTexture("res/images/hud2.png");
+        Texture tex = cont.getTexture("hud2");
         container = new TextureRegion(tex, 0, 0, 32, 32);
+        cont.loadTexture("res/images/letters.png");
+        Texture letter = cont.getTexture("letters");
+        fullFont = new TextureRegion[26];
+        TextureRegion[][] regi = TextureRegion.split(letter,9,9);
+        int count = 0;
+        for (int i =0; i<10;i++){
+            fullFont[count] = regi[0][i];
+            count++;
+        }
+        for(int i =0;i<10;i++){
+            fullFont[count]= regi[1][i];
+            count++;
+        }
+        for(int i =0;i<6;i++){
+            fullFont[count]= regi[2][i];
+            count++;
+        }
 
         blocks = new TextureRegion[3];
         for(int i = 0; i < blocks.length; i++) {
             blocks[i] = new TextureRegion(tex, 32 + i * 16, 0, 16, 16);
         }
-
         crystal = new TextureRegion(tex, 80, 0, 16, 16);
 
         font = new TextureRegion[11];
@@ -39,7 +57,10 @@ public class HUD {
         for(int i = 0; i < 5; i++) {
             font[i + 6] = new TextureRegion(tex, 32 + i * 9, 25, 9, 9);
         }
-
+        blockSprites = new TextureRegion[3];
+        for(int i = 0; i < blockSprites.length; i++) {
+            blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
+        }
     }
 
     public void render(SpriteBatch sb) {
@@ -55,8 +76,18 @@ public class HUD {
         else if ((bits & B2DVars.BIT_BLUE_BLOCK) != 0) {
             sb.draw(blocks[2], 40, game.getHeight()-42);
         }
-        sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
-        drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
+        //draw crystals
+        //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
+        //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
+
+        drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-132,game.getHeight()-30);
+        drawString(sb,"multiplyer "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
+        int space = 0;
+        for(int i = 0;i<player.getStep();i++){
+            sb.draw(blockSprites[0], game.getWidth()-110+space,game.getHeight()-60);
+            space+=15;
+        }
+
         sb.end();
 
     }
@@ -66,7 +97,14 @@ public class HUD {
             char c = s.charAt(i);
             if(c == '/') c = 10;
             else if(c >= '0' && c <= '9') c -= '0';
-            else continue;
+            else if(c ==' ') continue;
+            else {
+            //    System.out.println(c);
+            //    System.out.println(c-97);
+                sb.draw(fullFont[c-97], x + i * 9, y);
+                //sb.draw(fullFont[24], x + i * 9, y);
+                continue;
+            }
             sb.draw(font[c], x + i * 9, y);
         }
     }

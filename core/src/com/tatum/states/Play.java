@@ -40,14 +40,13 @@ import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
 import com.tatum.music.Section;
 import com.tatum.music.TrackData;
-
 import java.io.File;
 import java.util.ArrayList;
 
 
 public class Play extends GameState {
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -118,7 +117,8 @@ public class Play extends GameState {
     private void loadTrackData() {
         //testAndroidStorage();
         try{
-            String path = "/storage/sdcard1/ALarum/01 The Box.mp3";
+            //String path = "/storage/removable/sdcard1/ALarum/09 Leftovers.mp3";
+            String path = "Music/09 Leftovers.mp3";
             //String path = "res/music/test.mp3";
             String key = resources.makeKey(path);
             song = resources.loadMusic(path);
@@ -146,7 +146,8 @@ public class Play extends GameState {
     }
 
     private void testAndroidStorage(){
-        File f = new File("/storage/sdcard1/ALarum/01 The Box.mp3");
+
+        File f = new File("/storage/removable/sdcard1/ALarum/09 Leftovers.mp3");
         if(f == null)
             System.out.println("File is null");
         System.out.println(f.getAbsolutePath());
@@ -176,7 +177,7 @@ public class Play extends GameState {
 
         // create box shape for player collision box
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 13 / PPM);
+        shape.setAsBox(13 / PPM, 46/ PPM);
 
         // create fixturedef for player collision box
         FixtureDef fdef = new FixtureDef();
@@ -192,7 +193,7 @@ public class Play extends GameState {
 
         // create box shape for player foot
         shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -13 / PPM), 0);
+        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -46 / PPM), 0);
 
         // create fixturedef for player foot
         fdef.shape = shape;
@@ -437,7 +438,6 @@ public class Play extends GameState {
 
         // check input
         handleInput();
-
         // update box2d world
         world.step(Game.STEP, 1, 1);
 
@@ -454,7 +454,8 @@ public class Play extends GameState {
 
         // update player
         player.update(dt);
-
+        if(player.managescore())
+            player.scoreStep();
         // check player win
         if(player.getBody().getPosition().x * PPM > mapWidth * tileSize) {
             resources.getSound("levelselect").play();
@@ -465,16 +466,23 @@ public class Play extends GameState {
 
         // check player failed
         if(player.getBody().getPosition().y < 0) {
-            resources.getSound("hit").play();
-            gsm.setState(new Menu(gsm));
-            resources.getMusic(song).stop();
-            resources.getMusic(song).dispose();
+            //resources.getSound("hit").play();
+            //gsm.setState(new Menu(gsm));
+            //resources.getMusic(song).stop();
+            //resources.getMusic(song).dispose();
+            //player.getBody().set
+            player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
+            player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x,0);
+            player.scoreBreak();
         }
         if(player.getBody().getLinearVelocity().x < 0.001f) {
-            resources.getSound("hit").play();
-            gsm.setState(new Menu(gsm));
-            resources.getMusic(song).stop();
-            resources.getMusic(song).dispose();
+            //resources.getSound("hit").play();
+            //gsm.setState(new Menu(gsm));
+            //resources.getMusic(song).stop();
+            //resources.getMusic(song).dispose();
+            player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
+            player.getBody().setLinearVelocity(1,0);
+            player.scoreBreak();
         }
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
@@ -523,6 +531,7 @@ public class Play extends GameState {
 
         // draw hud
         sb.setProjectionMatrix(hudCam.combined);
+
         hud.render(sb);
 
         // debug draw box2d

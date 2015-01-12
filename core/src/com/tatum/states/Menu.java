@@ -35,13 +35,13 @@ public class Menu extends GameState {
 
         loadContent();
 
-        Texture menu = resources.getTexture("menu");
+        Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
         Texture bunny = resources.getTexture("bunny");
         TextureRegion[] bunnySprite = TextureRegion.split(bunny, 32, 32)[0];
         bunnyAnimation = new Animation(bunnySprite, 1/12f);
-        Texture hud = resources.getTexture("hud");
+        Texture hud = resources.getTexture("hud2");
         playButton = new GameButton(resources, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
@@ -96,7 +96,7 @@ public class Menu extends GameState {
         bpbody.createFixture(bpfdef);
         bpshape.dispose();
 
-        Texture tex = resources.getTexture("hud");
+        Texture tex = resources.getTexture("hud2");
         TextureRegion[] blockSprites = new TextureRegion[3];
         for(int i = 0; i < blockSprites.length; i++) {
             blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
@@ -184,16 +184,17 @@ public class Menu extends GameState {
         }
     }
     private void loadContent(){
-        resources.loadTexture("res/images/menu.png");
+        resources.loadTexture("res/images/menu2.png");
         resources.loadTexture("res/images/bgs.png");
-        resources.loadTexture("res/images/hud.png");
+        resources.loadTexture("res/images/hud2.png");
         resources.loadTexture("res/images/bunny.png");
         resources.loadTexture("res/images/crystal.png");
-        resources.loadTexture("res/images/blocks.png");
+        resources.loadTexture("res/images/blocks2.png");
         //resources.loadTexture("res/images/spikes.png");
         resources.loadTexture("res/images/Play.png");
         resources.loadTexture("res/images/Leader.png");
         resources.loadTexture("res/images/Track.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
 
         resources.loadSound("res/sfx/jump.wav");
         resources.loadSound("res/sfx/crystal.wav");
