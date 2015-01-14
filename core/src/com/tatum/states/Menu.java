@@ -18,6 +18,7 @@ import com.tatum.entities.B2DSprite;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
+import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 
@@ -29,18 +30,26 @@ public class Menu extends GameState {
     private World world;
     private Box2DDebugRenderer b2dRenderer;
     private Array<B2DSprite> blocks;
+    private TextureRegion[] sprites1 = new TextureRegion[11];
+    private TextureRegion[] sprites2 = new TextureRegion[11];
+    private TextureRegion[] sprites3 = new TextureRegion[11];
+    private Animation p1Animation;
+    private Animation p2Animation;
+    private Animation p3Animation;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
 
         loadContent();
-
+        loadPlayers(resources);
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-        Texture bunny = resources.getTexture("bunny");
-        TextureRegion[] bunnySprite = TextureRegion.split(bunny, 32, 32)[0];
-        bunnyAnimation = new Animation(bunnySprite, 1/12f);
+
+        p1Animation = new Animation(sprites1, 1/15f);
+        p2Animation = new Animation(sprites2, 1/15f);
+        p3Animation = new Animation(sprites3, 1/15f);
+
         Texture hud = resources.getTexture("hud2");
         playButton = new GameButton(resources, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
@@ -162,7 +171,9 @@ public class Menu extends GameState {
         handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
-        bunnyAnimation.update(dt);
+        p1Animation.update(dt);
+        p2Animation.update(dt);
+        p3Animation.update(dt);
         playButton.update(dt);
 
     }
@@ -172,7 +183,10 @@ public class Menu extends GameState {
         bg.render(sb);
         playButton.render(sb);
         sb.begin();
-        sb.draw(bunnyAnimation.getFrame(), 146, 31);
+        sb.draw(p1Animation.getFrame(), 100, 31);
+        sb.draw(p2Animation.getFrame(), 140, 31);
+        sb.draw(p3Animation.getFrame(), 180, 31);
+
         sb.end();
         if (debug) {
             cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
@@ -206,5 +220,64 @@ public class Menu extends GameState {
     }
     public void dispose(){
 
+    }
+    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+        if(i<10)
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
+        else
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
+        System.out.println("Load " +i);
+    }
+        Texture[] tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p1_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p1_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+
+        }
+        for(int i=1;i<12;i++) {
+            if(i<10)
+                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk0" + i + ".png");
+            else
+                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk" + i + ".png");
+            System.out.println("Load " +i);
+        }
+        tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p2_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p2_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites2[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+
+        }for(int i=1;i<12;i++) {
+            if(i<10)
+                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk0" + i + ".png");
+            else
+                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk" + i + ".png");
+            System.out.println("Load " +i);
+        }
+        tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p3_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p3_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+        }
     }
 }

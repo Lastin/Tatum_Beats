@@ -70,6 +70,8 @@ public class Play extends GameState {
     public static int level = 1;
     public static String song;
     private LevelGenerator generator;
+    private String userName;
+    private String path;
 
     public Play(GameStateManager gsm) {
         super(gsm);
@@ -78,6 +80,8 @@ public class Play extends GameState {
         cl = new CollisionListener();
         world.setContactListener(cl);
         //
+        userName="user1"; // to be given to constructor
+        path = "Music/09 Leftovers.mp3";// to be given to constructor
         loadTrackData();
         tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         //up to this point map should be generated, otherwise might throw errors
@@ -118,7 +122,6 @@ public class Play extends GameState {
         //testAndroidStorage();
         try{
             //String path = "/storage/removable/sdcard1/ALarum/09 Leftovers.mp3";
-            String path = "Music/09 Leftovers.mp3";
             //String path = "res/music/test.mp3";
             String key = resources.makeKey(path);
             song = resources.loadMusic(path);
@@ -177,7 +180,7 @@ public class Play extends GameState {
 
         // create box shape for player collision box
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 46/ PPM);
+        shape.setAsBox(13 / PPM, 23/ PPM);
 
         // create fixturedef for player collision box
         FixtureDef fdef = new FixtureDef();
@@ -193,7 +196,7 @@ public class Play extends GameState {
 
         // create box shape for player foot
         shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -46 / PPM), 0);
+        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -23 / PPM), 0);
 
         // create fixturedef for player foot
         fdef.shape = shape;
@@ -206,7 +209,7 @@ public class Play extends GameState {
         shape.dispose();
 
         // create new player
-        player = new Player(body, resources);
+        player = new Player(body, resources,userName,path);
         body.setUserData(player);
 
         // final tweaks, manually set the player body mass to 1 kg
@@ -386,15 +389,15 @@ public class Play extends GameState {
         // red -> green -> blue
         if(bits == B2DVars.BIT_RED_BLOCK) {
             bits = B2DVars.BIT_GREEN_BLOCK;
-            player.getBody().setLinearVelocity(0.6f, 0f);
+           // player.getBody().setLinearVelocity(0.6f, 0f);
         }
         else if(bits == B2DVars.BIT_GREEN_BLOCK) {
             bits = B2DVars.BIT_BLUE_BLOCK;
-            player.getBody().setLinearVelocity(0.6f, 0f);
+           // player.getBody().setLinearVelocity(0.6f, 0f);
         }
         else if(bits == B2DVars.BIT_BLUE_BLOCK) {
             bits = B2DVars.BIT_RED_BLOCK;
-            player.getBody().setLinearVelocity(0.6f, 0f);
+            //player.getBody().setLinearVelocity(0.6f, 0f);
         }
 
         // set player foot mask bits
@@ -474,6 +477,7 @@ public class Play extends GameState {
             player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x,0);
             player.scoreBreak();
+            player.randomSprite();
         }
         if(player.getBody().getLinearVelocity().x < 0.001f) {
             //resources.getSound("hit").play();
@@ -483,6 +487,7 @@ public class Play extends GameState {
             player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
             player.getBody().setLinearVelocity(1,0);
             player.scoreBreak();
+            player.randomSprite();
         }
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
@@ -548,4 +553,5 @@ public class Play extends GameState {
     public void dispose() {
         // everything is in the resource manager com.tatum.handlers.Content
     }
+
 }

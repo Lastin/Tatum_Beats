@@ -81,7 +81,7 @@ public class HUD {
         //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
 
         drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-132,game.getHeight()-30);
-        drawString(sb,"multiplyer "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
+        drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
         int space = 0;
         for(int i = 0;i<player.getStep();i++){
             sb.draw(blockSprites[0], game.getWidth()-110+space,game.getHeight()-60);
