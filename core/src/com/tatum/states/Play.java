@@ -462,12 +462,22 @@ public class Play extends GameState {
         player.update(dt);
         if(player.managescore())
             player.scoreStep();
+
+
+        //check scores / set new high score
+        if(player.getScore()>player.getHighScore()){
+
+            player.setHighScore();
+            player.newHighScore();
+        }
+
         // check player win
         if(player.getBody().getPosition().x * PPM > mapWidth * tileSize) {
             resources.getSound("levelselect").play();
-            gsm.setState(new LevelSelect(gsm));
+            player.saveHighScore();
             resources.getMusic(song).stop();
             resources.getMusic(song).dispose();
+            gsm.setState(new Menu(gsm));
         }
 
         // check player failed
@@ -479,6 +489,7 @@ public class Play extends GameState {
             //player.getBody().set
             player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x,0);
+            //player.getBody().setLinearVelocity(10,0);
             player.scoreBreak();
             player.randomSprite();
         }

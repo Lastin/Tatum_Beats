@@ -79,7 +79,7 @@ public class HUD {
         //draw crystals
         //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
         //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
-
+        drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-132,game.getHeight()-10);
         drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-132,game.getHeight()-30);
         drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
         int space = 0;
