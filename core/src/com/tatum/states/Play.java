@@ -80,7 +80,7 @@ public class Play extends GameState {
         cl = new CollisionListener();
         world.setContactListener(cl);
         //
-        userName="user1"; // to be given to constructor
+        userName = "user1"; // to be given to constructor
         path = "Music/09 Leftovers.mp3";// to be given to constructor
         loadTrackData();
         tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -317,6 +317,9 @@ public class Play extends GameState {
         // get all crystals in "crystals" layer,
         // create bodies for each, and add them
         // to the crystals list
+        if(tiledMap == null) {
+            System.out.println("tiledmap is null");
+        }
         MapLayer ml = tiledMap.getLayers().get("crystals");
         if(ml == null) return;
 
