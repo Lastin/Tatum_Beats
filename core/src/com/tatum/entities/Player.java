@@ -1,10 +1,22 @@
 package com.tatum.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.ContentManager;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
 
 public class Player extends B2DSprite {
     private int numCrystals;
@@ -15,44 +27,30 @@ public class Player extends B2DSprite {
     private int stepStage;
     private int scorespeedVar;
     private int scorespeedConst;
+    private String playerName;
+    private int highScore;
+    private TextureRegion[] sprites1 = new TextureRegion[11];
+    private TextureRegion[] sprites2 = new TextureRegion[11];
+    private TextureRegion[] sprites3 = new TextureRegion[11];
+    private int playerNum;
+    private boolean newHighScore;
+    private String path;
 
-
-    public Player(Body body, ContentManager resources) {
+    public Player(Body body, ContentManager resources,String name,String path) {
         super(body, resources);
 
+        playerName=name;
+        this.path=path;
+        highScore=loadHighScore();
         score=0;
+        newHighScore=false;
         multiplyer=1;
         step=0;
         stepStage=0;
         scorespeedVar=0;
         scorespeedConst=5;
-        //resources.loadTexture("res/images/bunny.png");
-        //resources.loadTexture("res/images/dickbutt.png");
-        //Texture tex = resources.getTexture("bunny");
-        //Texture tex = resources.getTexture("dickbutt");
-        //TextureRegion[] sprites = TextureRegion.split(tex, 32, 32)[0];
-        resources.printKeys();
-        for(int i=1;i<12;i++) {
-            if(i<10)
-                resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/p1_walk0" + i + ".png");
-            else
-                resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/p1_walk" + i + ".png");
-            System.out.println("Load " +i);
-        }
-        Texture[] tex = new Texture[11];
-        for(int i=0;i<11;i++) {
-            int j = i + 1;
-            if(j<10)
-                tex[i] = resources.getTexture("p1_walk0" + j);
-            else
-                tex[i] = resources.getTexture("p1_walk" + j);
-            System.out.println("get " +(i+1));
-        }
-        TextureRegion[] sprites = new TextureRegion[11];
-        for(int i=0;i<11;i++) {
-            sprites[i] = TextureRegion.split(tex[i], 72, 97)[0][0];
-            System.out.println("split " + (i + 1/50f));
-        }
+        playerNum = 1;
+        loadPlayers(resources);
         /*TextureRegion[][] spriteSplit = TextureRegion.split(tex,71,93);
         int count =0;
         for(int i =0;i<4;i++){
@@ -66,10 +64,10 @@ public class Player extends B2DSprite {
         }
     */
 
-        animation = new Animation(sprites);
-        animation.setFrames(sprites, 1/15f);
-        width = sprites[0].getRegionWidth();
-        height = sprites[0].getRegionHeight();
+        animation = new Animation(sprites1);
+        animation.setFrames(sprites1, 1/15f);
+        width = sprites1[0].getRegionWidth();
+        height = sprites1[0].getRegionHeight();
 
     }
 
@@ -118,9 +116,125 @@ public class Player extends B2DSprite {
 
         }
         return false;
+    }
+    public int getHighScore(){return highScore;}
+    public String getPlayerName(){return playerName;}
+    public void randomSprite(){
 
+        if(playerNum ==3){
+            animation = new Animation(sprites1);
+            animation.setFrames(sprites1, 1/15f);
+            playerNum=1;
+        }
+        else if(playerNum ==2){
+            animation = new Animation(sprites3);
+            animation.setFrames(sprites3, 1/15f);
+            playerNum=3;
+        }
+        else {
+            animation = new Animation(sprites2);
+            animation.setFrames(sprites2, 1/15f);
+            playerNum=2;
+        }
 
 
     }
+   public int getPlayerNum(){return playerNum;}
 
+    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+        if(i<10)
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
+        else
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
+        System.out.println("Load " +i);
+    }
+        Texture[] tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p1_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p1_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+
+        }
+        for(int i=1;i<12;i++) {
+            if(i<10)
+                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk0" + i + ".png");
+            else
+                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk" + i + ".png");
+            System.out.println("Load " +i);
+        }
+        tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p2_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p2_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites2[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+
+        }for(int i=1;i<12;i++) {
+            if(i<10)
+                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk0" + i + ".png");
+            else
+                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk" + i + ".png");
+            System.out.println("Load " +i);
+        }
+        tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p3_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p3_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+        }
+    }
+    public int loadHighScore(){
+        String trackName = path.replaceAll("/","");
+        File file = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.json").file();
+        if(file.exists()){
+            InputStream is = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.json").read();
+            JsonReader rdr = Json.createReader(is);
+            JsonObject hi = rdr.readObject();
+            return hi.getInt("Score");
+        }
+        else{
+            return 0;
+        }
+    }
+    public void saveHighScore(){
+        String trackname = path.replaceAll("/","");
+        if(newHighScore){
+            File file = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName).file();
+            if(!file.exists()){
+                file.mkdir();
+            }
+            FileHandle ff = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName+"/score.json");
+            OutputStream OS = ff.write(false);
+            try {
+                OS.write(("{\"Score\": "+highScore+"}").getBytes());
+                OS.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    public void newHighScore(){
+        newHighScore=true;
+    }
+    public void setHighScore(){
+        highScore=score;
+    }
 }
