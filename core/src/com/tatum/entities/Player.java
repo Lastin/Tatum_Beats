@@ -1,7 +1,10 @@
 package com.tatum.entities;
 
 import com.badlogic.gdx.Gdx;
+<<<<<<< HEAD
 import com.badlogic.gdx.files.FileHandle;
+=======
+>>>>>>> origin/Tatum
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -9,6 +12,7 @@ import com.tatum.handlers.Animation;
 import com.tatum.handlers.ContentManager;
 
 import java.io.File;
+<<<<<<< HEAD
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -16,6 +20,8 @@ import java.io.OutputStream;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+=======
+>>>>>>> origin/Tatum
 
 
 public class Player extends B2DSprite {
@@ -136,8 +142,35 @@ public class Player extends B2DSprite {
             animation.setFrames(sprites2, 1/15f);
             playerNum=2;
         }
+<<<<<<< HEAD
 
 
+    }
+   public int getPlayerNum(){return playerNum;}
+=======
+>>>>>>> origin/Tatum
+
+    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+        if(i<10)
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
+        else
+            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
+        System.out.println("Load " +i);
+    }
+        Texture[] tex = new Texture[11];
+        for(int i=0;i<11;i++) {
+            int j = i + 1;
+            if(j<10)
+                tex[i] = resources.getTexture("p1_walk0" + j);
+            else
+                tex[i] = resources.getTexture("p1_walk" + j);
+            System.out.println("get " +(i+1));
+        }
+        for(int i=0;i<11;i++) {
+            sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
+
+<<<<<<< HEAD
+=======
     }
    public int getPlayerNum(){return playerNum;}
 
@@ -160,6 +193,7 @@ public class Player extends B2DSprite {
         for(int i=0;i<11;i++) {
             sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
 
+>>>>>>> origin/Tatum
         }
         for(int i=1;i<12;i++) {
             if(i<10)
@@ -202,18 +236,25 @@ public class Player extends B2DSprite {
     }
     public int loadHighScore(){
         String trackName = path.replaceAll("/","");
+<<<<<<< HEAD
         File file = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.json").file();
         if(file.exists()){
             InputStream is = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.json").read();
             JsonReader rdr = Json.createReader(is);
             JsonObject hi = rdr.readObject();
             return hi.getInt("Score");
+=======
+        File file = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.txt").file();
+        if(file.exists()){
+            return 0;
+>>>>>>> origin/Tatum
         }
         else{
             return 0;
         }
     }
     public void saveHighScore(){
+<<<<<<< HEAD
         String trackname = path.replaceAll("/","");
         if(newHighScore){
             File file = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName).file();
@@ -237,4 +278,8 @@ public class Player extends B2DSprite {
     public void setHighScore(){
         highScore=score;
     }
+=======
+
+    }
+>>>>>>> origin/Tatum
 }
