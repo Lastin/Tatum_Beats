@@ -17,21 +17,37 @@ import com.tatum.music.TrackData;
 
 
 public class ContentManager {
-    private HashMap<String, Texture> textures;
-    private HashMap<String, Music> music;
-    private HashMap<String, Sound> sounds;
-    private HashMap<String, File> files;
-    private HashMap<String, TiledMap> maps;
-    private HashMap<String, TrackData> tracksData;
+    private HashMap<String, Texture> textures = new HashMap<String, Texture>();
+    private HashMap<String, Music> music = new HashMap<String, Music>();
+    private HashMap<String, Sound> sounds = new HashMap<String, Sound>();
+    private HashMap<String, File> files = new HashMap<String, File>();
+    private HashMap<String, TiledMap> maps = new HashMap<String, TiledMap>();
+    private HashMap<String, TrackData> tracksData = new HashMap<String, TrackData>();
     public ContentManager() {
-      textures = new HashMap<String, Texture>();
-      music = new HashMap<String, Music>();
-      sounds = new HashMap<String, Sound>();
-      files = new HashMap<String, File>();
-      maps = new HashMap<String, TiledMap>();
-      tracksData = new HashMap<String, TrackData>();
+        loadResources();
     }
 
+    private void loadResources(){
+        loadTexture("res/images/menu2.png");
+        loadTexture("res/images/bgs.png");
+        loadTexture("res/images/hud2.png");
+        loadTexture("res/images/bunny.png");
+        loadTexture("res/images/crystal.png");
+        loadTexture("res/images/blocks2.png");
+        //resources.loadTexture("res/images/spikes.png");
+        loadTexture("res/images/Play.png");
+        loadTexture("res/images/Leader.png");
+        loadTexture("res/images/Track.png");
+        loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
+
+        loadSound("res/sfx/jump.wav");
+        loadSound("res/sfx/crystal.wav");
+        loadSound("res/sfx/levelselect.wav");
+        loadSound("res/sfx/hit.wav");
+        loadSound("res/sfx/changeblock.wav");
+
+        loadFile("res/music/test.mp3");
+    }
     //Setters
     public void loadTexture(String path) {
 

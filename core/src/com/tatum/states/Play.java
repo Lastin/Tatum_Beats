@@ -11,14 +11,12 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -38,23 +36,26 @@ import com.tatum.handlers.BoundedCamera;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.Game;
+import com.tatum.handlers.TrackLoader;
 import com.tatum.music.Section;
 import com.tatum.music.TrackData;
-import java.io.File;
+
 import java.util.ArrayList;
 
 
 public class Play extends GameState {
 
-    private boolean debug = false;
+    TrackLoader trackLoader = new TrackLoader();
 
+
+    private boolean debug = false;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
     private CollisionListener cl;
     private BoundedCamera b2dCam;
 
     private Player player;
-    private TrackData track;
+    private TrackData trackData;
     private TiledMap tiledMap;
     private int mapWidth;
     private final int mapHeight = 200;
@@ -75,10 +76,12 @@ public class Play extends GameState {
 
     public Play(GameStateManager gsm) {
         super(gsm);
+
         // set up the box2d world and contact listener
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
+
         //
         userName = "user1"; // to be given to constructor
         path = "Music/09 Leftovers.mp3";// to be given to constructor
@@ -104,9 +107,9 @@ public class Play extends GameState {
 
     private TiledMap composeTrackMap() {
         generator = new LevelGenerator(resources, world);
-        mapWidth = (int)track.getDuration();
+        mapWidth = (int) trackData.getDuration();
         TiledMap tiledMap = generator.makeMap(mapWidth, mapHeight);
-        ArrayList<Section> sections = track.getSections();
+        ArrayList<Section> sections = trackData.getSections();
         int section = 0;
         int sectionBeginning = 0;
         for(Section each : sections){
@@ -125,13 +128,13 @@ public class Play extends GameState {
             //String path = "res/music/test.mp3";
             String key = resources.makeKey(path);
             song = resources.loadMusic(path);
-            track = resources.getTrackData(key);
-            if(track == null){
+            trackData = resources.getTrackData(key);
+            if(trackData == null){
                 FileHandle fh = Gdx.files.internal(path);
                 //System.out.println(fh.file().getAbsolutePath());
-                track = new TrackData(path);
-                track.initilize();
-                resources.addTrackData(key, track);
+                trackData = new TrackData(path);
+                trackData.initilize();
+                resources.addTrackData(key, trackData);
             }
 
             //resources.addMap(tiledMap, key);
@@ -147,13 +150,6 @@ public class Play extends GameState {
         }
     }
 
-    private void testAndroidStorage(){
-
-        File f = new File("/storage/removable/sdcard1/ALarum/09 Leftovers.mp3");
-        if(f == null)
-            System.out.println("File is null");
-        System.out.println(f.getAbsolutePath());
-    }
     private void createBackground() {
         Texture bgs = resources.getTexture("bgs");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -235,43 +231,6 @@ public class Play extends GameState {
                     break;
         }
         generator.createBlocks(layer, block, tempo);
-    }
-
-    private void createBlocks(TiledMapTileLayer layer, short bits) {
-
-        // tile size
-        float ts = layer.getTileWidth();
-
-        // go through all cells in layer
-        for(int row = 0; row < layer.getHeight(); row++) {
-            for(int col = 0; col < layer.getWidth(); col++) {
-
-                // get cell
-                Cell cell = layer.getCell(col, row);
-                if(cell == null) continue;
-                if(cell.getTile() == null) continue;
-
-                // create body from cell
-                BodyDef bdef = new BodyDef();
-                bdef.type = BodyType.StaticBody;
-                bdef.position.set((col + 0.5f) * ts / PPM, (row + 0.5f) * ts / PPM);
-                ChainShape cs = new ChainShape();
-                Vector2[] v = new Vector2[3];
-                v[0] = new Vector2(-ts / 2 / PPM, -ts / 2 / PPM);
-                v[1] = new Vector2(-ts / 2 / PPM, ts / 2 / PPM);
-                v[2] = new Vector2(ts / 2 / PPM, ts / 2 / PPM);
-                cs.createChain(v);
-                FixtureDef fd = new FixtureDef();
-                fd.friction = 0;
-                fd.shape = cs;
-                fd.filter.categoryBits = bits;
-                fd.filter.maskBits = B2DVars.BIT_PLAYER;
-                world.createBody(bdef).createFixture(fd);
-                cs.dispose();
-
-            }
-        }
-
     }
 
     private void createCrystals() {

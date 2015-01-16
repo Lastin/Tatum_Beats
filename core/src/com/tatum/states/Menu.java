@@ -21,11 +21,11 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.TrackLoader;
 
 public class Menu extends GameState {
     private boolean debug = false;
     private Background bg;
-    private Animation bunnyAnimation;
     private GameButton playButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -39,8 +39,6 @@ public class Menu extends GameState {
 
     public Menu(GameStateManager gsm) {
         super(gsm);
-
-        loadContent();
         loadPlayers(resources);
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
@@ -196,27 +194,6 @@ public class Menu extends GameState {
         for (int i = 0; i < blocks.size; i++) {
             blocks.get(i).render(sb);
         }
-    }
-    private void loadContent(){
-        resources.loadTexture("res/images/menu2.png");
-        resources.loadTexture("res/images/bgs.png");
-        resources.loadTexture("res/images/hud2.png");
-        resources.loadTexture("res/images/bunny.png");
-        resources.loadTexture("res/images/crystal.png");
-        resources.loadTexture("res/images/blocks2.png");
-        //resources.loadTexture("res/images/spikes.png");
-        resources.loadTexture("res/images/Play.png");
-        resources.loadTexture("res/images/Leader.png");
-        resources.loadTexture("res/images/Track.png");
-        resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
-
-        resources.loadSound("res/sfx/jump.wav");
-        resources.loadSound("res/sfx/crystal.wav");
-        resources.loadSound("res/sfx/levelselect.wav");
-        resources.loadSound("res/sfx/hit.wav");
-        resources.loadSound("res/sfx/changeblock.wav");
-
-        resources.loadFile("res/music/test.mp3");
     }
     public void dispose(){
 
