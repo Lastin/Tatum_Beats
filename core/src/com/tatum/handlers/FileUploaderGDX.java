@@ -54,7 +54,7 @@ public class FileUploaderGDX {
 
         //trackName = trackName.replaceAll(".","");
 
-        File dirCheck = Gdx.files.external("musicdata/"+trackName).file();
+        File dirCheck = Gdx.files.external("musicData/"+trackName).file();
 
         trackInformation = new HashMap<String, Object>();
         if(dirCheck.exists()) {

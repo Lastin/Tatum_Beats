@@ -57,8 +57,8 @@ public class Play extends GameState {
     private TrackData track;
     private TiledMap tiledMap;
     private int mapWidth;
-    private int mapHeight;
-    private int tileSize;
+    private final int mapHeight = 200;
+    private final int tileSize = 32;
     private OrthogonalTiledMapRenderer tmRenderer;
 
     private Array<Crystal> crystals;
@@ -83,9 +83,10 @@ public class Play extends GameState {
         userName = "user1"; // to be given to constructor
         path = "Music/09 Leftovers.mp3";// to be given to constructor
         loadTrackData();
+        tiledMap = composeTrackMap();
         tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         //up to this point map should be generated, otherwise might throw errors
-        createPlayer();
+        player = createPlayer();
         //createWalls();
         createCrystals();
         createSpikes();
@@ -101,21 +102,20 @@ public class Play extends GameState {
         resources.getMusic(song).play();
     }
 
-    private void composeTrackMap() {
+    private TiledMap composeTrackMap() {
         generator = new LevelGenerator(resources, world);
         mapWidth = (int)track.getDuration();
-        mapHeight = 200;
-        tileSize = 32;
-        tiledMap = generator.makeMap(mapWidth, mapHeight);
+        TiledMap tiledMap = generator.makeMap(mapWidth, mapHeight);
         ArrayList<Section> sections = track.getSections();
         int section = 0;
         int sectionBeginning = 0;
         for(Section each : sections){
             int sectionDuration = (int)Math.round(each.getduration());
-            createBlocks(section, sectionDuration, sectionBeginning, (int)each.getTempo(), mapHeight);
+            createBlocks(tiledMap, section, sectionDuration, sectionBeginning, (int)each.getTempo(), mapHeight);
             section++;
             sectionBeginning += sectionDuration;
         }
+        return tiledMap;
     }
 
     private void loadTrackData() {
@@ -133,14 +133,13 @@ public class Play extends GameState {
                 track.initilize();
                 resources.addTrackData(key, track);
             }
-            composeTrackMap();
+
             //resources.addMap(tiledMap, key);
-            Thread thread = new Thread(){
+            new Thread(){
                 public void run(){
                     //do nothing for now
                 }
-            };
-            thread.start();
+            }.start();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -166,14 +165,14 @@ public class Play extends GameState {
         backgrounds[2] = new Background(game, mountains, cam, 0.2f);
     }
 
-    private void createPlayer() {
-
+    private Player createPlayer() {
+        Player player;
         // create bodydef
         BodyDef bdef = new BodyDef();
         bdef.type = BodyType.DynamicBody;
         bdef.position.set(60 / PPM, 120 / PPM);
         bdef.fixedRotation = true;
-        bdef.linearVelocity.set(0.6f, 0f);
+        bdef.linearVelocity.set(1f, 0f);
 
         // create body from bodydef
         Body body = world.createBody(bdef);
@@ -216,47 +215,13 @@ public class Play extends GameState {
         MassData md = body.getMassData();
         md.mass = 1;
         body.setMassData(md);
-
+        return player;
         // i need a ratio of 0.005
         // so at 1kg, i need 200 N jump force
 
     }
 
-    private void createWalls() {
-        /***
-        This method should be deprecated
-         ***/
-
-        // load tile map and map renderer
-        try {
-            tiledMap = new TmxMapLoader().load("res/maps/level" + 1 + ".tmx");
-
-        }
-        catch(Exception e) {
-            System.out.println("Cannot find file: res/maps/level" + level + ".tmx");
-            Gdx.app.exit();
-        }
-
-        tiledMap = generator.makeMap(500, 200);
-        //generator.addLayer(tiledMap, "red", 500, 200, generator.getCells()[0]);
-
-        mapWidth = (Integer) tiledMap.getProperties().get("width");
-        mapHeight = (Integer) tiledMap.getProperties().get("height");
-        tileSize = (Integer) tiledMap.getProperties().get("tilewidth");
-        tmRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-
-        // read each of the "red" "green" and "blue" layers
-        TiledMapTileLayer layer;
-        layer = (TiledMapTileLayer) tiledMap.getLayers().get("red");
-        createBlocks(layer, B2DVars.BIT_RED_BLOCK);
-        //layer = (TiledMapTileLayer) tiledMap.getLayers().get("green");
-        //createBlocks(layer, B2DVars.BIT_GREEN_BLOCK);
-        //layer = (TiledMapTileLayer) tiledMap.getLayers().get("blue");
-        //createBlocks(layer, B2DVars.BIT_BLUE_BLOCK);
-
-    }
-
-    private void createBlocks(int counter, int sectionDuration, int sectionBeginning, int tempo, int mapHeight){
+    private void createBlocks(TiledMap tiledMap, int counter, int sectionDuration, int sectionBeginning, int tempo, int mapHeight){
         int cellsSize = generator.getCells().length;
         Cell cell = generator.getCells()[counter%cellsSize];
         System.out.println(counter%cellsSize);
