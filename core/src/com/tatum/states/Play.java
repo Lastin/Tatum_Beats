@@ -44,10 +44,6 @@ import java.util.ArrayList;
 
 
 public class Play extends GameState {
-
-    TrackLoader trackLoader = new TrackLoader();
-
-
     private boolean debug = false;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -91,11 +87,11 @@ public class Play extends GameState {
         //up to this point map should be generated, otherwise might throw errors
         player = createPlayer();
         //createWalls();
-        createCrystals();
-        createSpikes();
+        //createCrystals();
+        //createSpikes();
         createBackground();
         cam.setBounds(0, mapWidth * tileSize, 0, mapHeight * tileSize);
-        player.setTotalCrystals(crystals.size);
+        //player.setTotalCrystals(crystals.size);
         hud = new HUD(resources, game, player);
         // set up box2d cam
         b2dCam = new BoundedCamera();
@@ -435,14 +431,14 @@ public class Play extends GameState {
         }
 
         // update crystals
-        for(int i = 0; i < crystals.size; i++) {
+        /*for(int i = 0; i < crystals.size; i++) {
             crystals.get(i).update(dt);
         }
 
         // update spikes
         for(int i = 0; i < spikes.size; i++) {
             spikes.get(i).update(dt);
-        }
+        }*/
 
     }
 
@@ -463,14 +459,14 @@ public class Play extends GameState {
         player.render(sb);
 
         // draw crystals
-        for(int i = 0; i < crystals.size; i++) {
+        /*for(int i = 0; i < crystals.size; i++) {
             crystals.get(i).render(sb);
-        }
+        }*/
 
         // draw spikes
-        for(int i = 0; i < spikes.size; i++) {
+        /*for(int i = 0; i < spikes.size; i++) {
             spikes.get(i).render(sb);
-        }
+        }*/
 
         // draw hud
         sb.setProjectionMatrix(hudCam.combined);

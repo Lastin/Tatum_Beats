@@ -39,6 +39,7 @@ public class ContentManager {
         loadTexture("res/images/Leader.png");
         loadTexture("res/images/Track.png");
         loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
+        loadTexture("res/images/mm/sprites.png");
 
         loadSound("res/sfx/jump.wav");
         loadSound("res/sfx/crystal.wav");

@@ -21,12 +21,12 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.TrackLoader;
 
 public class Menu extends GameState {
     private boolean debug = false;
     private Background bg;
     private GameButton playButton;
+    private GameButton selectTrackButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
     private Array<B2DSprite> blocks;
@@ -49,7 +49,9 @@ public class Menu extends GameState {
         p3Animation = new Animation(sprites3, 1/15f);
 
         Texture hud = resources.getTexture("hud2");
-        playButton = new GameButton(resources, new TextureRegion(hud, 0, 34, 58, 27), 160, 100, cam);
+        Texture myStyle = resources.getTexture("sprites");
+        playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
+        selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -161,10 +163,17 @@ public class Menu extends GameState {
     public void handleInput() {
         if (playButton.isClicked()) {
             resources.getSound("crystal").play();
-            gsm.setState(new Play(gsm));
+            new Thread(){
+                public void run(){
+
+                }
+            }.start();
         }
     }
 
+    private void notifyNewState(GameState gameState){
+       gsm.setState(gameState);
+    }
     public void update(float dt) {
         handleInput();
         world.step(dt / 5, 8, 3);
@@ -173,6 +182,7 @@ public class Menu extends GameState {
         p2Animation.update(dt);
         p3Animation.update(dt);
         playButton.update(dt);
+        selectTrackButton.update(dt);
 
     }
 
@@ -180,6 +190,7 @@ public class Menu extends GameState {
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
         playButton.render(sb);
+        selectTrackButton.render(sb);
         sb.begin();
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
@@ -192,7 +203,7 @@ public class Menu extends GameState {
             cam.setToOrtho(false, game.getWidth(), game.getHeight());
         }
         for (int i = 0; i < blocks.size; i++) {
-            blocks.get(i).render(sb);
+            //blocks.get(i).render(sb);
         }
     }
     public void dispose(){

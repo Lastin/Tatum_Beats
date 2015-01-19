@@ -46,8 +46,8 @@ public class GameButton {
         vec.set(Input.x, Input.y, 0);
         cam.unproject(vec);
         if (Input.isPressed() &&
-                vec.x > x - width / 2 && vec.x < x + width / 2 &&
-                vec.y > y - height / 2 && vec.y < y + height / 2) {
+                vec.x > x - width / 4 && vec.x < x + width / 4 &&
+                vec.y > y - height / 4 && vec.y < y + height / 4) {
             clicked = true;
         }
         else {
@@ -57,7 +57,7 @@ public class GameButton {
 
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(reg, x - width / 2, y - height / 2);
+        sb.draw(reg, x - width / 4, y - height / 4, width/2, height/2);
         if (text != null) {
             drawString(sb, text, x, y);
         }
