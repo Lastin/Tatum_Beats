@@ -1,7 +1,6 @@
 package com.tatum.states;
 
-import static com.tatum.handlers.B2DVars.PPM;
-
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -14,8 +13,6 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.tatum.entities.B2DSprite;
 import com.tatum.handlers.Animation;
@@ -26,6 +23,8 @@ import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.handlers.TrackLoader;
+
+import static com.tatum.handlers.B2DVars.PPM;
 
 public class Menu extends GameState {
     private boolean debug = false;
@@ -177,9 +176,14 @@ public class Menu extends GameState {
             }
             Thread thread = new Thread(){
                 public void run(){
-                    TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
-                    TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
-                    gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
+                    final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
+                    final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
+                        }
+                    });
                 }
             };
             thread.start();
