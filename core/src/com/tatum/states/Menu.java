@@ -41,7 +41,6 @@ public class Menu extends GameState {
     private Animation p1Animation;
     private Animation p2Animation;
     private Animation p3Animation;
-    private TrackLoader trackLoader;
     private LevelGenerator levelGenerator;
     private String musicSelectionPath;
 
@@ -178,18 +177,12 @@ public class Menu extends GameState {
             }
             Thread thread = new Thread(){
                 public void run(){
-                    trackLoader = new TrackLoader(resources, musicSelectionPath);
+                    TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
                     TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                     gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
                 }
             };
             thread.start();
-            try{
-                thread.join();
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
         }
         else if(selectTrackButton.isClicked()){
             //deal with track selection
