@@ -4,6 +4,7 @@ import static com.tatum.handlers.B2DVars.PPM;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.tatum.entities.B2DSprite;
 import com.tatum.handlers.Animation;
@@ -21,6 +24,8 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.LevelGenerator;
+import com.tatum.handlers.TrackLoader;
 
 public class Menu extends GameState {
     private boolean debug = false;
@@ -36,9 +41,13 @@ public class Menu extends GameState {
     private Animation p1Animation;
     private Animation p2Animation;
     private Animation p3Animation;
+    private TrackLoader trackLoader;
+    private LevelGenerator levelGenerator;
+    private String musicSelectionPath;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
+        levelGenerator = new LevelGenerator(resources);
         loadPlayers(resources);
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
@@ -161,19 +170,42 @@ public class Menu extends GameState {
     }
 
     public void handleInput() {
-        if (playButton.isClicked()) {
+        if (playButton.isClicked() && playButton.isEnabled()) {
+            playButton.setEnabled(false);
             resources.getSound("crystal").play();
-            new Thread(){
+            if(musicSelectionPath == null){
+                musicSelectionPath = "Music/09 Leftovers.mp3";
+            }
+            Thread thread = new Thread(){
                 public void run(){
-
+                    trackLoader = new TrackLoader(resources, musicSelectionPath);
+                    TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                    gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
                 }
-            }.start();
+            };
+            thread.start();
+            try{
+                thread.join();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        else if(selectTrackButton.isClicked()){
+            //deal with track selection
+            musicSelectionPath = "Music/09 Leftovers.mp3";
+
         }
     }
 
-    private void notifyNewState(GameState gameState){
-       gsm.setState(gameState);
+    public void updateProgress(double progress){
+
     }
+
+    public void updateMusicSelection(String path){
+
+    }
+
     public void update(float dt) {
         handleInput();
         world.step(dt / 5, 8, 3);

@@ -8,7 +8,7 @@
         android:minSdkVersion="11"
         android:targetSdkVersion="20" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -21,7 +21,7 @@
         android:label="Tatum"
         android:theme="@style/GdxTheme" >
         <activity
-            android:name="com.tatum.android.AndroidLauncher"
+            android:name=".AndroidLauncher"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="Tatum"
             android:screenOrientation="landscape" >
@@ -30,6 +30,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SongSelector"
+            android:label="@string/title_activity_song_selector" >
         </activity>
     </application>
 

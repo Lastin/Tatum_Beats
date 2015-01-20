@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +12,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.tatum.music.Section;
+import com.tatum.music.TrackData;
+
+import java.util.ArrayList;
 
 import static com.tatum.handlers.B2DVars.PPM;
 
@@ -21,44 +23,36 @@ public class LevelGenerator {
     private ContentManager resources;
     private Cell[] cells;
     private int cellSide = 32;
-    private World world;
 
-    public LevelGenerator(ContentManager resources, World world){
+    public LevelGenerator(ContentManager resources){
         this.resources = resources;
-        this.world = world;
         loadCells();
     }
-    public TiledMap makeMap(int width, int height){
+
+    public TiledMap makeMap(TrackData trackData){
+        int width = (int)trackData.getDuration();
+        int height = 100;
+        //set properties
         TiledMap map = new TiledMap();
         MapProperties properties = map.getProperties();
         properties.put("width", width);
         properties.put("height", height);
         properties.put("tilewidth", cellSide);
+        //now compose for each section
+        ArrayList<Section> sections = trackData.getSections();
+        int section = 0;
+        int sectionBeginning = 0;
+        for(Section each : sections){
+            int sectionDuration = (int)Math.round(each.getduration());
+            //createBlocks(tiledMap, section, sectionDuration, sectionBeginning, (int)each.getTempo(), mapHeight);
+
+            section++;
+            sectionBeginning += sectionDuration;
+        }
         return map;
     }
-    private MapLayer makeLayer (){
-        /*int cellsize = 32;
-        int minh = 64;
-        TiledMapTileLayer l = new TiledMapTileLayer(32*20, 32*501, 32, 32);
-        l.setName("red");
-        Texture cell_t = resources.getTexture("blocks");
-        TextureRegion[] cell_tr = TextureRegion.split(cell_t, 32, 32)[0];
-        Cell cell_a = new Cell();
-        StaticTiledMapTile stmt = new StaticTiledMapTile(cell_tr[0]);
-        cell_a.setTile(stmt);
-        for(int i = 0; i < 500; i++){
-            l.setCell(i, i%2, cell_a);
-        }
-        System.out.println(l.getTileHeight());
-        System.out.println(l.getTileWidth());
-        System.out.println(l.getWidth());
-        System.out.println(l.getHeight());
-        return l;
-        */
-        return null;
-    }
 
-    public TiledMapTileLayer makeLayer(int width, int height, int sectionBeginning, Cell cell) {
+    private TiledMapTileLayer makeLayer(int width, int height, int sectionBeginning, Cell cell) {
         TiledMapTileLayer layer = new TiledMapTileLayer(sectionBeginning+width, sectionBeginning+height, cellSide, cellSide);
         //layer.setName(name);
         int i = sectionBeginning;
@@ -83,13 +77,6 @@ public class LevelGenerator {
         }
     }
 
-    private boolean isWithinRange(){
-        //range: [speed^2 * sin(2degree)]/grav
-        //int range = (speed^2 * Math.sin(2*jump_degree))/gravity;
-        //this is not correct.
-        return false;
-    }
-
     private enum TileTypes{
         RED(4), GREEN(8), BLUE(16);
         private short value;
@@ -101,19 +88,16 @@ public class LevelGenerator {
         }
     }
 
-    public void createBlocks(TiledMapTileLayer layer, short bits, int tempo) {
+    public void createBlocks(TiledMapTileLayer layer, short bits, int tempo, World world) {
         // tile size
         float ts = layer.getTileWidth();
-
         // go through all cells in layer
         for(int row = 0; row < layer.getHeight(); row++) {
             for(int col = 0; col < layer.getWidth(); col++) {
-
                 // get cell
                 Cell cell = layer.getCell(col, row);
                 if(cell == null) continue;
                 if(cell.getTile() == null) continue;
-
                 // create body from cell
                 BodyDef bdef = new BodyDef();
                 bdef.type = BodyDef.BodyType.StaticBody;

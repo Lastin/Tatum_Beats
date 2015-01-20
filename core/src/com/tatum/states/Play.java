@@ -3,11 +3,13 @@ package com.tatum.states;
 import static com.tatum.handlers.B2DVars.*;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -46,11 +48,26 @@ import java.util.ArrayList;
 public class Play extends GameState {
     private boolean debug = false;
     private World world;
-    private Box2DDebugRenderer b2dRenderer;
     private CollisionListener cl;
+    //renderers
+    private Box2DDebugRenderer b2dRenderer;
     private BoundedCamera b2dCam;
-
+    private OrthogonalTiledMapRenderer tmRenderer;
+    //map and properties
+    private TiledMap map;
+    private int height;
+    private int width;
+    private final int tileSide = 32;
+    //rendered components
     private Player player;
+    private HUD hud;
+    private Background[] backgrounds;
+    //other settings
+    private String userName = "test";
+    private String path = "tempPath";
+
+
+    /*private Player player;
     private TrackData trackData;
     private TiledMap tiledMap;
     private int mapWidth;
@@ -68,17 +85,26 @@ public class Play extends GameState {
     public static String song;
     private LevelGenerator generator;
     private String userName;
-    private String path;
+    private String path;*/
 
-    public Play(GameStateManager gsm) {
+    public Play(GameStateManager gsm, TiledMap map, Music music) {
         super(gsm);
-
+        world = new World(GRAVITY, true);
+        cl = new CollisionListener();
+        world.setContactListener(cl);
+        this.map = map;
+        MapProperties properties = map.getProperties();
+        width = (Integer) properties.get("width");
+        height = (Integer) properties.get("height");
+        initialiseCamerasAndRenderers();
+        player = createPlayer();
+        hud = new HUD(resources, game, player);
+        backgrounds = createBackground();
+        /*
         // set up the box2d world and contact listener
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
-
-        //
         userName = "user1"; // to be given to constructor
         path = "Music/09 Leftovers.mp3";// to be given to constructor
         loadTrackData();
@@ -98,10 +124,116 @@ public class Play extends GameState {
         b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
         b2dCam.setBounds(0, (mapWidth * tileSize) / PPM, 0, (mapHeight * tileSize) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
-        resources.getMusic(song).play();
+        resources.getMusic(song).play();*/
     }
 
-    private TiledMap composeTrackMap() {
+    private void initialiseCamerasAndRenderers(){
+        b2dCam = new BoundedCamera();
+        b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
+        b2dCam.setBounds(0, (width * tileSide) / PPM, 0, (height * tileSide) / PPM);
+        b2dRenderer = new Box2DDebugRenderer();
+        cam.setBounds(0, width * tileSide, 0, height * tileSide);
+        tmRenderer = new OrthogonalTiledMapRenderer(map);
+    }
+
+    private Player createPlayer() {
+        Player player;
+        // create bodydef
+        BodyDef bdef = new BodyDef();
+        bdef.type = BodyType.DynamicBody;
+        bdef.position.set(60 / PPM, 120 / PPM);
+        bdef.fixedRotation = true;
+        bdef.linearVelocity.set(1f, 0f);
+
+        // create body from bodydef
+        Body body = world.createBody(bdef);
+
+        // create box shape for player collision box
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(13 / PPM, 23/ PPM);
+
+        // create fixturedef for player collision box
+        FixtureDef fdef = new FixtureDef();
+        fdef.shape = shape;
+        fdef.density = 1;
+        fdef.friction = 0;
+        fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK | B2DVars.BIT_CRYSTAL | B2DVars.BIT_SPIKE;
+
+        // create player collision box fixture
+        body.createFixture(fdef);
+        shape.dispose();
+
+        // create box shape for player foot
+        shape = new PolygonShape();
+        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -23 / PPM), 0);
+
+        // create fixturedef for player foot
+        fdef.shape = shape;
+        fdef.isSensor = true;
+        fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
+        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK;
+
+        // create player foot fixture
+        body.createFixture(fdef).setUserData("foot");
+        shape.dispose();
+
+        // create new player
+        player = new Player(body, resources, userName, path);
+        body.setUserData(player);
+
+        // final tweaks, manually set the player body mass to 1 kg
+        MassData md = body.getMassData();
+        md.mass = 1;
+        body.setMassData(md);
+        return player;
+        // i need a ratio of 0.005
+        // so at 1kg, i need 200 N jump force
+    }
+
+    private Background[] createBackground() {
+        Texture bgs = resources.getTexture("bgs");
+        TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
+        TextureRegion clouds = new TextureRegion(bgs, 0, 240, 320, 240);
+        TextureRegion mountains = new TextureRegion(bgs, 0, 480, 320, 240);
+        Background[] backgrounds = new Background[3];
+        backgrounds[0] = new Background(game, sky, cam, 0f);
+        backgrounds[1] = new Background(game, clouds, cam, 0.1f);
+        backgrounds[2] = new Background(game, mountains, cam, 0.2f);
+        return backgrounds;
+    }
+
+    public void render() {
+        // camera follow player
+        cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight()/3);
+        cam.update();
+        // draw bgs
+        sb.setProjectionMatrix(hudCam.combined);
+        for (Background each : backgrounds) {
+            each.render(sb);
+        }
+        // draw tilemap
+        tmRenderer.setView(cam);
+        tmRenderer.render();
+        // draw player
+        sb.setProjectionMatrix(cam.combined);
+        player.render(sb);
+
+        // draw hud
+        sb.setProjectionMatrix(hudCam.combined);
+
+        hud.render(sb);
+
+        // debug draw box2d
+        if(debug) {
+            b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);
+            b2dCam.update();
+            b2dRenderer.render(world, b2dCam.combined);
+        }
+
+    }
+
+    /*private TiledMap composeTrackMap() {
         generator = new LevelGenerator(resources, world);
         mapWidth = (int) trackData.getDuration();
         TiledMap tiledMap = generator.makeMap(mapWidth, mapHeight);
@@ -155,62 +287,6 @@ public class Play extends GameState {
         backgrounds[0] = new Background(game, sky, cam, 0f);
         backgrounds[1] = new Background(game, clouds, cam, 0.1f);
         backgrounds[2] = new Background(game, mountains, cam, 0.2f);
-    }
-
-    private Player createPlayer() {
-        Player player;
-        // create bodydef
-        BodyDef bdef = new BodyDef();
-        bdef.type = BodyType.DynamicBody;
-        bdef.position.set(60 / PPM, 120 / PPM);
-        bdef.fixedRotation = true;
-        bdef.linearVelocity.set(1f, 0f);
-
-        // create body from bodydef
-        Body body = world.createBody(bdef);
-
-        // create box shape for player collision box
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 23/ PPM);
-
-        // create fixturedef for player collision box
-        FixtureDef fdef = new FixtureDef();
-        fdef.shape = shape;
-        fdef.density = 1;
-        fdef.friction = 0;
-        fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK | B2DVars.BIT_CRYSTAL | B2DVars.BIT_SPIKE;
-
-        // create player collision box fixture
-        body.createFixture(fdef);
-        shape.dispose();
-
-        // create box shape for player foot
-        shape = new PolygonShape();
-        shape.setAsBox(13 / PPM, 3 / PPM, new Vector2(0, -23 / PPM), 0);
-
-        // create fixturedef for player foot
-        fdef.shape = shape;
-        fdef.isSensor = true;
-        fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK;
-
-        // create player foot fixture
-        body.createFixture(fdef).setUserData("foot");
-        shape.dispose();
-
-        // create new player
-        player = new Player(body, resources,userName,path);
-        body.setUserData(player);
-
-        // final tweaks, manually set the player body mass to 1 kg
-        MassData md = body.getMassData();
-        md.mass = 1;
-        body.setMassData(md);
-        return player;
-        // i need a ratio of 0.005
-        // so at 1kg, i need 200 N jump force
-
     }
 
     private void createBlocks(TiledMap tiledMap, int counter, int sectionDuration, int sectionBeginning, int tempo, int mapHeight){
@@ -438,7 +514,7 @@ public class Play extends GameState {
         // update spikes
         for(int i = 0; i < spikes.size; i++) {
             spikes.get(i).update(dt);
-        }*/
+        }
 
     }
 
@@ -466,7 +542,7 @@ public class Play extends GameState {
         // draw spikes
         /*for(int i = 0; i < spikes.size; i++) {
             spikes.get(i).render(sb);
-        }*/
+        }
 
         // draw hud
         sb.setProjectionMatrix(hudCam.combined);
@@ -481,11 +557,12 @@ public class Play extends GameState {
         }
 
     }
-    public void setMap(TiledMap map){
-        tiledMap = map;
-    }
+    */
     public void dispose() {
         // everything is in the resource manager com.tatum.handlers.Content
     }
+    @Override
+    public void update(float dt){}
 
+    public void handleInput(){}
 }

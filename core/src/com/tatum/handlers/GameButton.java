@@ -17,6 +17,7 @@ public class GameButton {
     Vector3 vec;
     private OrthographicCamera cam;
     private boolean clicked;
+    private boolean enabled = true;
     private String text;
     private TextureRegion[] font;
 
@@ -75,5 +76,12 @@ public class GameButton {
             else continue;
             sb.draw(font[c], x + i * 9 - xo, y - yo);
         }
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
+    }
+    public boolean isEnabled(){
+        return enabled;
     }
 }
