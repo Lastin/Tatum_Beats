@@ -1,6 +1,7 @@
 package com.tatum.handlers;
 
 import com.badlogic.gdx.audio.Music;
+import com.tatum.errors.MusicNotFoundException;
 import com.tatum.music.TrackData;
 import com.tatum.states.Menu;
 
@@ -13,12 +14,12 @@ public class TrackLoader {
     private TrackData trackData;
     private boolean ready = false;
 
-    public TrackLoader(ContentManager resources, String path) throws NullPointerException{
+    public TrackLoader(ContentManager resources, String path) {
         this.resources = resources;
         this.path = path;
         this.key = resources.makeKey(path);
         music = loadMusic();
-        if(music != null){
+        if(music == null){
             throw new NullPointerException("Music was not found on given path");
         }
         trackData = loadTrackData();
@@ -28,7 +29,7 @@ public class TrackLoader {
     private Music loadMusic(){
         Music music = resources.getMusic(key);
         if(music == null){
-            resources.loadMusic(path);
+            music = resources.loadMusic(path);
         }
         return music;
     }

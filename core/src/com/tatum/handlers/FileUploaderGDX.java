@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,6 +33,13 @@ import com.echonest.api.v4.Track;
  */
 
 public class FileUploaderGDX {
+    PrintStream supresser = new PrintStream(new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            //supressed
+        }
+    });
+
     private EchoNestAPI en;
     private Track track;
     private String trackPath;
@@ -39,6 +47,7 @@ public class FileUploaderGDX {
     HashMap<String, Object> trackInformation;
 
     public void uploadGDX() throws EchoNestException, IOException {
+        System.setOut(supresser);
         FileHandle fH = Gdx.files.external(trackPath);
         File file = fH.file();
         System.out.println(file+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$");

@@ -15,12 +15,19 @@ import com.echonest.api.v4.Location;
 import com.echonest.api.v4.Segment;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import java.util.List;
 
 class MetaGrabber{
-
+    PrintStream supresser = new PrintStream(new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            //supressed
+        }
+    });
     private EchoNestAPI en;
     private String trackPath;
     private File file; //done
@@ -68,6 +75,7 @@ class MetaGrabber{
 
 
     public MetaGrabber()throws EchoNestException {
+        System.setOut(supresser);
         en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
         en.setTraceSends(true);
         en.setTraceRecvs(false);

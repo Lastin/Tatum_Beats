@@ -56,12 +56,11 @@ public class ContentManager {
         Texture t = new Texture(path);
         textures.put(makeKey(path), t);
     }
-    public String loadMusic(String path) {
-        if(Gdx.files.external(path) == null) return "";
+    public Music loadMusic(String path) {
+        if(Gdx.files.external(path) == null) return null;
         Music m = Gdx.audio.newMusic(Gdx.files.external(path));
-        String key = makeKey(path);
-        music.put(key, m);
-        return key;
+        music.put(makeKey(path), m);
+        return m;
     }
     public void loadSound(String path) {
         if(Gdx.files.internal(path) == null) return;

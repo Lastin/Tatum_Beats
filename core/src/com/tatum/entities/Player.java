@@ -106,7 +106,7 @@ public class Player extends B2DSprite {
     public int getStep(){return step;}
     public int getMultiplyer(){return  multiplyer;}
 
-    public boolean managescore(){
+    public boolean manageScore(){
 
         scorespeedVar+=1;
         if(scorespeedVar==scorespeedConst) {
