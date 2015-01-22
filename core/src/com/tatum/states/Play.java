@@ -37,7 +37,7 @@ import com.tatum.handlers.LevelGenerator;
 import java.util.logging.Level;
 
 public class Play extends GameState {
-    private boolean debug = false;
+    private boolean debug = true;
     private World world;
     private CollisionListener cl;
     //renderers
@@ -81,7 +81,7 @@ public class Play extends GameState {
         b2dCam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
         b2dCam.setBounds(0, (width * tileSide) / PPM, 0, (height * tileSide) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
-        cam.setBounds(0, width * tileSide, 0, height * tileSide);
+        cam.setBounds(0, width * PPM, 0, height * tileSide);
         tmRenderer = new OrthogonalTiledMapRenderer(map);
     }
 
@@ -159,7 +159,7 @@ public class Play extends GameState {
     @Override
     public void render() {
         // camera follow player
-        cam.setPosition(player.getPosition().x * PPM + game.getWidth()/4, game.getHeight()/3);
+        cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);

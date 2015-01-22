@@ -25,6 +25,8 @@ import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.handlers.TrackLoader;
 
+import java.util.Timer;
+
 import static com.tatum.handlers.B2DVars.PPM;
 
 public class Menu extends GameState {
@@ -175,10 +177,18 @@ public class Menu extends GameState {
             if(musicSelectionPath == null){
                 musicSelectionPath = "Music/09 Leftovers.mp3";
             }
-            Thread thread = new Thread(){
+            Thread thread = new Thread() {
                 public void run(){
+                    //set characters sprite to loading track here
                     final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
+                    //set characters sprite to generating the map
                     final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                    //set characters sprite to one here
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        //do nothing here
+                    }
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
