@@ -5,18 +5,24 @@ import static com.tatum.handlers.B2DVars.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
 import com.tatum.handlers.B2DVars;
@@ -25,6 +31,10 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.BoundedCamera;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
+import com.tatum.handlers.Input;
+import com.tatum.handlers.LevelGenerator;
+
+import java.util.logging.Level;
 
 public class Play extends GameState {
     private boolean debug = false;
@@ -55,14 +65,14 @@ public class Play extends GameState {
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
-
         MapProperties properties = map.getProperties();
         width = (Integer) properties.get("width");
         height = (Integer) properties.get("height");
-        initialiseCamerasAndRenderers();
         player = createPlayer();
         hud = new HUD(resources, game, player);
         backgrounds = createBackground();
+        createBlocks();
+        initialiseCamerasAndRenderers();
         music.play();
     }
 
@@ -97,7 +107,7 @@ public class Play extends GameState {
         fdef.density = 1;
         fdef.friction = 0;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK | B2DVars.BIT_CRYSTAL | B2DVars.BIT_SPIKE;
+        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK | B2DVars.BIT_CRYSTAL | B2DVars.BIT_SPIKE;
 
         // create player collision box fixture
         body.createFixture(fdef);
@@ -111,7 +121,7 @@ public class Play extends GameState {
         fdef.shape = shape;
         fdef.isSensor = true;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_RED_BLOCK;
+        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK;
 
         // create player foot fixture
         body.createFixture(fdef).setUserData("foot");
@@ -142,17 +152,21 @@ public class Play extends GameState {
         return backgrounds;
     }
 
+    private void createBlocks(){
+        LevelGenerator.createBlocks(map, world);
+    }
+
     @Override
     public void render() {
         // camera follow player
-        cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight()/3);
+        cam.setPosition(player.getPosition().x * PPM + game.getWidth()/4, game.getHeight()/3);
         cam.update();
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         for (Background each : backgrounds) {
             each.render(sb);
         }
-        // draw tilemap
+        // draw tiledmap
         tmRenderer.setView(cam);
         tmRenderer.render();
         // draw player
@@ -161,7 +175,6 @@ public class Play extends GameState {
 
         // draw hud
         sb.setProjectionMatrix(hudCam.combined);
-
         hud.render(sb);
 
         // debug draw box2d
@@ -212,10 +225,49 @@ public class Play extends GameState {
     }
 
     @Override
-    public void dispose() {
+    public void handleInput(){
+        if(Input.isPressed(Input.BUTTON1))
+            playerJump();
+        if(Input.isPressed(Input.BUTTON2))
+            switchBlocks();
+    }
 
+    private void playerJump(){
+        if(cl.playerCanJump()){
+            player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
+            player.getBody().applyForceToCenter(0, 200, true);
+            resources.getSound("jump").play();
+        }
+    }
+
+    private void switchBlocks(){
+        //get foot mask bits
+        Filter filter = player.getBody().getFixtureList().get(1).getFilterData();
+        short bits = filter.maskBits;
+        //switch block
+        switch (bits){
+            case BIT_GRASS_BLOCK:
+                bits = BIT_ICE_BLOCK;
+                break;
+            case BIT_ICE_BLOCK:
+                bits = BIT_SAND_BLOCK;
+                break;
+            case BIT_SAND_BLOCK:
+                bits = BIT_GRASS_BLOCK;
+                break;
+        }
+        //set foot mask bits
+        filter.maskBits = bits;
+        player.getBody().getFixtureList().get(1).setFilterData(filter);
+        //set mask bits
+        filter.maskBits = bits;
+        player.getBody().getFixtureList().get(0).setFilterData(filter);
+
+        resources.getSound("changeblock").play();
     }
 
     @Override
-    public void handleInput(){}
+    public void dispose() {
+
+    }
 }

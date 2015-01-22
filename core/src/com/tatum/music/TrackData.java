@@ -159,7 +159,7 @@ public class TrackData {
                             array.add(unit);
                             unit.setContainedIn(beats.size());
                             int count = beats.size() + 1;
-                            System.out.println("Added tatum " + tatumsCount + " to beat " + count);
+                            //System.out.println("Added tatum " + tatumsCount + " to beat " + count);
                             tatumsCount++;
                         } else if (unit.getStart() >= start + duration) {
                             break;
@@ -177,11 +177,11 @@ public class TrackData {
                             if ((unit.getStart() >= start - 0.0001)) {
                                 int count = beats.size() + 1;
                                 unit.setContainedIn(beats.size());
-                                System.out.println("Added tatum " + tatumsCount + " to beat " + count);
+                                //System.out.println("Added tatum " + tatumsCount + " to beat " + count);
                                 array.add(unit);
                             } else {
                                 int count = beats.size() + 1;
-                                System.out.println("NOT Added tatum " + tatumsCount + " to beat " + count);
+                                //System.out.println("NOT Added tatum " + tatumsCount + " to beat " + count);
                             }
                             tatumsCount++;
                         }
@@ -208,7 +208,7 @@ public class TrackData {
                             array.add(unit);
                             unit.setContainedIn(bars.size());
                             int count = bars.size() + 1;
-                            System.out.println("Added beat " + tatumsCount + " to bar " + count);
+                            //System.out.println("Added beat " + tatumsCount + " to bar " + count);
                             tatumsCount++;
                         } else if (unit.getStart() >= start + duration) {
                             break;
@@ -225,7 +225,7 @@ public class TrackData {
                                 int count = bars.size() + 1;
 
                                 unit.setContainedIn(bars.size());
-                                System.out.println("Added beat " + tatumsCount + " to bar " + count);
+                                //System.out.println("Added beat " + tatumsCount + " to bar " + count);
                                 array.add(unit);
                             }
                             //if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
@@ -233,7 +233,7 @@ public class TrackData {
                             //}
                             else {
                                 int count = bars.size() + 1;
-                                System.out.println("NOT Added beat " + tatumsCount + " to bar " + count);
+                                //System.out.println("NOT Added beat " + tatumsCount + " to bar " + count);
                             }
                             tatumsCount++;
                         }
@@ -243,7 +243,7 @@ public class TrackData {
                     }
                 }
                 if (Testcount != 3) {
-                    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 }
                 bars.add(new TimedEvent(start, duration, confidence, array));
             }
@@ -307,7 +307,7 @@ public class TrackData {
                         if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
                             array.add(unit);
                             int count = sections.size() + 1;
-                            System.out.println("Added bar " + tatumsCount + " to section " + count);
+                            //System.out.println("Added bar " + tatumsCount + " to section " + count);
                             double unitDur = unit.getStart() + unit.getduration();
                             double startDur = (start + duration);
                             //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
@@ -324,7 +324,7 @@ public class TrackData {
                             }
                             if ((unit.getStart() >= start - 0.0001)) {
                                 int count = sections.size() + 1;
-                                System.out.println("Added bar " + tatumsCount + " to section " + count + "dsas");
+                                //System.out.println("Added bar " + tatumsCount + " to section " + count + "dsas");
                                 array.add(unit);
                             }
                             //if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
@@ -332,7 +332,7 @@ public class TrackData {
                             //}
                             else {
                                 int count = sections.size() + 1;
-                                System.out.println("NOT Added bar " + tatumsCount + " to section " + count);
+                                //System.out.println("NOT Added bar " + tatumsCount + " to section " + count);
                             }
                             tatumsCount++;
                         }
@@ -465,7 +465,7 @@ public class TrackData {
 
         int count = 0;
         while (true) {
-            System.out.println("Count:" + count);
+            //System.out.println("Count:" + count);
             try {
                 timeBar = bars.get(midpoint);
 
@@ -480,17 +480,17 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("error bars " + midpoint);
+                //System.out.println("error bars " + midpoint);
                 midpoint--;
             }
             count++;
 
         }
-        System.out.println("bars");
+        /*System.out.println("bars");
         System.out.println(time);
         System.out.println(bar);
         System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());
+        System.out.println(timeBar.getduration());*/
 
         return bar;
     }
@@ -631,7 +631,7 @@ public class TrackData {
         int count = 0;
         while (true) {
 
-            System.out.println("Count:" + count);
+            //System.out.println("Count:" + count);
             try {
                 timeBar = segments.get(midpoint);
 
@@ -646,16 +646,16 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("error segments " + midpoint);
+                //System.out.println("error segments " + midpoint);
                 midpoint--;
             }
             count++;
         }
-        System.out.println("segments");
-        System.out.println(time);
-        System.out.println(bar);
-        System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());
+        //System.out.println("segments");
+        //System.out.println(time);
+        //System.out.println(bar);
+        //System.out.println(timeBar.getStart());
+        //System.out.println(timeBar.getduration());
         return bar;
     }
 

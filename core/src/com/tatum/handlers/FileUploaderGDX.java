@@ -47,17 +47,17 @@ public class FileUploaderGDX {
     HashMap<String, Object> trackInformation;
 
     public void uploadGDX() throws EchoNestException, IOException {
-        System.setOut(supresser);
+        //System.setOut(supresser);
         FileHandle fH = Gdx.files.external(trackPath);
         File file = fH.file();
-        System.out.println(file+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println(file+"£££££££££££££££££££££££££££££££££££££££");
-        System.out.println(trackPath+"£££££££££££££££££££££££££££££££££££££££");
-        System.out.println(Gdx.files.internal(""));
+        //System.out.println(file+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        //System.out.println(file+"£££££££££££££££££££££££££££££££££££££££");
+        //System.out.println(trackPath+"£££££££££££££££££££££££££££££££££££££££");
+        //System.out.println(Gdx.files.internal(""));
         String extRoot = Gdx.files.getExternalStoragePath();
-        System.out.println(extRoot);
+        //System.out.println(extRoot);
         String locRoot = Gdx.files.getLocalStoragePath();
-        System.out.println(locRoot);
+        //System.out.println(locRoot);
         //Long fileSize = file.getTotalSpace();
         String trackName = trackPath.replaceAll("/","");
 

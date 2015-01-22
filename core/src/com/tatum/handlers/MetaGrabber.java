@@ -75,7 +75,7 @@ class MetaGrabber{
 
 
     public MetaGrabber()throws EchoNestException {
-        System.setOut(supresser);
+        //System.setOut(supresser);
         en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
         en.setTraceSends(true);
         en.setTraceRecvs(false);

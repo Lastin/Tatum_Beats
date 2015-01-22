@@ -67,13 +67,13 @@ public class HUD {
         sb.begin();
         sb.draw(container, 32, game.getHeight()-50);
         short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
-        if ((bits & B2DVars.BIT_RED_BLOCK) != 0) {
+        if ((bits & B2DVars.BIT_GRASS_BLOCK) != 0) {
             sb.draw(blocks[0], 40, game.getHeight()-42);
         }
-        else if ((bits & B2DVars.BIT_GREEN_BLOCK) != 0) {
+        else if ((bits & B2DVars.BIT_ICE_BLOCK) != 0) {
             sb.draw(blocks[1], 40, game.getHeight()-42);
         }
-        else if ((bits & B2DVars.BIT_BLUE_BLOCK) != 0) {
+        else if ((bits & B2DVars.BIT_SAND_BLOCK) != 0) {
             sb.draw(blocks[2], 40, game.getHeight()-42);
         }
         //draw crystals

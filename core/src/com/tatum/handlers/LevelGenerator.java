@@ -2,6 +2,10 @@ package com.tatum.handlers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -12,12 +16,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.echonest.api.v4.TimedEvent;
 import com.tatum.music.Section;
 import com.tatum.music.TrackData;
 
 import java.util.ArrayList;
-
-import static com.tatum.handlers.B2DVars.PPM;
 
 public class LevelGenerator {
     private ContentManager resources;
@@ -26,7 +29,7 @@ public class LevelGenerator {
 
     public LevelGenerator(ContentManager resources){
         this.resources = resources;
-        loadCells();
+        cells = loadCells();
     }
 
     public TiledMap makeMap(TrackData trackData){
@@ -40,14 +43,11 @@ public class LevelGenerator {
         properties.put("tilewidth", cellSide);
         //now compose for each section
         ArrayList<Section> sections = trackData.getSections();
-        int section = 0;
-        int sectionBeginning = 0;
+        double sectionBeginning = 0.00;
+        int sectionCounter = 0;
         for(Section each : sections){
-            int sectionDuration = (int)Math.round(each.getduration());
-            //createBlocks(tiledMap, section, sectionDuration, sectionBeginning, (int)each.getTempo(), mapHeight);
-
-            section++;
-            sectionBeginning += sectionDuration;
+            sectionBeginning += each.getduration();
+            sectionCounter++;
         }
         return map;
     }
@@ -63,7 +63,8 @@ public class LevelGenerator {
         return layer;
     }
 
-    private void loadCells() {
+    private Cell[] loadCells() {
+        Cell[] cells;
         Texture blocks_texture = resources.getTexture("blocks2");
         if(blocks_texture == null) {
             resources.loadTexture("res/images/blocks2.png");
@@ -75,22 +76,12 @@ public class LevelGenerator {
             cells[i] = new Cell();
             cells[i].setTile(new StaticTiledMapTile(blocks_textures[i]));
         }
+        return cells;
     }
 
-    private enum TileTypes{
-        RED(4), GREEN(8), BLUE(16);
-        private short value;
-        private TileTypes(int value){
-            this.value = (short)value;
-        }
-        public short getValue(){
-            return value;
-        }
-    }
-
-    public void createBlocks(TiledMapTileLayer layer, short bits, int tempo, World world) {
+    public static void createBlocks(TiledMapTileLayer layer, short bits, World world) {
         // tile size
-        float ts = layer.getTileWidth();
+        float tileWidth = layer.getTileWidth();
         // go through all cells in layer
         for(int row = 0; row < layer.getHeight(); row++) {
             for(int col = 0; col < layer.getWidth(); col++) {
@@ -101,12 +92,13 @@ public class LevelGenerator {
                 // create body from cell
                 BodyDef bdef = new BodyDef();
                 bdef.type = BodyDef.BodyType.StaticBody;
-                bdef.position.set((col + 0.5f) * ts / 100, (row + 0.5f) * ts / 100);
+                bdef.position.set((col + 0.5f) * tileWidth / 100, (row + 0.5f) * tileWidth / 100);
+                //create chain using vectors
                 ChainShape cs = new ChainShape();
                 Vector2[] v = new Vector2[3];
-                v[0] = new Vector2(-ts / 2 / tempo, -ts / 2 / tempo);
-                v[1] = new Vector2(-ts / 2 / tempo, ts / 2 / tempo);
-                v[2] = new Vector2(ts / 2 / tempo, ts / 2 / tempo);
+                v[0] = new Vector2(-tileWidth / 2, -tileWidth / 2);
+                v[1] = new Vector2(-tileWidth / 2, tileWidth / 2);
+                v[2] = new Vector2(tileWidth / 2, tileWidth / 2);
                 cs.createChain(v);
                 FixtureDef fd = new FixtureDef();
                 fd.friction = 0;
@@ -115,10 +107,18 @@ public class LevelGenerator {
                 fd.filter.maskBits = B2DVars.BIT_PLAYER;
                 world.createBody(bdef).createFixture(fd);
                 cs.dispose();
-
             }
         }
+    }
 
+    public static void createBlocks(TiledMap map, World world) {
+        MapLayers layers = map.getLayers();
+        for(MapLayer layer : layers){
+            MapObjects blocks = layer.getObjects();
+            for(MapObject block : blocks){
+                System.out.println("block");
+            }
+        }
     }
 
     public Cell[] getCells() {
