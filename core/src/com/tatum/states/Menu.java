@@ -45,11 +45,15 @@ public class Menu extends GameState {
     private Animation p3Animation;
     private LevelGenerator levelGenerator;
     private String musicSelectionPath;
+    private boolean loading = false;
+    private boolean generating = false;
+    private boolean done = false;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
-        loadPlayers(resources);
+        loadPlayers();
+        loadSigns();
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
@@ -70,6 +74,14 @@ public class Menu extends GameState {
 
         createTitleBodies();
 
+    }
+
+    private void loadSigns() {
+        Texture texture = resources.getTexture("signs");
+        TextureRegion[][] signs_temp = TextureRegion.split(texture, 85, 67);
+        for(int i=0; i<3; i++){
+
+        }
     }
 
     private void createTitleBodies() {
@@ -185,7 +197,7 @@ public class Menu extends GameState {
                     final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                     //set characters sprite to one here
                     try {
-                        wait(1000);
+                        sleep(1000);
                     } catch (InterruptedException e) {
                         //do nothing here
                     }
@@ -235,6 +247,9 @@ public class Menu extends GameState {
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
+        if(generating == true){
+            //sb.draw();
+        }
 
         sb.end();
         if (debug) {
@@ -249,7 +264,18 @@ public class Menu extends GameState {
     public void dispose(){
 
     }
-    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+    public void loadPlayers(){
+        Texture texture = resources.getTexture("mini_walk_combined");
+        TextureRegion[][] walking = TextureRegion.split(texture, 36, 50);
+        for(int i=0; i<walking.length; i++) {
+            if(i<11)
+                sprites1[i%11] = walking[i][0];
+            else if(i<22)
+                sprites2[i%11] = walking[i][0];
+            else
+                sprites3[i%11] = walking[i][0];
+        }
+        /*for(int i=1;i<12;i++) {
         if(i<10)
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
         else
@@ -306,6 +332,6 @@ public class Menu extends GameState {
         }
         for(int i=0;i<11;i++) {
             sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
-        }
+        }*/
     }
 }
