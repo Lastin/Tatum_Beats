@@ -42,6 +42,7 @@ public class ContentManager {
         loadTexture("res/images/PlatformerPack/Player/mini_walk_combined.png");
         loadTexture("res/images/mm/sprites.png");
         loadTexture("res/images/mm/signs.png");
+        loadTexture("res/images/mm/tatumLogoMini.png");
 
         loadSound("res/sfx/jump.wav");
         loadSound("res/sfx/crystal.wav");
