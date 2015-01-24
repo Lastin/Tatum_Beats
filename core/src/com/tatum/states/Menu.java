@@ -184,11 +184,11 @@ public class Menu extends GameState {
                     //set characters sprite to generating the map
                     final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                     //set characters sprite to one here
-                    try {
+/*                    try {
                         wait(1000);
                     } catch (InterruptedException e) {
                         //do nothing here
-                    }
+                    }*/
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
@@ -201,7 +201,7 @@ public class Menu extends GameState {
         }
         else if(selectTrackButton.isClicked()){
             //deal with track selection
-            musicSelectionPath = "Music/09 Leftovers.mp3";
+            gsm.setState(new Select(gsm));
 
         }
     }

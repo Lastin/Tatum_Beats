@@ -135,7 +135,8 @@ public class TrackData {
                 this.keyConf = track.getJsonNumber("key_confidence").doubleValue();
                 this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
             } catch (NullPointerException e) {
-                JOptionPane.showMessageDialog(null, "not possible to use this file");
+               // JOptionPane.showMessageDialog(null, "not possible to use this file");
+                e.printStackTrace();
             }
             tatums = new ArrayList<TimedEvent>();
 

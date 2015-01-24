@@ -1,0 +1,186 @@
+package com.tatum.states;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+// stage
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+// finish
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.tatum.entities.B2DSprite;
+import com.tatum.handlers.Animation;
+import com.tatum.handlers.Background;
+import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.GameButton;
+import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.Input;
+import com.tatum.handlers.LevelGenerator;
+
+import javax.swing.GroupLayout;
+
+/**
+ * Created by Ben on 24/01/2015.
+ */
+public class Select extends GameState {
+
+    private boolean debug = false;
+    private Background bg;
+    private GameButton playButton;
+    private GameButton selectTrackButton;
+    private World world;
+    private Box2DDebugRenderer b2dRenderer;
+
+    private Animation p1Animation;
+    private Animation p2Animation;
+    private Animation p3Animation;
+    private LevelGenerator levelGenerator;
+    private String musicSelectionPath;
+    private FileHandle currentDir;
+    private FileHandle[] children;
+    private ScrollPane scrollPane;
+    private Stage aStage;
+    private int scrollPlus;
+    private  Table table2;
+    private ContentManager cont;
+    private TextureRegion[] fullFont;
+    private TextureRegion[] font;
+
+    public Select(GameStateManager gsm) {
+        super(gsm);
+        scrollPlus =0;
+        levelGenerator = new LevelGenerator(resources);
+
+        Texture menu = resources.getTexture("menu2");
+        bg = new Background(game, new TextureRegion(menu), cam, 1f);
+        bg.setVector(-20, 0);
+        currentDir = Gdx.files.external("");
+        children = currentDir.list();
+        cont = gsm.getGame().getResources();
+        cont.loadTexture("res/images/letters.png");
+        Texture letter = cont.getTexture("letters");
+        fullFont = new TextureRegion[26];
+        TextureRegion[][] regi = TextureRegion.split(letter,9,9);
+        int count = 0;
+        for (int i =0; i<10;i++){
+            fullFont[count] = regi[0][i];
+            count++;
+        }
+        for(int i =0;i<10;i++){
+            fullFont[count]= regi[1][i];
+            count++;
+        }
+        for(int i =0;i<6;i++){
+            fullFont[count]= regi[2][i];
+            count++;
+        }
+
+        // ------------------ Stage ---------------- //
+        aStage = new Stage();
+        Viewport viewport = aStage.getViewport();
+        viewport.setCamera(cam);
+        aStage.setDebugAll(true);
+        final Skin skin = new Skin(Gdx.files.internal("res/skin/uiskin.json"));
+
+        Label label = new Label("Hello", skin);
+        label.setAlignment(Align.center);
+        label.setWrap(true);
+        Label label2 = new Label("World", skin);
+        label2.setAlignment(Align.center);
+        label2.setWrap(true);
+
+        Table table = new Table(skin);
+        table.add(label);
+        table.row();
+        table.add(label2);
+
+        scrollPane = new ScrollPane(table);
+
+        table2 = new Table(skin);
+        table2.add(scrollPane).fill().expand();
+        aStage.addActor(table2);
+
+        // ---------------- Finish ----------------- //
+
+        Texture hud = resources.getTexture("hud2");
+        Texture myStyle = resources.getTexture("sprites");
+        playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
+        selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
+
+
+        cam.setToOrtho(false, game.getWidth(), game.getHeight());
+        world = new World(new Vector2(0, -9.8f * 5), true);
+        //world = new World(new Vector2(10, 10), true);
+        b2dRenderer = new Box2DDebugRenderer();
+
+    }
+
+
+    @Override
+    public void handleInput() {
+        if (playButton.isClicked() && playButton.isEnabled()) {
+            playButton.setEnabled(false);
+            resources.getSound("crystal").play();
+
+        }
+            scrollPlus-=2;
+    }
+
+    @Override
+    public void update(float dt) {
+        handleInput();
+        world.step(dt / 5, 8, 3);
+        bg.update(dt);
+        playButton.update(dt);
+        selectTrackButton.render(sb);
+        this.aStage.act(dt);
+    }
+
+    @Override
+    public void render() {
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        sb.setProjectionMatrix(cam.combined);
+        bg.render(sb);
+        //playButton.render(sb);
+       /// selectTrackButton.render(sb);
+        sb.begin();
+        drawString(sb,"test",game.getWidth()/2,game.getHeight()-10+scrollPlus);
+        sb.end();
+        this.aStage.draw();
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+    private void drawString(SpriteBatch sb, String s, float x, float y) {
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == '/') c = 10;
+            else if(c >= '0' && c <= '9') c -= '0';
+            else if(c ==' ') continue;
+            else if(c== '-') continue;
+            else {
+                //    System.out.println(c);
+                //    System.out.println(c-97);
+                sb.draw(fullFont[c-97], x + i * 9, y);
+                //sb.draw(fullFont[24], x + i * 9, y);
+                continue;
+            }
+            sb.draw(font[c], x + i * 9, y);
+        }
+    }
+}

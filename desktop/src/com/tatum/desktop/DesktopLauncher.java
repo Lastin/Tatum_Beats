@@ -7,6 +7,7 @@ import com.tatum.Game;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new Game(), config);
+        String[] temp ={"2","2","2","2"};
+		new LwjglApplication(new Game(temp), config);
 	}
 }

@@ -83,13 +83,18 @@ public class HUD {
         drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-132,game.getHeight()-30);
         drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
         int space = 0;
+        //System.out.println("here");
         for(int i = 0;i<player.getStep();i++){
             sb.draw(blockSprites[0], game.getWidth()-110+space,game.getHeight()-60);
             space+=15;
         }
-
+        String temp = game.getData()[1].replaceAll("\\.", " ");
+        drawString(sb,"x "+ temp,game.getWidth()-200,game.getHeight()-70);
+        temp = game.getData()[2].replaceAll("\\.", " ");
+        drawString(sb,"y "+ temp,game.getWidth()-200,game.getHeight()-90);
+        temp = game.getData()[3].replaceAll("\\.", " ");
+        drawString(sb,"z "+ temp,game.getWidth()-200,game.getHeight()-110);
         sb.end();
-
     }
 
     private void drawString(SpriteBatch sb, String s, float x, float y) {
@@ -98,6 +103,7 @@ public class HUD {
             if(c == '/') c = 10;
             else if(c >= '0' && c <= '9') c -= '0';
             else if(c ==' ') continue;
+            else if(c== '-') continue;
             else {
             //    System.out.println(c);
             //    System.out.println(c-97);

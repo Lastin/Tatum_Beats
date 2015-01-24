@@ -18,7 +18,12 @@ public class Game extends ApplicationAdapter {
     private OrthographicCamera hudCam;
     private GameStateManager gsm;
 	private static ContentManager resources;
+    private String[] data;
 
+    public Game(String[] data){
+      super();
+       this.data=data;
+    }
 	@Override
 	public void create () {
         width = 320;//Gdx.graphics.getWidth();
@@ -70,5 +75,9 @@ public class Game extends ApplicationAdapter {
 
     public ContentManager getResources(){
         return resources;
+    }
+
+    public String[] getData(){
+        return data;
     }
 }

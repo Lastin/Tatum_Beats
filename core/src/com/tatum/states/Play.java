@@ -57,6 +57,7 @@ public class Play extends GameState {
     //other settings
     private String userName = "test";
     private String path = "tempPath";
+    private String[] data;
 
     public Play(GameStateManager gsm, TiledMap map, Music music) {
         super(gsm);
@@ -74,6 +75,7 @@ public class Play extends GameState {
         createBlocks();
         initialiseCamerasAndRenderers();
         music.play();
+        data = gsm.getGame().getData();
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -270,4 +272,5 @@ public class Play extends GameState {
     public void dispose() {
 
     }
+
 }
