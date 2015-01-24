@@ -78,6 +78,32 @@ public class Menu extends GameState {
         createTitleBodies();
 
     }
+    public Menu(GameStateManager gsm, String Path){
+        super(gsm);
+        musicSelectionPath = Path;
+        levelGenerator = new LevelGenerator(resources);
+        loadPlayers();
+        signs = loadSigns();
+        miniLogo = resources.getTexture("tatumLogoMini");
+        Texture menu = resources.getTexture("menu2");
+        bg = new Background(game, new TextureRegion(menu), cam, 1f);
+        bg.setVector(-20, 0);
+        p1Animation = new Animation(sprites1, 1/15f);
+        p2Animation = new Animation(sprites2, 1/15f);
+        p3Animation = new Animation(sprites3, 1/15f);
+
+        Texture hud = resources.getTexture("hud2");
+        Texture myStyle = resources.getTexture("sprites");
+        playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
+        selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
+        cam.setToOrtho(false, game.getWidth(), game.getHeight());
+
+        world = new World(new Vector2(0, -9.8f * 5), true);
+        //world = new World(new Vector2(10, 10), true);
+        b2dRenderer = new Box2DDebugRenderer();
+
+        createTitleBodies();
+    }
 
     private TextureRegion[] loadSigns() {
         Texture texture = resources.getTexture("signs");
@@ -224,7 +250,6 @@ public class Menu extends GameState {
         else if(selectTrackButton.isClicked()){
             //deal with track selection
             gsm.setState(new Select(gsm));
-            musicSelectionPath = "Music/09 Leftovers.mp3";
 
         }
     }

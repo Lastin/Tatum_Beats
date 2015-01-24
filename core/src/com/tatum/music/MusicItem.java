@@ -19,19 +19,25 @@ public class MusicItem {
     private Vector3 vec = new Vector3();
     private OrthographicCamera cam;
 
-    public MusicItem(Batch batch, BitmapFont font, String text, OrthographicCamera cam){
+    public MusicItem(Batch batch, BitmapFont font, String text, OrthographicCamera cam, int x, int y){
         this.font = font;
         this.text = text;
         this.batch = batch;
         this.cam = cam;
+        this.x=x;
+        this.y=y;
+        batch.begin();
         TextBounds tb = font.draw(batch, text, x, y);
+        batch.end();
         width = tb.width;
         height = tb.height;
 
     }
 
     public void render(){
+        batch.begin();
         font.draw(batch, text, x, y);
+        batch.end();
     }
 
     public boolean isClicker(){
@@ -49,6 +55,9 @@ public class MusicItem {
         else {
             clicked = false;
         }
+    }
+    public String getText(){
+        return text;
     }
 }
 

@@ -10,11 +10,15 @@ import com.badlogic.gdx.physics.box2d.World;
 // finish
 import com.tatum.Game;
 import com.tatum.handlers.Background;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.SelectionHandler;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
+import com.tatum.music.MusicItem;
+
+import java.util.ArrayList;
 
 /**
  * Created by Ben on 24/01/2015.
@@ -30,15 +34,16 @@ public class Select extends GameState {
     private String musicSelectionPath;
     private SelectionHandler selectionHandler;
     private ContentManager cont;
-    private GameButton[] gameButtons;
+    private ArrayList<MusicItem> musicItems;
     private GameButton upButton;
     private GameButton downButton;
-
+    private int listPosition;
+    private FontGenerator fontGenerator;
     public Select(GameStateManager gsm) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
         selectionHandler = new SelectionHandler(Gdx.files.external(""));
-        gameButtons = new GameButton[5];
+        fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
@@ -50,13 +55,12 @@ public class Select extends GameState {
         Texture upArrow = cont.getTexture("buttonup");
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-50, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-100, cam);
-        Texture hud = resources.getTexture("hud2");
-        Texture myStyle = resources.getTexture("sprites");
 
+        listPosition=0;
+        setMusicItems();
 
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
-        //world = new World(new Vector2(10, 10), true);
         b2dRenderer = new Box2DDebugRenderer();
 
     }
@@ -66,12 +70,33 @@ public class Select extends GameState {
     public void handleInput() {
 
         if(upButton.isClicked()){
+            if(listPosition!=0){
+            listPosition-=1;
+            setMusicItems();
+            }
 
         }
         if(downButton.isClicked()){
-
+            if(listPosition!=selectionHandler.getScreenCount()){
+                listPosition+=1;
+                setMusicItems();
+            }
         }
-        
+        for(int i =0;i<musicItems.size();i++){
+            if(musicItems.get(i).isClicker()){
+                String text = musicItems.get(i).getText();
+                if(selectionHandler.isDir(text)){
+                    System.out.println(musicItems.get(i).getText());
+                    selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
+                    listPosition=0;
+                    setMusicItems();
+                }
+                else{
+                    System.out.println(musicItems.get(i).getText());
+                    gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
+                }
+            }
+        }
     }
 
     @Override
@@ -81,6 +106,9 @@ public class Select extends GameState {
         bg.update(dt);
         upButton.update(dt);
         downButton.update(dt);
+        for (int i =0;i<musicItems.size();i++){
+            musicItems.get(i).update(dt);
+        }
     }
 
     @Override
@@ -93,6 +121,30 @@ public class Select extends GameState {
         downButton.render(sb);
         sb.begin();
         sb.end();
+
+        for (int i =0;i<musicItems.size();i++){
+            musicItems.get(i).render();
+        }
+    }
+
+    private void setMusicItems(){
+
+        int screenCount = selectionHandler.getScreenCount();
+        String[] names = selectionHandler.getNames();
+
+            try{
+                musicItems= new ArrayList<MusicItem>();
+                int bufferFromCeil =30;
+                for(int i =0;i<5;i++){
+                    String name = names[5*listPosition+i];
+                    musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
+                    bufferFromCeil+=30;
+                }
+            }catch (ArrayIndexOutOfBoundsException e){
+
+            }
+
+
 
     }
 

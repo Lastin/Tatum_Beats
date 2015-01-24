@@ -11,6 +11,7 @@ public class SelectionHandler {
     private FileHandle current;
     private FileHandle[] children;
     private int screenCount;
+    private int remainder;
     private String[] names;
 
     public SelectionHandler(FileHandle parent){
@@ -20,12 +21,11 @@ public class SelectionHandler {
         setBasics();
     }
     private void setBasics(){
-        if(parent.list()==null){
-            System.out.println("You null bitch");
-        }
+
         children= parent.list();
         names = new String[children.length];
-        screenCount = (int) Math.ceil(children.length/5);
+        screenCount = (int) Math.floor(children.length/5);
+        remainder = children.length%5;
 
         for(int i =0;i<children.length;i++){
             names[i] = children[i].name();
@@ -41,7 +41,10 @@ public class SelectionHandler {
         }
         return position;
     }
-
+    public FileHandle getChild(String child){
+        int position = findChild(child);
+        return children[position];
+    }
     public int getScreenCount(){ return screenCount; }
 
 
@@ -56,6 +59,9 @@ public class SelectionHandler {
     }
     public String[] getNames() {
         return names;
+    }
+    public int getRemainder(){
+        return remainder;
     }
     public void goToParent(){
         if(current.equals(parent)){
