@@ -20,6 +20,7 @@ import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
@@ -45,15 +46,21 @@ public class Menu extends GameState {
     private Animation p3Animation;
     private LevelGenerator levelGenerator;
     private String musicSelectionPath;
+    private boolean loading = false;
+    private boolean generating = false;
+    private boolean done = false;
+    private TextureRegion[] signs;
+    private Texture miniLogo;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
-        loadPlayers(resources);
+        loadPlayers();
+        signs = loadSigns();
+        miniLogo = resources.getTexture("tatumLogoMini");
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-
         p1Animation = new Animation(sprites1, 1/15f);
         p2Animation = new Animation(sprites2, 1/15f);
         p3Animation = new Animation(sprites3, 1/15f);
@@ -70,6 +77,17 @@ public class Menu extends GameState {
 
         createTitleBodies();
 
+    }
+
+    private TextureRegion[] loadSigns() {
+        Texture texture = resources.getTexture("signs");
+        TextureRegion[][] signs_temp = TextureRegion.split(texture, 85, 70);
+        System.out.println(signs_temp.length);
+        TextureRegion[] signs = new TextureRegion[3];
+        for(int i=0; i<3; i++){
+            signs[i] = signs_temp[i][0];
+        }
+        return signs;
     }
 
     private void createTitleBodies() {
@@ -179,22 +197,26 @@ public class Menu extends GameState {
             }
             Thread thread = new Thread() {
                 public void run(){
-                    //set characters sprite to loading track here
-                    final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
-                    //set characters sprite to generating the map
-                    final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
-                    //set characters sprite to one here
-/*                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        //do nothing here
-                    }*/
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
-                        }
-                    });
+                    loading = true;
+                    try{
+                        final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
+                        loading = false;
+                        generating = true;
+                        final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                        generating = false;
+                        done = true;
+                        sleep(1000);
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
+                            }
+                        });
+                    } catch (Exception e) {
+                        loading = false;
+                        generating = false;
+                        done = false;
+                    }
                 }
             };
             thread.start();
@@ -202,6 +224,7 @@ public class Menu extends GameState {
         else if(selectTrackButton.isClicked()){
             //deal with track selection
             gsm.setState(new Select(gsm));
+            musicSelectionPath = "Music/09 Leftovers.mp3";
 
         }
     }
@@ -235,7 +258,14 @@ public class Menu extends GameState {
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
+        FontGenerator.royalMenu.draw(sb, "Sheeeeit", 100, 200);
+        if(loading)
+            //sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
 
+            if(generating)
+                sb.draw(signs[1], 160, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
+        if(loading && !done){
+        }
         sb.end();
         if (debug) {
             cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
@@ -249,7 +279,18 @@ public class Menu extends GameState {
     public void dispose(){
 
     }
-    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+    public void loadPlayers(){
+        Texture texture = resources.getTexture("mini_walk_combined");
+        TextureRegion[][] walking = TextureRegion.split(texture, 36, 50);
+        for(int i=0; i<walking.length; i++) {
+            if(i<11)
+                sprites1[i%11] = walking[i][0];
+            else if(i<22)
+                sprites2[i%11] = walking[i][0];
+            else
+                sprites3[i%11] = walking[i][0];
+        }
+        /*for(int i=1;i<12;i++) {
         if(i<10)
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
         else
@@ -306,6 +347,6 @@ public class Menu extends GameState {
         }
         for(int i=0;i<11;i++) {
             sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
-        }
+        }*/
     }
 }

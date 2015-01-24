@@ -26,7 +26,6 @@ public class ContentManager {
     public ContentManager() {
         loadResources();
     }
-
     private void loadResources(){
         loadTexture("res/images/menu2.png");
         loadTexture("res/images/bgs.png");
@@ -39,7 +38,10 @@ public class ContentManager {
         loadTexture("res/images/Leader.png");
         loadTexture("res/images/Track.png");
         loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
+        loadTexture("res/images/PlatformerPack/Player/mini_walk_combined.png");
         loadTexture("res/images/mm/sprites.png");
+        loadTexture("res/images/mm/signs.png");
+        loadTexture("res/images/mm/tatumLogoMini.png");
 
         loadSound("res/sfx/jump.wav");
         loadSound("res/sfx/crystal.wav");
@@ -49,9 +51,9 @@ public class ContentManager {
 
         loadFile("res/music/test.mp3");
     }
+
     //Setters
     public void loadTexture(String path) {
-
         if(Gdx.files.internal(path) == null) return;
         Texture t = new Texture(path);
         textures.put(makeKey(path), t);

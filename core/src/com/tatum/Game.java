@@ -11,23 +11,28 @@ public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
     public static final int SCALE = 2;
     public static final float STEP = 1/60f;
-    private int width;
-    private int height;
-	private SpriteBatch sb;
-	private BoundedCamera cam;
+    public final int width;
+    public final int height;
+    private SpriteBatch sb;
+    private BoundedCamera cam;
     private OrthographicCamera hudCam;
     private GameStateManager gsm;
-	private static ContentManager resources;
+    private static ContentManager resources;
     private String[] data;
 
     public Game(String[] data){
-      super();
-       this.data=data;
+        super();
+        this.data=data;
+        width=320;
+        height=240;
     }
-	@Override
-	public void create () {
+    public Game(){
         width = 320;//Gdx.graphics.getWidth();
         height = 240; //Gdx.graphics.getHeight();
+    }
+
+    @Override
+    public void create () {
         Gdx.input.setInputProcessor(new InputProcessor());
         resources = new ContentManager();
         //Cameras
@@ -38,7 +43,7 @@ public class Game extends ApplicationAdapter {
         //
         sb = new SpriteBatch();
         gsm = new GameStateManager(this);
-	}
+    }
 
     public SpriteBatch getSpriteBatch() {
         return sb;
@@ -76,8 +81,11 @@ public class Game extends ApplicationAdapter {
     public ContentManager getResources(){
         return resources;
     }
-
     public String[] getData(){
         return data;
+    }
+
+    public void getParent(){
+
     }
 }
