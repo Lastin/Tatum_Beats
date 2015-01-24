@@ -7,7 +7,7 @@ eclipse.project {
 }
 dependencies {
     compile 'org.glassfish:javax.json:1.0.4'
-    compile ('com.googlecode.json-simple:json-simple:1.1.1'){
+    compile('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude module: 'junit'
     }
 }

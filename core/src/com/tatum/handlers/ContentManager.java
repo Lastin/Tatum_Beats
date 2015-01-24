@@ -26,7 +26,6 @@ public class ContentManager {
     public ContentManager() {
         loadResources();
     }
-
     private void loadResources(){
         loadTexture("res/images/menu2.png");
         loadTexture("res/images/bgs.png");
@@ -52,9 +51,9 @@ public class ContentManager {
 
         loadFile("res/music/test.mp3");
     }
+
     //Setters
     public void loadTexture(String path) {
-
         if(Gdx.files.internal(path) == null) return;
         Texture t = new Texture(path);
         textures.put(makeKey(path), t);

@@ -20,6 +20,7 @@ import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
@@ -256,13 +257,14 @@ public class Menu extends GameState {
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
+        FontGenerator.royalMenu.draw(sb, "Sheeeeit", 100, 200);
         if(loading)
-            sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
+            //sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
+
         if(generating)
             sb.draw(signs[1], 160, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
         if(loading && !done){
         }
-
         sb.end();
         if (debug) {
             cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
