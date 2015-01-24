@@ -35,6 +35,7 @@ public class Select extends GameState {
     private SelectionHandler selectionHandler;
     private ContentManager cont;
     private ArrayList<MusicItem> musicItems;
+    private MusicItem backButton;
     private GameButton upButton;
     private GameButton downButton;
     private int listPosition;
@@ -82,6 +83,16 @@ public class Select extends GameState {
                 setMusicItems();
             }
         }
+        if(backButton.isClicker()){
+            System.out.println("///");
+            if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
+                System.out.println("inside");
+                selectionHandler = new SelectionHandler(selectionHandler.getCurrent().parent());
+                listPosition=0;
+                setMusicItems();
+                return;
+            }
+        }
         for(int i =0;i<musicItems.size();i++){
             if(musicItems.get(i).isClicker()){
                 String text = musicItems.get(i).getText();
@@ -90,13 +101,16 @@ public class Select extends GameState {
                     selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
                     listPosition=0;
                     setMusicItems();
+                    return;
                 }
                 else{
                     System.out.println(musicItems.get(i).getText());
                     gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
+                    return;
                 }
             }
         }
+
     }
 
     @Override
@@ -109,6 +123,7 @@ public class Select extends GameState {
         for (int i =0;i<musicItems.size();i++){
             musicItems.get(i).update(dt);
         }
+        backButton.update(dt);
     }
 
     @Override
@@ -125,13 +140,14 @@ public class Select extends GameState {
         for (int i =0;i<musicItems.size();i++){
             musicItems.get(i).render();
         }
+        backButton.render();
     }
 
     private void setMusicItems(){
 
         int screenCount = selectionHandler.getScreenCount();
         String[] names = selectionHandler.getNames();
-
+        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight());
             try{
                 musicItems= new ArrayList<MusicItem>();
                 int bufferFromCeil =30;
