@@ -147,10 +147,10 @@ public class Select extends GameState {
 
         int screenCount = selectionHandler.getScreenCount();
         String[] names = selectionHandler.getNames();
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight());
+        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-30);
             try{
                 musicItems= new ArrayList<MusicItem>();
-                int bufferFromCeil =30;
+                int bufferFromCeil =60;
                 for(int i =0;i<5;i++){
                     String name = names[5*listPosition+i];
                     musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
