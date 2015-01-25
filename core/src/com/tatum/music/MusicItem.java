@@ -13,19 +13,22 @@ public class MusicItem {
     private float width;
     private float height;
     private String text;
+    private String originalText;
     private BitmapFont font;
     private Batch batch;
     private boolean clicked;
     private Vector3 vec = new Vector3();
     private OrthographicCamera cam;
 
-    public MusicItem(Batch batch, BitmapFont font, String text, OrthographicCamera cam, int x, int y){
+    public MusicItem(Batch batch, BitmapFont font, String text, OrthographicCamera cam, int x, int y) {
         this.font = font;
         this.text = text;
+        originalText = text;
+        checkText();
         this.batch = batch;
         this.cam = cam;
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
         batch.begin();
         TextBounds tb = font.draw(batch, text, x, y);
         batch.end();
@@ -34,13 +37,13 @@ public class MusicItem {
 
     }
 
-    public void render(){
+    public void render() {
         batch.begin();
         font.draw(batch, text, x, y);
         batch.end();
     }
 
-    public boolean isClicked(){
+    public boolean isClicked() {
         return clicked;
     }
 
@@ -48,16 +51,21 @@ public class MusicItem {
         vec.set(Input.x, Input.y, 0);
         cam.unproject(vec);
         if (Input.isPressed() &&
-                vec.x > x - width  && vec.x < x + width &&
+                vec.x > x - width && vec.x < x + width &&
                 vec.y > y - height && vec.y < y + height) {
             clicked = true;
-        }
-        else {
+        } else {
             clicked = false;
         }
     }
-    public String getText(){
-        return text;
+
+    public String getText() {
+        return originalText;
+    }
+    public void checkText(){
+        if(text.length()>25){
+            text = text.substring(0,22) + "...";
+        }
     }
 }
 
