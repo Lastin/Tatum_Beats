@@ -83,7 +83,7 @@ public class Select extends GameState {
                 setMusicItems();
             }
         }
-        if(backButton.isClicker()){
+        if(backButton.isClicked()){
             System.out.println("///");
             if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
                 System.out.println("inside");
@@ -94,7 +94,7 @@ public class Select extends GameState {
             }
         }
         for(int i =0;i<musicItems.size();i++){
-            if(musicItems.get(i).isClicker()){
+            if(musicItems.get(i).isClicked()){
                 String text = musicItems.get(i).getText();
                 if(selectionHandler.isDir(text)){
                     System.out.println(musicItems.get(i).getText());

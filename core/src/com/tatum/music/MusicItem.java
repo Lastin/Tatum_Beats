@@ -40,7 +40,7 @@ public class MusicItem {
         batch.end();
     }
 
-    public boolean isClicker(){
+    public boolean isClicked(){
         return clicked;
     }
 
