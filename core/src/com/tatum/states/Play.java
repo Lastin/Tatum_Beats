@@ -155,7 +155,7 @@ public class Play extends GameState {
     }
 
     private void createBlocks(){
-        LevelGenerator.createBlocks(map, world);
+        //LevelGenerator.createBlocks(map, world);
     }
 
     @Override

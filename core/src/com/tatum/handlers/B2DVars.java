@@ -18,4 +18,21 @@ public class B2DVars {
     public static final short BIT_BOTTOM_BLOCK = 4;
     public static final short BIT_TOP_PLATFORM = 8;
     public static final short BIT_BOTTOM_PLATFORM = 16;
+
+    public static enum Filters{
+        PLAYER((short)1),
+        GRASS((short)2),
+        SAND((short)3),
+        ICE((short)4),
+        CRYSTAL((short)5),
+        SPIKE((short)6),
+        BLOCK_TOP((short)7),
+        BLOCK_BOTTOM((short)8),
+        PLATFORM_TOP((short)9),
+        PLATFORM_BOTTOM((short)10);
+        private final short bits;
+        private Filters(short bits){
+            this.bits = bits;
+        }
+    }
 }
