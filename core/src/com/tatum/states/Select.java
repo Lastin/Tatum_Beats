@@ -79,14 +79,16 @@ public class Select extends GameState {
         }
         if(downButton.isClicked()){
             if(listPosition!=selectionHandler.getScreenCount()){
-                listPosition+=1;
-                setMusicItems();
+                if((listPosition==selectionHandler.getScreenCount()-1)&&(selectionHandler.getRemainder()==0)){
+                    //do nothing as we don't want there to be an empty page at the end
+                }else {
+                    listPosition += 1;
+                    setMusicItems();
+                }
             }
         }
         if(backButton.isClicked()){
-            System.out.println("///");
             if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
-                System.out.println("inside");
                 selectionHandler = new SelectionHandler(selectionHandler.getCurrent().parent());
                 listPosition=0;
                 setMusicItems();
@@ -146,17 +148,17 @@ public class Select extends GameState {
     private void setMusicItems(){
 
         int screenCount = selectionHandler.getScreenCount();
-        String[] names = selectionHandler.getNames();
+        ArrayList<String> names = selectionHandler.getPrunedNames();
         backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-30);
             try{
                 musicItems= new ArrayList<MusicItem>();
                 int bufferFromCeil =60;
                 for(int i =0;i<5;i++){
-                    String name = names[5*listPosition+i];
+                    String name = names.get(5*listPosition+i);
                     musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=30;
                 }
-            }catch (ArrayIndexOutOfBoundsException e){
+            }catch (IndexOutOfBoundsException e){
 
             }
 

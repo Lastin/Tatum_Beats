@@ -28,13 +28,13 @@ public class SelectionHandler {
 
         children= parent.list();
         names = new String[children.length];
-        screenCount = (int) Math.floor(children.length / 5);
-        remainder = children.length%5;
 
         for(int i =0;i<children.length;i++){
             names[i] = children[i].name();
         }
         pruneChildren();
+        screenCount = (int) Math.floor(prunedChildren.size() / 5);
+        remainder = prunedChildren.size()%5;
     }
     public void pruneChildren(){
         prunedChildren = new ArrayList<FileHandle>();
@@ -49,8 +49,9 @@ public class SelectionHandler {
                 String extention = children[i].name().substring(children[i].name().length()-4); // get last 4 characters
                 //System.out.println("file: " + children[i].name());
                 //System.out.println(extention);
-                for (int j = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
                     if(extention.equals(legalFormats[j])){
+                        System.out.println("Added: " +children[i].name());
                         prunedChildren.add(children[i]);
                         prunedChildrenNames.add(children[i].name());
 
@@ -64,8 +65,8 @@ public class SelectionHandler {
 
     private int findChild(String child){
         int position =0;
-        for(int i =0;i<names.length;i++){
-            if(child.equals(names[i])){
+        for(int i =0;i<prunedChildrenNames.size();i++){
+            if(child.equals(prunedChildrenNames.get(i))){
                 position=i;
                 break;
             }
@@ -74,10 +75,9 @@ public class SelectionHandler {
     }
     public FileHandle getChild(String child){
         int position = findChild(child);
-        return children[position];
+        return prunedChildren.get(position);
     }
     public int getScreenCount(){ return screenCount; }
-
 
     public FileHandle getCurrent(){
         return current;
@@ -88,8 +88,14 @@ public class SelectionHandler {
     public FileHandle[] getChildren(){
         return children;
     }
+    public ArrayList<FileHandle> getPrunedChilder(){
+        return prunedChildren;
+    }
     public String[] getNames() {
         return names;
+    }
+    public ArrayList<String> getPrunedNames(){
+        return prunedChildrenNames;
     }
     public int getRemainder(){
         return remainder;
@@ -103,15 +109,15 @@ public class SelectionHandler {
     }
     public void goToChild(String child){
         int position = findChild(child);
-        current=children[position];
+        current= prunedChildren.get(position);
         setBasics();
     }
     public boolean isDir(String child){
         int position = findChild(child);
-        return children[position].isDirectory();
+        return prunedChildren.get(position).isDirectory();
     }
     public String getChildFullPath(String child){
         int position = findChild(child);
-        return children[position].path();
+        return prunedChildren.get(position).path();
     }
 }
