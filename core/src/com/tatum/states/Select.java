@@ -104,7 +104,7 @@ public class Select extends GameState {
                     return;
                 }
                 else{
-                    System.out.println(musicItems.get(i).getText());
+                    musicItems.get(i).getText();
                     gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
                     return;
                 }
