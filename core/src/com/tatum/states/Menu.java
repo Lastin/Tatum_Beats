@@ -108,7 +108,6 @@ public class Menu extends GameState {
     private TextureRegion[] loadSigns() {
         Texture texture = resources.getTexture("signs");
         TextureRegion[][] signs_temp = TextureRegion.split(texture, 85, 70);
-        System.out.println(signs_temp.length);
         TextureRegion[] signs = new TextureRegion[3];
         for(int i=0; i<3; i++){
             signs[i] = signs_temp[i][0];
@@ -262,6 +261,7 @@ public class Menu extends GameState {
 
     }
 
+    @Override
     public void update(float dt) {
         handleInput();
         world.step(dt / 5, 8, 3);
@@ -271,9 +271,9 @@ public class Menu extends GameState {
         p3Animation.update(dt);
         playButton.update(dt);
         selectTrackButton.update(dt);
-
     }
 
+    @Override
     public void render() {
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
@@ -283,10 +283,8 @@ public class Menu extends GameState {
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
-        FontGenerator.royalMenu.draw(sb, "Sheeeeit", 100, 200);
         if(loading)
-            //sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
-
+            sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
             if(generating)
                 sb.draw(signs[1], 160, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
         if(loading && !done){
@@ -301,9 +299,12 @@ public class Menu extends GameState {
             //blocks.get(i).render(sb);
         }
     }
+
+    @Override
     public void dispose(){
 
     }
+
     public void loadPlayers(){
         Texture texture = resources.getTexture("mini_walk_combined");
         TextureRegion[][] walking = TextureRegion.split(texture, 36, 50);
@@ -315,63 +316,5 @@ public class Menu extends GameState {
             else
                 sprites3[i%11] = walking[i][0];
         }
-        /*for(int i=1;i<12;i++) {
-        if(i<10)
-            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
-        else
-            resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
-        System.out.println("Load " +i);
-    }
-        Texture[] tex = new Texture[11];
-        for(int i=0;i<11;i++) {
-            int j = i + 1;
-            if(j<10)
-                tex[i] = resources.getTexture("p1_walk0" + j);
-            else
-                tex[i] = resources.getTexture("p1_walk" + j);
-            System.out.println("get " +(i+1));
-        }
-        for(int i=0;i<11;i++) {
-            sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
-
-        }
-        for(int i=1;i<12;i++) {
-            if(i<10)
-                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk0" + i + ".png");
-            else
-                resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk" + i + ".png");
-            System.out.println("Load " +i);
-        }
-        tex = new Texture[11];
-        for(int i=0;i<11;i++) {
-            int j = i + 1;
-            if(j<10)
-                tex[i] = resources.getTexture("p2_walk0" + j);
-            else
-                tex[i] = resources.getTexture("p2_walk" + j);
-            System.out.println("get " +(i+1));
-        }
-        for(int i=0;i<11;i++) {
-            sprites2[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
-
-        }for(int i=1;i<12;i++) {
-            if(i<10)
-                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk0" + i + ".png");
-            else
-                resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk" + i + ".png");
-            System.out.println("Load " +i);
-        }
-        tex = new Texture[11];
-        for(int i=0;i<11;i++) {
-            int j = i + 1;
-            if(j<10)
-                tex[i] = resources.getTexture("p3_walk0" + j);
-            else
-                tex[i] = resources.getTexture("p3_walk" + j);
-            System.out.println("get " +(i+1));
-        }
-        for(int i=0;i<11;i++) {
-            sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
-        }*/
     }
 }

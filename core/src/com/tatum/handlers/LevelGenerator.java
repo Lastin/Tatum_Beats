@@ -36,10 +36,11 @@ public class LevelGenerator {
     }
 
     private TiledMapTileLayer makeLayer(TrackData trackData){
-        TiledMapTileLayer layer = new TiledMapTileLayer(0, (int)trackData.getDuration(), cellSide, cellSide);
+        TiledMapTileLayer layer = new TiledMapTileLayer((int)trackData.getDuration(), 20, cellSide, cellSide);
         ArrayList<TimedEvent> beats = trackData.getBeats();
+        System.out.println("number of beats:" + beats.size());
         for(int i=0; i<beats.size(); i++){
-            layer.setCell(i, 1, cells[0]);
+            layer.setCell(i, 0, cells[0]);
         }
         return layer;
     }

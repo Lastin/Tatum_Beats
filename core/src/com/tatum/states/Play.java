@@ -5,12 +5,8 @@ import static com.tatum.handlers.B2DVars.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -22,28 +18,25 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.BoundedCamera;
+import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
-import com.tatum.handlers.LevelGenerator;
-
-import java.util.logging.Level;
 
 public class Play extends GameState {
-    private boolean debug = true;
+    private boolean debug = false;
     private World world;
     private CollisionListener cl;
     //renderers
     private Box2DDebugRenderer b2dRenderer;
     private BoundedCamera b2dCam;
-    private OrthogonalTiledMapRenderer tmRenderer;
+    private OrthogonalTiledMapRenderer mapRenderer;
     //map and properties
     private TiledMap map;
     private int height;
@@ -72,7 +65,7 @@ public class Play extends GameState {
         player = createPlayer();
         hud = new HUD(resources, game, player);
         backgrounds = createBackground();
-        createBlocks();
+        GameBodiesCreator.createBlocks(map, world);
         initialiseCamerasAndRenderers();
         music.play();
         data = gsm.getGame().getData();
@@ -84,7 +77,7 @@ public class Play extends GameState {
         b2dCam.setBounds(0, (width * tileSide) / PPM, 0, (height * tileSide) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
         cam.setBounds(0, width * PPM, 0, height * tileSide);
-        tmRenderer = new OrthogonalTiledMapRenderer(map);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
     }
 
     private Player createPlayer() {
@@ -154,8 +147,9 @@ public class Play extends GameState {
         return backgrounds;
     }
 
-    private void createBlocks(){
-        //LevelGenerator.createBlocks(map, world);
+    private void adjustPlayerSpeed(){
+        double musicPosition = music.getPosition();
+        double playerPosition = player.getPosition().x;
     }
 
     @Override
@@ -169,8 +163,8 @@ public class Play extends GameState {
             each.render(sb);
         }
         // draw tiledmap
-        tmRenderer.setView(cam);
-        tmRenderer.render();
+        mapRenderer.setView(cam);
+        mapRenderer.render();
         // draw player
         sb.setProjectionMatrix(cam.combined);
         player.render(sb);
@@ -185,7 +179,6 @@ public class Play extends GameState {
             b2dCam.update();
             b2dRenderer.render(world, b2dCam.combined);
         }
-
     }
 
     @Override

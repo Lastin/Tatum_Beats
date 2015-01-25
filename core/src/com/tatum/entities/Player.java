@@ -139,15 +139,17 @@ public class Player extends B2DSprite {
 
 
     }
-   public int getPlayerNum(){return playerNum;}
+    public int getPlayerNum(){return playerNum;}
 
-    public void loadPlayers(ContentManager resources){ for(int i=1;i<12;i++) {
+    public void loadPlayers(ContentManager resources){
+
+        for(int i=1;i<12;i++) {
         if(i<10)
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
         else
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
-        System.out.println("Load " +i);
-    }
+            //System.out.println("Load " +i);
+        }
         Texture[] tex = new Texture[11];
         for(int i=0;i<11;i++) {
             int j = i + 1;
@@ -155,7 +157,7 @@ public class Player extends B2DSprite {
                 tex[i] = resources.getTexture("p1_walk0" + j);
             else
                 tex[i] = resources.getTexture("p1_walk" + j);
-            System.out.println("get " +(i+1));
+            //System.out.println("get " +(i+1));
         }
         for(int i=0;i<11;i++) {
             sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
@@ -166,7 +168,7 @@ public class Player extends B2DSprite {
                 resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk0" + i + ".png");
             else
                 resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk" + i + ".png");
-            System.out.println("Load " +i);
+            //System.out.println("Load " +i);
         }
         tex = new Texture[11];
         for(int i=0;i<11;i++) {
@@ -175,7 +177,7 @@ public class Player extends B2DSprite {
                 tex[i] = resources.getTexture("p2_walk0" + j);
             else
                 tex[i] = resources.getTexture("p2_walk" + j);
-            System.out.println("get " +(i+1));
+            //System.out.println("get " +(i+1));
         }
         for(int i=0;i<11;i++) {
             sprites2[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
@@ -185,7 +187,7 @@ public class Player extends B2DSprite {
                 resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk0" + i + ".png");
             else
                 resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk" + i + ".png");
-            System.out.println("Load " +i);
+            //System.out.println("Load " +i);
         }
         tex = new Texture[11];
         for(int i=0;i<11;i++) {
@@ -194,7 +196,7 @@ public class Player extends B2DSprite {
                 tex[i] = resources.getTexture("p3_walk0" + j);
             else
                 tex[i] = resources.getTexture("p3_walk" + j);
-            System.out.println("get " +(i+1));
+            //System.out.println("get " +(i+1));
         }
         for(int i=0;i<11;i++) {
             sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
