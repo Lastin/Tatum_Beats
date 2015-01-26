@@ -40,8 +40,9 @@ public class Select extends GameState {
     private GameButton downButton;
     private GameButton upButtonFast;
     private GameButton downButtonFast;
-    private int listPosition;
+    private int listPosition[];
     private FontGenerator fontGenerator;
+    MusicItem toWriteItem;
     public Select(GameStateManager gsm) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
@@ -64,8 +65,9 @@ public class Select extends GameState {
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
         downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
-
-        listPosition=0;
+        toWriteItem = new MusicItem(sb,FontGenerator.listFont,"",cam,10,game.getHeight()-5);
+        listPosition= new int[5];
+        setListPosition("start");
         setMusicItems();
 
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
@@ -79,26 +81,47 @@ public class Select extends GameState {
     public void handleInput() {
 
         if(upButton.isClicked()){
-            if(listPosition!=0){
-            listPosition-=1;
-            setMusicItems();
-            }
 
-        }
-        if(downButton.isClicked()){
-            if(listPosition!=selectionHandler.getScreenCount()){
-                if((listPosition==selectionHandler.getScreenCount()-1)&&(selectionHandler.getRemainder()==0)){
-                    //do nothing as we don't want there to be an empty page at the end
-                }else {
-                    listPosition += 1;
-                    setMusicItems();
-                }
+            System.out.println("Up click");
+            if(listPosition[0]!=0) {
+                System.out.println("inside");
+                setListPosition("up");
+                setMusicItems();
+            }
+            }
+        if(upButtonFast.isClicked()){
+
+            System.out.println("Up click");
+            if(listPosition[0]!=0) {
+                System.out.println("inside");
+                setListPosition("quickup");
+                setMusicItems();
             }
         }
+
+
+        if(downButton.isClicked()){
+            System.out.println("Down click");
+            if(listPosition[4]<selectionHandler.getScreenCount()-1){
+                    System.out.println("in");
+                    setListPosition("down");
+                    setMusicItems();
+            }
+         }
+
+        if(downButtonFast.isClicked()){
+            System.out.println("Down click");
+            if(listPosition[4]<selectionHandler.getScreenCount()-1){
+                System.out.println("in");
+                setListPosition("quickdown");
+                setMusicItems();
+            }
+        }
+
         if(backButton.isClicked()){
             if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
                 selectionHandler = new SelectionHandler(selectionHandler.getCurrent().parent());
-                listPosition=0;
+
                 setMusicItems();
                 return;
             }
@@ -109,7 +132,7 @@ public class Select extends GameState {
                 if(selectionHandler.isDir(text)){
                     System.out.println(musicItems.get(i).getText());
                     selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
-                    listPosition=0;
+                    setListPosition("start");
                     setMusicItems();
                     return;
                 }
@@ -132,6 +155,7 @@ public class Select extends GameState {
         downButton.update(dt);
         downButtonFast.update(dt);
         upButtonFast.update(dt);
+        toWriteItem.render();
         for (int i =0;i<musicItems.size();i++){
             musicItems.get(i).update(dt);
         }
@@ -148,6 +172,7 @@ public class Select extends GameState {
         downButton.render(sb);
         upButtonFast.render(sb);
         downButtonFast.render(sb);
+        toWriteItem.render();
         sb.begin();
         sb.end();
 
@@ -159,14 +184,15 @@ public class Select extends GameState {
 
     private void setMusicItems(){
 
-        int screenCount = selectionHandler.getScreenCount();
         ArrayList<String> names = selectionHandler.getPrunedNames();
         backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-30);
+        System.out.println(names.size());
             try{
                 musicItems= new ArrayList<MusicItem>();
                 int bufferFromCeil =60;
                 for(int i =0;i<5;i++){
-                    String name = names.get(5*listPosition+i);
+                    System.out.println(listPosition[i]);
+                    String name = names.get(listPosition[i]);
                     musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=30;
                 }
@@ -174,10 +200,79 @@ public class Select extends GameState {
 
             }
 
+        fileCounter();
+    }
+    public void setListPosition(String position){
 
+        if(position.equals("start")){
+            for(int i =0;i<5;i++){
+                listPosition[i]=i;
+            }
+        }
+        else if(position.equals("down")){
+            for(int i =0;i<5;i++)
+                listPosition[i]++;
 
+        }
+        else if(position.equals("up")){
+            if(listPosition[0]!=0)
+                for(int i =0;i<5;i++)
+                    listPosition[i]--;
+
+        }
+        else if(position.equals("quickdown")){
+            if(listPosition[4]+5>=selectionHandler.getScreenCount())
+                setListPosition("quickdown2ElectricBoogaloo");
+            else
+                for(int i =0;i<5;i++){
+                    listPosition[i]+=5;
+            }
+        }
+        else if (position.equals("quickdown2ElectricBoogaloo")){
+            int value = selectionHandler.getScreenCount()-1;
+            for(int i =4;i>=0;i--){
+                listPosition[i]=value;
+                value--;
+            }
+        }
+
+        else if(position.equals("quickup")){
+            if(listPosition[0]-5<0)
+                setListPosition("start");
+            else
+                for(int i =0;i<5;i++){
+                    listPosition[i]-=5;
+            }
+        }
     }
 
+    public void fileCounter(){
+
+        String toWrite = "";
+        int size = selectionHandler.getScreenCount();
+        if(size==0){
+            toWrite="No songs Found in "+ selectionHandler.getCurrent().name() +"!";
+        }
+        else if(listPosition[1]>=size){
+            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[0]+1) +" / " +size;
+        }
+
+        else if(listPosition[2]>=size){
+            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
+        }
+
+        else if(listPosition[3]>=size){
+            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
+        }
+
+        else if(listPosition[4]>=size){
+            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[3]+1) +" / " +size;
+        }
+        else {
+            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
+        }
+        toWriteItem = new MusicItem(sb,FontGenerator.titleFont,toWrite,cam,game.getWidth()/4,game.getHeight()-5);
+    }
     @Override
     public void dispose() {
 

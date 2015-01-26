@@ -33,7 +33,7 @@ public class SelectionHandler {
             names[i] = children[i].name();
         }
         pruneChildren();
-        screenCount = (int) Math.floor(prunedChildren.size() / 5);
+        screenCount = (int) Math.floor(prunedChildren.size());
         remainder = prunedChildren.size()%5;
     }
     public void pruneChildren(){
