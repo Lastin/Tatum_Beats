@@ -33,7 +33,7 @@ import com.tatum.handlers.PaceMaker;
 import com.tatum.music.TrackData;
 
 public class Play extends GameState {
-    private boolean debug = false;
+    private boolean debug = true;
     private World world;
     private CollisionListener cl;
     //renderers
@@ -246,7 +246,7 @@ public class Play extends GameState {
     private void playerJump(){
         if(cl.playerCanJump()){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
-            player.getBody().applyForceToCenter(0, 200, true);
+            player.getBody().applyForceToCenter(0, 150, true);
             resources.getSound("jump").play();
         }
     }
