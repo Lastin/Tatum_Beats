@@ -17,7 +17,7 @@ public class PaceMaker {
         beats = trackData.getBeats();
     }
 
-    public float getVelocity(float deltaTime, double musicTime, float position){
+    public float calculateVelocity(float deltaTime, double musicTime, float position){
         /*TODO:
         - find beat_id matching musicTime
         - find distance to make: ((beat_id+1) * block_size) - position
@@ -27,9 +27,13 @@ public class PaceMaker {
         return 1.0f;
     }
 
-    private int findMatchingBeat(){
+    private int findMatchingBeat(double musicTime){
         for(int i=lastBeatId;;){
 
         }
+    }
+
+    private float calculateDistance(){
+        return 0f;
     }
 }

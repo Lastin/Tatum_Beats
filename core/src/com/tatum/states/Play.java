@@ -196,7 +196,7 @@ public class Play extends GameState {
         player.update(deltaTime);
         //set speed
         Vector2 velocity = player.getBody().getLinearVelocity();
-        velocity.x = paceMaker.getVelocity(deltaTime, music.getPosition(), player.getBody().getPosition().x);
+        velocity.x = paceMaker.calculateVelocity(deltaTime, music.getPosition(), player.getBody().getPosition().x);
         player.getBody().setLinearVelocity(velocity);
 
         if(player.manageScore())
