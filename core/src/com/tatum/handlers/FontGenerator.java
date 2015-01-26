@@ -14,7 +14,7 @@ public class FontGenerator {
 
     public static BitmapFont royalMenu = makeFont(35, 0, 0.714f, 1, 1);
 
-    public static BitmapFont titleFont = makeFont(10, Color.BLACK);
+    public static BitmapFont titleFont = makeFont(20, Color.BLACK);
 
     public static BitmapFont listFont = makeFont(36, Color.BLACK);
 
