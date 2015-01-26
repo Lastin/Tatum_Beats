@@ -38,6 +38,8 @@ public class Select extends GameState {
     private MusicItem backButton;
     private GameButton upButton;
     private GameButton downButton;
+    private GameButton upButtonFast;
+    private GameButton downButtonFast;
     private int listPosition;
     private FontGenerator fontGenerator;
     public Select(GameStateManager gsm) {
@@ -50,12 +52,18 @@ public class Select extends GameState {
         bg.setVector(-20, 0);
 
         cont = gsm.getGame().getResources();
-        cont.loadTexture("res/images/buttondown.png");
-        cont.loadTexture("res/images/buttonup.png");
-        Texture downArrow = cont.getTexture("buttondown");
-        Texture upArrow = cont.getTexture("buttonup");
-        upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-50, cam);
-        downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-100, cam);
+        cont.loadTexture("res/images/arrowDown.png");
+        cont.loadTexture("res/images/arrowUp.png");
+        cont.loadTexture("res/images/arrowUpFast.png");
+        cont.loadTexture("res/images/arrowDownFast.png");
+        Texture downArrow = cont.getTexture("arrowDown");
+        Texture upArrow = cont.getTexture("arrowUp");
+        Texture downArrowFast = cont.getTexture("arrowDownFast");
+        Texture upArrowFast = cont.getTexture("arrowUpFast");
+        upButtonFast = new GameButton(resources, new TextureRegion(upArrowFast,70,85), game.getWidth()-30, game.getHeight()-50, cam);
+        upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
+        downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
+        downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
 
         listPosition=0;
         setMusicItems();
@@ -122,6 +130,8 @@ public class Select extends GameState {
         bg.update(dt);
         upButton.update(dt);
         downButton.update(dt);
+        downButtonFast.update(dt);
+        upButtonFast.update(dt);
         for (int i =0;i<musicItems.size();i++){
             musicItems.get(i).update(dt);
         }
@@ -136,6 +146,8 @@ public class Select extends GameState {
 
         upButton.render(sb);
         downButton.render(sb);
+        upButtonFast.render(sb);
+        downButtonFast.render(sb);
         sb.begin();
         sb.end();
 
