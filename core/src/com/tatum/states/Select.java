@@ -172,7 +172,7 @@ public class Select extends GameState {
         downButton.render(sb);
         upButtonFast.render(sb);
         downButtonFast.render(sb);
-        toWriteItem.render();
+        toWriteItem.renderFull();
         sb.begin();
         sb.end();
 
@@ -250,28 +250,32 @@ public class Select extends GameState {
 
         String toWrite = "";
         int size = selectionHandler.getScreenCount();
+        String start = selectionHandler.getCurrent().path();
+        if(start==""){
+            start = "root";
+        }
         if(size==0){
-            toWrite="No songs Found in "+ selectionHandler.getCurrent().name() +"!";
+            toWrite = start+": " + (listPosition[0]) + "-"+(listPosition[0]) +" / " +size;
         }
         else if(listPosition[1]>=size){
-            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[0]+1) +" / " +size;
+            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[0]+1) +" / " +size;
         }
 
         else if(listPosition[2]>=size){
-            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
+            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
         }
 
         else if(listPosition[3]>=size){
-            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
+            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
         }
 
         else if(listPosition[4]>=size){
-            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[3]+1) +" / " +size;
+            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[3]+1) +" / " +size;
         }
         else {
-            toWrite = selectionHandler.getCurrent().name()+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
+            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
         }
-        toWriteItem = new MusicItem(sb,FontGenerator.titleFont,toWrite,cam,game.getWidth()/4,game.getHeight()-5);
+        toWriteItem = new MusicItem(sb,FontGenerator.titleFont,toWrite,cam,10,game.getHeight()-5);
     }
     @Override
     public void dispose() {
