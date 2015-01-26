@@ -229,7 +229,7 @@ public class Menu extends GameState {
                         loading = false;
                         generating = true;
                         final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
-                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData());
+                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map);
                         generating = false;
                         done = true;
                         sleep(1000);
