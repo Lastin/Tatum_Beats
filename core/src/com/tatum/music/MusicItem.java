@@ -42,11 +42,6 @@ public class MusicItem {
         font.draw(batch, text, x, y);
         batch.end();
     }
-    public void renderFull() {
-        batch.begin();
-        font.draw(batch, originalText, x, y);
-        batch.end();
-    }
 
     public boolean isClicked() {
         return clicked;
