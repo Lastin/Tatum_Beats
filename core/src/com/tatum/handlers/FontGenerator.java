@@ -3,6 +3,7 @@ package com.tatum.handlers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -15,6 +16,7 @@ public class FontGenerator {
     public static BitmapFont makeFont(int size, float r, float g, float b, float o){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
         parameters.size = size;
+        parameters.magFilter = Texture.TextureFilter.Linear;
         BitmapFont font = fontGenerator.generateFont(parameters);
         font.setColor(r, g, b, o);
         return font;
