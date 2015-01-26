@@ -13,6 +13,7 @@ public class FontGenerator {
     private static FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
     public static BitmapFont royalMenu = makeFont(35, 0, 0.714f, 1, 1);
     public static BitmapFont listFont = makeFont(18, 0, 0, 0, 1);
+    public static BitmapFont titleFont = makeFont(10, 0, 0, 0, 1);
     public static BitmapFont makeFont(int size, float r, float g, float b, float o){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
         parameters.size = size;
