@@ -28,6 +28,8 @@ import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
+import com.tatum.handlers.PaceMaker;
+import com.tatum.music.TrackData;
 
 public class Play extends GameState {
     private boolean debug = false;
@@ -51,11 +53,14 @@ public class Play extends GameState {
     private String userName = "test";
     private String path = "tempPath";
     private String[] data;
+    //paceMaker
+    private final PaceMaker paceMaker;
 
-    public Play(GameStateManager gsm, TiledMap map, Music music) {
+    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
         super(gsm);
         this.map = map;
         this.music = music;
+        this.paceMaker = paceMaker;
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
@@ -189,6 +194,11 @@ public class Play extends GameState {
 
         // update player
         player.update(deltaTime);
+        //set speed
+        Vector2 velocity = player.getBody().getLinearVelocity();
+        velocity.x = paceMaker.getVelocity(deltaTime, music.getPosition(), player.getBody().getPosition().x);
+        player.getBody().setLinearVelocity(velocity);
+
         if(player.manageScore())
             player.scoreStep();
 

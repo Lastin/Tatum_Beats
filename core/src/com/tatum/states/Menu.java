@@ -24,6 +24,7 @@ import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
+import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TrackLoader;
 
 import java.util.Timer;
@@ -228,13 +229,14 @@ public class Menu extends GameState {
                         loading = false;
                         generating = true;
                         final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData());
                         generating = false;
                         done = true;
                         sleep(1000);
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                gsm.setState(new Play(gsm, map, trackLoader.getMusic()));
+                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker));
                             }
                         });
                     } catch (Exception e) {
