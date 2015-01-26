@@ -2,6 +2,7 @@ package com.tatum.states;
 
 import static com.tatum.handlers.B2DVars.*;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -196,12 +197,11 @@ public class Play extends GameState {
         player.update(deltaTime);
         //set speed
         Vector2 velocity = player.getBody().getLinearVelocity();
-        velocity.x = paceMaker.calculateVelocity(deltaTime, music.getPosition(), player.getBody().getPosition().x);
+        velocity.x = paceMaker.calculateVelocity(deltaTime, music.getPosition(), player.getPosition().x);
         player.getBody().setLinearVelocity(velocity);
 
         if(player.manageScore())
             player.scoreStep();
-
 
         //check scores / set new high score
         if(player.getScore()>player.getHighScore()){
@@ -235,6 +235,12 @@ public class Play extends GameState {
             playerJump();
         if(Input.isPressed(Input.BUTTON2))
             switchBlocks();
+        if(Input.isPressed()) {
+            if (Input.x < Gdx.graphics.getWidth() / 2)
+                switchBlocks();
+            else
+                playerJump();
+        }
     }
 
     private void playerJump(){

@@ -24,7 +24,8 @@ public class PaceMaker {
         - find time to make that distance in: beats.get(beat_id+1).getStart() - deltaTime
         - calculate speed
          */
-        return 1.0f;
+        //System.out.println("Position " + (int)position + " Time: " + (int)musicTime);
+        return 1f;
     }
 
     private int findMatchingBeat(double musicTime){
