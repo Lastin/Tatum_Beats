@@ -33,9 +33,9 @@ public class GameBodiesCreator {
                 //create chain using vectors
                 ChainShape cs = new ChainShape();
                 Vector2[] v = new Vector2[3];
-                v[0] = new Vector2(-0.24f, -0.16f);
-                v[1] = new Vector2(-0.24f, 0.16f);
-                v[2] = new Vector2(0.24f, 0.24f);
+                v[0] = new Vector2(-0.48f, 0.1f);
+                v[1] = new Vector2(0, 0.32f);
+                v[2] = new Vector2(0.48f, 0.1f);
                 cs.createChain(v);
                 FixtureDef fd = new FixtureDef();
                 fd.friction = 0;
