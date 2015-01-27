@@ -47,7 +47,7 @@ public class PaceMaker {
             if(musicTime > beatStart){
                 double beatDuration = beats.get(i).getduration();
                 if(musicTime < beatStart+beatDuration) {
-                    System.out.println(beatStart + " < " + musicTime + " < " + (beatStart+beatDuration));
+                    //System.out.println(beatStart + " < " + musicTime + " < " + (beatStart+beatDuration));
                     lastBeatHitId = i;
                     return i;
                 }
