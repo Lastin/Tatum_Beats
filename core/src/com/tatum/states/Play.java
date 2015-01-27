@@ -30,7 +30,6 @@ import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.PaceMaker;
-import com.tatum.music.TrackData;
 
 public class Play extends GameState {
     private boolean debug = true;

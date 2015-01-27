@@ -230,9 +230,9 @@ public class Menu extends GameState {
                         generating = true;
                         final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                         final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map);
+                        sleep(1000);
                         generating = false;
                         done = true;
-                        sleep(1000);
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
