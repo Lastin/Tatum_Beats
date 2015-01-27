@@ -219,7 +219,7 @@ public class Menu extends GameState {
             playButton.setEnabled(false);
             resources.getSound("crystal").play();
             if(musicSelectionPath == null){
-                musicSelectionPath = "Music/09 Leftovers.mp3";
+                gsm.setState(new Select(gsm));
             }
             Thread thread = new Thread() {
                 public void run(){
