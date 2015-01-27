@@ -23,7 +23,7 @@ public class LevelGenerator {
     }
 
     public TiledMap makeMap(TrackData trackData){
-        int width = trackData.getBeats().size();
+        int width = trackData.getBeats().size()*6;
         int height = 100;
         //set properties
         TiledMap map = new TiledMap();
@@ -36,13 +36,13 @@ public class LevelGenerator {
     }
 
     private TiledMapTileLayer makeLayer(TrackData trackData){
-        TiledMapTileLayer layer = new TiledMapTileLayer((int)trackData.getDuration(), 20, cellSide, cellSide);
         ArrayList<TimedEvent> beats = trackData.getBeats();
-        for(TimedEvent beat : beats)
-            System.out.println("start: " + beat.getStart() + " end: " + beat.getStart() + beat.getduration());
+        TiledMapTileLayer layer = new TiledMapTileLayer(beats.size()*6, 20, cellSide, cellSide);
         System.out.println("number of beats:" + beats.size());
-        for(int i=0; i<beats.size()*3; i+=3) {
-            layer.setCell(i, 0, cells[0]);
+        for(int i=0; i<beats.size()*6; i+=6) {
+            for(int j=0; j<3; j++) {
+                layer.setCell(i+j, 0, cells[0]);
+            }
         }
         return layer;
     }

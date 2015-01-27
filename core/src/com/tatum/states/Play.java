@@ -55,6 +55,8 @@ public class Play extends GameState {
     private String[] data;
     //paceMaker
     private final PaceMaker paceMaker;
+    private float delay = 0.2f;
+    private float time = 0;
 
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
         super(gsm);
@@ -152,11 +154,6 @@ public class Play extends GameState {
         return backgrounds;
     }
 
-    private void adjustPlayerSpeed(){
-        double musicPosition = music.getPosition();
-        double playerPosition = player.getPosition().x;
-    }
-
     @Override
     public void render() {
         // camera follow player
@@ -195,9 +192,7 @@ public class Play extends GameState {
         // update player
         player.update(deltaTime);
         //set speed
-        Vector2 velocity = player.getBody().getLinearVelocity();
-        velocity.x = paceMaker.calculateVelocity(deltaTime, music.getPosition(), player.getPosition().x);
-        player.getBody().setLinearVelocity(velocity);
+        updateVelocity(deltaTime);
 
         if(player.manageScore())
             player.scoreStep();
@@ -228,6 +223,14 @@ public class Play extends GameState {
         }
     }
 
+    private void updateVelocity(float deltaTime){
+        time += deltaTime;
+        if(time >= delay){
+            paceMaker.updateVelocity(player, music.getPosition());
+            time = 0;
+        }
+    }
+
     @Override
     public void handleInput(){
         if(Input.isPressed(Input.BUTTON1))
@@ -245,7 +248,7 @@ public class Play extends GameState {
     private void playerJump(){
         if(cl.playerCanJump()){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
-            player.getBody().applyForceToCenter(0, 150, true);
+            player.getBody().applyForceToCenter(0, 200, true);
             resources.getSound("jump").play();
         }
     }
