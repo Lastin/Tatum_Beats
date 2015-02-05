@@ -159,7 +159,6 @@ public class Play extends GameState {
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
-        cam.rotate(0.4f);
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         for (Background each : backgrounds) {
