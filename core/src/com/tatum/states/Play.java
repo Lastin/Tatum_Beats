@@ -58,6 +58,23 @@ public class Play extends GameState {
     private float delay = 0.2f;
     private float time = 0;
 
+
+    private long now = 0;
+    private long timeDiff = 0;
+    private long lastUpdate = 0;
+    private long lastShake = 0;
+
+    private float x = 0;
+    private float y = 0;
+    private float z = 0;
+    private float lastX = 0;
+    private float lastY = 0;
+    private float lastZ = 0;
+    private float force = 0;
+    private float Zthreshold = 3;
+    private float Ythreshold = 3;
+    private float interval = 10;
+
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
         super(gsm);
         this.map = map;
@@ -221,7 +238,63 @@ public class Play extends GameState {
             gsm.setState(new Menu(gsm));
             music.stop();
         }
+
+        now = Long.parseLong(data[0]);
+
+        x = Float.parseFloat(data[1]);
+        y = Float.parseFloat(data[2]);
+        z = Float.parseFloat(data[3]);
+
+
+        if (lastUpdate == 0) {
+            lastUpdate = now;
+            lastShake = now;
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+           System.out.println("No Motion detected");
+
+
+        } else {
+            timeDiff = now - lastUpdate;
+
+            if (timeDiff > 0) {
+
+                float Zforce = Math.abs(z - lastZ);
+                if (now - lastShake >= interval ) {
+                    float Yforce = y - lastY;
+
+
+                    if (Float.compare(Zforce, Zthreshold) >0) {
+
+                        playerJump();
+                    }
+                    //else if (Float.compare(Zforce, Zthreshold) >0){
+
+                    //}
+                    else
+                    {
+
+                        //System.out.println("No Motion detected");
+
+                    }
+                    lastShake = now;
+                }
+                lastX = x;
+                lastY = y;
+                lastZ = z;
+                lastUpdate = now;
+            }
+            else
+            {
+
+               // System.out.println("No Motion detected");
+
+            }
+        }
     }
+
+
 
     private void updateVelocity(float deltaTime){
         time += deltaTime;
@@ -249,7 +322,7 @@ public class Play extends GameState {
         if(cl.playerCanJump()){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);
-            resources.getSound("jump").play();
+            //resources.getSound("jump").play();
         }
     }
 
