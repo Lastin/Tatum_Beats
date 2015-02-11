@@ -72,8 +72,10 @@ public class Play extends GameState {
     private float lastZ = 0;
     private float force = 0;
     private float Zthreshold = 3;
-    private float Ythreshold = 3;
+    private float Ythreshold = 1.5f;
     private float interval = 10;
+    private boolean yResetLeft = true;
+    private boolean yResetRight = true;
 
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
         super(gsm);
@@ -91,7 +93,7 @@ public class Play extends GameState {
         backgrounds = createBackground();
         GameBodiesCreator.createBlocks(map, world);
         initialiseCamerasAndRenderers();
-        music.play();
+        //music.play();
         data = gsm.getGame().getData();
     }
 
@@ -239,59 +241,8 @@ public class Play extends GameState {
             music.stop();
         }
 
-        now = Long.parseLong(data[0]);
+        checkMotion();
 
-        x = Float.parseFloat(data[1]);
-        y = Float.parseFloat(data[2]);
-        z = Float.parseFloat(data[3]);
-
-
-        if (lastUpdate == 0) {
-            lastUpdate = now;
-            lastShake = now;
-            lastX = x;
-            lastY = y;
-            lastZ = z;
-           System.out.println("No Motion detected");
-
-
-        } else {
-            timeDiff = now - lastUpdate;
-
-            if (timeDiff > 0) {
-
-                float Zforce = Math.abs(z - lastZ);
-                if (now - lastShake >= interval ) {
-                    float Yforce = y - lastY;
-
-
-                    if (Float.compare(Zforce, Zthreshold) >0) {
-
-                        playerJump();
-                    }
-                    //else if (Float.compare(Zforce, Zthreshold) >0){
-
-                    //}
-                    else
-                    {
-
-                        //System.out.println("No Motion detected");
-
-                    }
-                    lastShake = now;
-                }
-                lastX = x;
-                lastY = y;
-                lastZ = z;
-                lastUpdate = now;
-            }
-            else
-            {
-
-               // System.out.println("No Motion detected");
-
-            }
-        }
     }
 
 
@@ -356,5 +307,84 @@ public class Play extends GameState {
     public void dispose() {
 
     }
+    public void checkMotion(){
+        now = Long.parseLong(data[0]);
 
+        x = Float.parseFloat(data[1]);
+        y = Float.parseFloat(data[2]);
+        z = Float.parseFloat(data[3]);
+
+
+        if (lastUpdate == 0) {
+            lastUpdate = now;
+            lastShake = now;
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+
+
+        } else {
+            timeDiff = now - lastUpdate;
+
+            if (timeDiff > 0) {
+
+                float Zforce = Math.abs(z - lastZ);
+                if (now - lastShake >= interval ) {
+                    if (Float.compare(Zforce, Zthreshold) >0) {
+
+                        playerJump();
+                        lastX = x;
+                        lastY = y;
+                        lastZ = z;
+                        lastUpdate = now;
+                        lastShake = now;
+                        return;
+                    }
+                    if(yResetLeft) {
+                         if ((y<0)&&(y < lastY)) {
+                            if (!(y + Ythreshold > lastY)) {
+                                resources.getSound("jump").play();
+                                yResetLeft=false;
+                                lastX = x;
+                                lastY = y;
+                                lastZ = z;
+                                lastUpdate = now;
+                                lastShake = now;
+                                return;
+                            }
+                        }
+                    }
+                    else if(!yResetLeft)
+                        if(y>0)
+                            yResetLeft = true;
+
+                    if(yResetRight){
+                        if ((y>0)&&(y > lastY)) {
+                            if (!(lastY + Ythreshold > y)) {
+                                resources.getSound("crystal").play();
+                                yResetRight = false;
+                                lastX = x;
+                                lastY = y;
+                                lastZ = z;
+                                lastUpdate = now;
+                                lastShake = now;
+                                return;
+                            }
+                        }
+                    }
+                    else if(!yResetRight)
+                        if(y<0)
+                            yResetRight = true;
+                }
+
+
+
+                lastShake = now;
+            }
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+            lastUpdate = now;
+        }
+    }
 }
