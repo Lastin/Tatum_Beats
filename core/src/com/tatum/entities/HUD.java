@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.tatum.Game;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.PaceMaker;
 
 public class HUD {
     private Player player;
@@ -18,8 +19,11 @@ public class HUD {
     private TextureRegion[] font;
     private TextureRegion[] fullFont;
     TextureRegion[] blockSprites;
-
-    public HUD(ContentManager cont, Game game, Player player) {
+    private PaceMaker paceMaker;
+    private int timePoint;
+    private int timeSig;
+    private int currbeat;
+    public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker) {
         this.game = game;
         this.cont = cont;
         this.player = player;
@@ -61,6 +65,10 @@ public class HUD {
         for(int i = 0; i < blockSprites.length; i++) {
             blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
         }
+        timeSig=paceMaker.getTimeSig();
+        timePoint=1;
+        this.paceMaker=paceMaker;
+        currbeat=paceMaker.getLastBeatHitId();
     }
 
     public void render(SpriteBatch sb) {
@@ -76,6 +84,7 @@ public class HUD {
         else if ((bits & B2DVars.BIT_SAND_BLOCK) != 0) {
             sb.draw(blocks[2], 40, game.getHeight()-42);
         }
+
         //draw crystals
         //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
         //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
@@ -94,7 +103,19 @@ public class HUD {
         drawString(sb,"y "+ temp,game.getWidth()-200,game.getHeight()-90);
         temp = game.getData()[3].replaceAll("\\.", " ");
         drawString(sb,"z "+ temp,game.getWidth()-200,game.getHeight()-110);
+        temp = String.valueOf(paceMaker.getLastBeatHitId());
+        drawString(sb,"beat "+ temp ,game.getWidth()-250,game.getHeight()-10);
+
+        drawString(sb,"beat out of "+ timePoint +" "+ timeSig ,game.getWidth()-250,game.getHeight()-30);
         sb.end();
+        if(timePoint<=timeSig){
+            if(currbeat<Integer.parseInt(temp)) {
+                timePoint++;
+                currbeat = Integer.parseInt(temp);
+            }
+        }else{
+            timePoint=1;
+        }
     }
 
     private void drawString(SpriteBatch sb, String s, float x, float y) {
@@ -114,7 +135,7 @@ public class HUD {
             sb.draw(font[c], x + i * 9, y);
         }
     }
-
+    public void setPaceMaker(PaceMaker paceMaker){this.paceMaker=paceMaker;}
     public TextureRegion getCrystal() {
         return crystal;
     }

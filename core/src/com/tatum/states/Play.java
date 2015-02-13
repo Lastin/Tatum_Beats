@@ -89,11 +89,12 @@ public class Play extends GameState {
         width = (Integer) properties.get("width");
         height = (Integer) properties.get("height");
         player = createPlayer();
-        hud = new HUD(resources, game, player);
+        hud = new HUD(resources, game, player,paceMaker);
+        hud.setPaceMaker(paceMaker);
         backgrounds = createBackground();
         GameBodiesCreator.createBlocks(map, world);
         initialiseCamerasAndRenderers();
-        //music.play();
+        music.play();
         data = gsm.getGame().getData();
     }
 
@@ -113,7 +114,7 @@ public class Play extends GameState {
         bdef.type = BodyType.DynamicBody;
         bdef.position.set(60 / PPM, 120 / PPM);
         bdef.fixedRotation = true;
-        bdef.linearVelocity.set(1f, 0f);
+        //bdef.linearVelocity.set(1f, 0f);
 
         // create body from bodydef
         Body body = world.createBody(bdef);
@@ -202,12 +203,23 @@ public class Play extends GameState {
         }
     }
 
+    float previousPosition  = 0;
+    float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
+    float total = 0;
     @Override
     public void update(float deltaTime){
         handleInput();
+        float currPosition = music.getPosition();
+        deltaPos = currPosition - previousPosition;
+        previousPosition = currPosition;
+        deltaDiff = deltaPos - deltaPosPrev;
+        deltaPosPrev = deltaPos;
+
+       // System.out.println("Delta diff: " + deltaDiff);
+
+        //System.out.println(System.nanoTime());
         // update box2d world
         world.step(Game.STEP, 1, 1);
-
         // update player
         player.update(deltaTime);
         //set speed
@@ -249,10 +261,10 @@ public class Play extends GameState {
 
     private void updateVelocity(float deltaTime){
         time += deltaTime;
-        if(time >= delay){
+        //if(time >= delay){
             paceMaker.updateVelocity(player, music.getPosition());
             time = 0;
-        }
+        //}
     }
 
     @Override
