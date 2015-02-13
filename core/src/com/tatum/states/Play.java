@@ -56,7 +56,7 @@ public class Play extends GameState {
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
-    private float time = 0;
+    private long startTime;
 
 
     private long now = 0;
@@ -95,7 +95,9 @@ public class Play extends GameState {
         GameBodiesCreator.createBlocks(map, world);
         initialiseCamerasAndRenderers();
         music.play();
+        startTime= System.nanoTime();
         data = gsm.getGame().getData();
+
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -241,12 +243,12 @@ public class Play extends GameState {
             player.scoreBreak();
             player.randomSprite();
         }
-        if(player.getBody().getLinearVelocity().x < 0.001f) {
-            player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
-            player.getBody().setLinearVelocity(1,0);
-            player.scoreBreak();
-            player.randomSprite();
-        }
+        //if(player.getBody().getLinearVelocity().x < 0.001f) {
+        //    player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
+            //player.getBody().setLinearVelocity(1,0);
+        //    player.scoreBreak();
+        //    player.randomSprite();
+        //}
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
@@ -260,10 +262,14 @@ public class Play extends GameState {
 
 
     private void updateVelocity(float deltaTime){
-        time += deltaTime;
+        double currTime = (System.nanoTime()-startTime);
+        //System.out.println("Curr time:" + currTime);
+        //System.out.println(currTime/1000000000);
+        //System.out.println("Music: "+ music.getPosition());
         //if(time >= delay){
-            paceMaker.updateVelocity(player, music.getPosition());
-            time = 0;
+        //paceMaker.updateVelocity(player, music.getPosition());
+          paceMaker.updateVelocity(player, currTime/1000000000);
+
         //}
     }
 

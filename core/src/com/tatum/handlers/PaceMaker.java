@@ -52,7 +52,7 @@ public class PaceMaker {
         try {
               if (musicTime > pixelPoints.get(pixelPoint)) {
                     System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
-                    float xPos = ((32*(lastBeatHitId-1))+(pixelPoint+1))/PPM;
+                    float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM;
                     player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
                     //player.getBody().setTransform(new Vector2(player.getPosition().x + (1/PPM), player.getPosition().y), 0);
                     //pixelPoints.remove(i);
@@ -62,8 +62,9 @@ public class PaceMaker {
 
         }catch(NullPointerException e){
             //bullshit start crap
+        }catch(IndexOutOfBoundsException e){
+            //end of bar
         }
-
         //player.getBody().setLinearVelocity(velocity);
     }
 
@@ -103,8 +104,8 @@ public class PaceMaker {
     private void setPixelPoints(){
         TimedEvent beat = beats.get(lastBeatHitId);
         pixelPoints = new ArrayList<Double>();
-        double duration = beat.getduration()/32;
-        for(int i =1;i<32;i++){
+        double duration = beat.getduration()/16;
+        for(int i =0;i<16;i++){
             pixelPoints.add(beat.getStart()+(duration*i));
         }
         pixelPoint=0;
