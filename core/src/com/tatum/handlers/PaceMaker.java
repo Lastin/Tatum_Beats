@@ -110,4 +110,7 @@ public class PaceMaker {
         }
         pixelPoint=0;
     }
+    public boolean getNewBeat(){
+        return newBeat;
+    }
 }

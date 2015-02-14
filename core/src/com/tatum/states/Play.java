@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -183,9 +184,12 @@ public class Play extends GameState {
         cam.update();
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
+        if(!paceMaker.getNewBeat())
+            sb.setColor(0.5F, 0.5F, 0.5F, 1F);
         for (Background each : backgrounds) {
             each.render(sb);
         }
+        sb.setColor(1f, 1f, 1f, 1F);
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
