@@ -54,17 +54,18 @@ public class Play extends GameState {
     private String userName = "test";
     private String path = "tempPath";
     private String[] data;
+    private float shaderVal = 0.1f;
+    private 
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
     private long startTime;
 
-
+    //shake stuff
     private long now = 0;
     private long timeDiff = 0;
     private long lastUpdate = 0;
     private long lastShake = 0;
-
     private float x = 0;
     private float y = 0;
     private float z = 0;
@@ -186,21 +187,30 @@ public class Play extends GameState {
         sb.setProjectionMatrix(hudCam.combined);
         if(!paceMaker.getNewBeat())
             sb.setColor(0.5F, 0.5F, 0.5F, 1F);
-        for (Background each : backgrounds) {
+       for (Background each : backgrounds) {
             each.render(sb);
         }
-        sb.setColor(1f, 1f, 1f, 1F);
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
-        // draw player
-        sb.setProjectionMatrix(cam.combined);
-        player.render(sb);
+        sb.setColor(shaderVal, shaderVal, shaderVal, shaderVal);
 
-        // draw hud
-        sb.setProjectionMatrix(hudCam.combined);
-        hud.render(sb);
 
+        if(paceMaker.gotFirstBeat()) {
+
+            // draw player
+            sb.setProjectionMatrix(cam.combined);
+            player.render(sb);
+
+            // draw hud
+            sb.setProjectionMatrix(hudCam.combined);
+            hud.render(sb);
+            if(shaderVal<1f){
+                shaderVal+=0.05f;
+                if(shaderVal>1f)
+                    shaderVal=1f;
+            }
+        }
         // debug draw box2d
         if(debug) {
             b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);

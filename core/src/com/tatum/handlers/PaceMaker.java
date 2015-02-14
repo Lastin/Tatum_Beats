@@ -20,6 +20,7 @@ public class PaceMaker {
     private final float PPM = B2DVars.PPM;
     private ArrayList<Double> pixelPoints;
     private int pixelPoint=0;
+    private boolean gotFirstBeat = false;
     public PaceMaker(TrackData trackData, TiledMap map){
         this.trackData = trackData;
         this.map = map;
@@ -81,6 +82,9 @@ public class PaceMaker {
                     }else{
                         newBeat=false;
                     }
+                    if(i == 1){
+                        gotFirstBeat =true;
+                    }
                     lastBeatHitId = i;
 
                     return i;
@@ -112,5 +116,8 @@ public class PaceMaker {
     }
     public boolean getNewBeat(){
         return newBeat;
+    }
+    public boolean gotFirstBeat(){
+        return gotFirstBeat;
     }
 }
