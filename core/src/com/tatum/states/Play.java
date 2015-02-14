@@ -55,7 +55,7 @@ public class Play extends GameState {
     private String path = "tempPath";
     private String[] data;
     private float shaderVal = 0.1f;
-    private 
+    private float walkCheck = 32/PPM;
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
@@ -185,15 +185,16 @@ public class Play extends GameState {
         cam.update();
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
-        if(!paceMaker.getNewBeat())
-            sb.setColor(0.5F, 0.5F, 0.5F, 1F);
+        sb.setColor(1f, 1f, 1f, 1f);
+        if(!paceMaker.getNewBeat()&&music.getPosition()>5)
+           sb.setColor(0.5F, 0.5F, 0.5F, 1F);
        for (Background each : backgrounds) {
             each.render(sb);
         }
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
-        sb.setColor(shaderVal, shaderVal, shaderVal, shaderVal);
+        sb.setColor(1f, 1f, 1f, shaderVal);
 
 
         if(paceMaker.gotFirstBeat()) {
@@ -268,7 +269,10 @@ public class Play extends GameState {
             gsm.setState(new Menu(gsm));
             music.stop();
         }
-
+        if(player.getBody().getPosition().x>walkCheck){
+            //resources.getSound("crystal").play();
+            walkCheck+=(32/PPM);
+        }
         checkMotion();
 
     }

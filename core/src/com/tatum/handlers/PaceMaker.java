@@ -3,6 +3,7 @@ package com.tatum.handlers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.tatum.entities.Player;
+import com.tatum.music.Section;
 import com.tatum.music.TimedEvent;
 import com.tatum.music.TrackData;
 import com.tatum.handlers.B2DVars;
@@ -14,7 +15,11 @@ public class PaceMaker {
     private final TrackData trackData;
     private final TiledMap map;
     private final ArrayList<TimedEvent> beats;
+    private final ArrayList<TimedEvent> bars;
+    private final ArrayList<Section> sections;
     private int lastBeatHitId = 0;
+    private int lastBarHitId = 0;
+    private int lastSectionHitId = 0;
     private int timeSig;
     private boolean newBeat = false;
     private final float PPM = B2DVars.PPM;
@@ -25,6 +30,8 @@ public class PaceMaker {
         this.trackData = trackData;
         this.map = map;
         beats = trackData.getBeats();
+        bars = trackData.getBars();
+        sections = trackData.getSections();
         timeSig=trackData.getTimeSignature();
     }
 

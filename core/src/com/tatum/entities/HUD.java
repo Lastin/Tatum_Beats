@@ -23,6 +23,8 @@ public class HUD {
     private int timePoint;
     private int timeSig;
     private int currbeat;
+    private boolean debug =true;
+
     public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker) {
         this.game = game;
         this.cont = cont;
@@ -94,28 +96,33 @@ public class HUD {
         int space = 0;
         //System.out.println("here");
         for(int i = 0;i<player.getStep();i++){
-            sb.draw(blockSprites[0], game.getWidth()-110+space,game.getHeight()-60);
+            if(i>4)
+                break;
+            sb.draw(blockSprites[0], game.getWidth() - 110 + space, game.getHeight() - 60);
             space+=15;
         }
-        String temp = game.getData()[1].replaceAll("\\.", " ");
-        drawString(sb,"x "+ temp,game.getWidth()-200,game.getHeight()-70);
-        temp = game.getData()[2].replaceAll("\\.", " ");
-        drawString(sb,"y "+ temp,game.getWidth()-200,game.getHeight()-90);
-        temp = game.getData()[3].replaceAll("\\.", " ");
-        drawString(sb,"z "+ temp,game.getWidth()-200,game.getHeight()-110);
-        temp = String.valueOf(paceMaker.getLastBeatHitId());
-        drawString(sb,"beat "+ temp ,game.getWidth()-250,game.getHeight()-10);
+        if(debug) {
+            String temp = game.getData()[1].replaceAll("\\.", " ");
+            drawString(sb, "x " + temp, game.getWidth() - 200, game.getHeight() - 70);
+            temp = game.getData()[2].replaceAll("\\.", " ");
+            drawString(sb, "y " + temp, game.getWidth() - 200, game.getHeight() - 90);
+            temp = game.getData()[3].replaceAll("\\.", " ");
+            drawString(sb, "z " + temp, game.getWidth() - 200, game.getHeight() - 110);
+            temp = String.valueOf(paceMaker.getLastBeatHitId());
+            drawString(sb, "beat " + temp, game.getWidth() - 250, game.getHeight() - 10);
 
-        drawString(sb,"beat out of "+ timePoint +" "+ timeSig ,game.getWidth()-250,game.getHeight()-30);
-        sb.end();
-        if(timePoint<=timeSig){
-            if(currbeat<Integer.parseInt(temp)) {
-                timePoint++;
-                currbeat = Integer.parseInt(temp);
+            drawString(sb, "beat out of " + timePoint + " " + timeSig, game.getWidth() - 250, game.getHeight() - 30);
+
+            if (timePoint <= timeSig) {
+                if (currbeat < Integer.parseInt(temp)) {
+                    timePoint++;
+                    currbeat = Integer.parseInt(temp);
+                }
+            } else {
+                timePoint = 1;
             }
-        }else{
-            timePoint=1;
         }
+        sb.end();
     }
 
     private void drawString(SpriteBatch sb, String s, float x, float y) {
