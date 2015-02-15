@@ -155,7 +155,7 @@ public class Select extends GameState {
         downButton.update(dt);
         downButtonFast.update(dt);
         upButtonFast.update(dt);
-        toWriteItem.render();
+        toWriteItem.update(dt);
         for (int i =0;i<musicItems.size();i++){
             musicItems.get(i).update(dt);
         }
@@ -173,6 +173,7 @@ public class Select extends GameState {
         upButtonFast.render(sb);
         downButtonFast.render(sb);
         toWriteItem.renderFull();
+        toWriteItem.render();
         sb.begin();
         sb.end();
 

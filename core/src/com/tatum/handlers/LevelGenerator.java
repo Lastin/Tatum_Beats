@@ -23,7 +23,7 @@ public class LevelGenerator {
     }
 
     public TiledMap makeMap(TrackData trackData){
-        int width = trackData.getBeats().size()*6;
+        float width = ((trackData.getBeats().size()/B2DVars.PPM)*32)-(32/B2DVars.PPM);
         int height = 100;
         //set properties
         TiledMap map = new TiledMap();

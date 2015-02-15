@@ -114,12 +114,33 @@ public class TrackData {
                     this.loudness = audio.getJsonNumber("loudness").doubleValue();
                 } catch (NullPointerException e) {
                 }
-                this.speechiness = audio.getJsonNumber("speechiness").doubleValue();
+                try {
+                    this.speechiness = audio.getJsonNumber("speechiness").doubleValue();
+                }catch (ClassCastException e){
+                    this.speechiness = 0;
+                }
+                try {
                 this.acousticness = audio.getJsonNumber("acousticness").doubleValue();
+                }catch (ClassCastException e){
+                    this.acousticness = 0;
+                }
+                try {
                 this.valence = audio.getJsonNumber("valence").doubleValue();
+                }catch (ClassCastException e){
+                this.valence = 0;
+                }
+                try {
                 this.instrumentalness = audio.getJsonNumber("instrumentalness").doubleValue();
-
+                }
+                catch (ClassCastException e){
+                    this.instrumentalness = 0;
+                }
+                try{
                 this.liveness = audio.getJsonNumber("liveness").doubleValue();
+                }
+                catch (ClassCastException e){
+                    this.liveness = 0;
+                }
                 this.tempo = audio.getJsonNumber("tempo").doubleValue();
 
                 this.key = audio.getInt("key");
@@ -219,7 +240,9 @@ public class TrackData {
                         } else if (unit.getStart() >= start + duration) {
                             break;
                         }else if (bars.size()==0 && unit.getStart()<start){
-                            beats.remove(tatumsCount);
+                            array.add(unit);
+                            unit.setContainedIn(bars.size());
+                            tatumsCount++;
 
                         }else {
                             //double unitDur = unit.getStart() + unit.getduration();

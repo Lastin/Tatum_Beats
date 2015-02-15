@@ -26,11 +26,13 @@ import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.BoundedCamera;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.music.MusicItem;
 
 public class Play extends GameState {
     private boolean debug = false;
@@ -43,7 +45,7 @@ public class Play extends GameState {
     //map and properties
     private TiledMap map;
     private int height;
-    private int width;
+    private float width;
     private final int tileSide = 32;
     //rendered components
     private Player player;
@@ -56,6 +58,10 @@ public class Play extends GameState {
     private String[] data;
     private float shaderVal = 0.1f;
     private float walkCheck = 32/PPM;
+
+    //buttons
+    MusicItem backButton;
+
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
@@ -79,6 +85,7 @@ public class Play extends GameState {
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
 
+
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
         super(gsm);
         this.map = map;
@@ -88,7 +95,7 @@ public class Play extends GameState {
         cl = new CollisionListener();
         world.setContactListener(cl);
         MapProperties properties = map.getProperties();
-        width = (Integer) properties.get("width");
+        width = (Float) properties.get("width");
         height = (Integer) properties.get("height");
         player = createPlayer();
         hud = new HUD(resources, game, player,paceMaker);
@@ -99,7 +106,7 @@ public class Play extends GameState {
         music.play();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
-
+        backButton = new MusicItem(sb, FontGenerator.listFont,"Back",cam,game.width/2,game.height/2);
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -196,7 +203,6 @@ public class Play extends GameState {
         mapRenderer.render();
         sb.setColor(1f, 1f, 1f, shaderVal);
 
-
         if(paceMaker.gotFirstBeat()) {
 
             // draw player
@@ -218,6 +224,8 @@ public class Play extends GameState {
             b2dCam.update();
             b2dRenderer.render(world, b2dCam.combined);
         }
+
+        backButton.render();
     }
 
     float previousPosition  = 0;
@@ -231,7 +239,6 @@ public class Play extends GameState {
         previousPosition = currPosition;
         deltaDiff = deltaPos - deltaPosPrev;
         deltaPosPrev = deltaPos;
-
        // System.out.println("Delta diff: " + deltaDiff);
 
         //System.out.println(System.nanoTime());
@@ -244,6 +251,14 @@ public class Play extends GameState {
 
         if(player.manageScore())
             player.scoreStep();
+
+
+        //check if level is finished
+        if(player.getBody().getPosition().x>=width){
+            if(player.getHighScore()>player.loadHighScore())
+                player.saveHighScore();
+            gsm.setState(new Menu(gsm));
+        }
 
         //check scores / set new high score
         if(player.getScore()>player.getHighScore()){
@@ -285,14 +300,20 @@ public class Play extends GameState {
         //System.out.println(currTime/1000000000);
         //System.out.println("Music: "+ music.getPosition());
         //if(time >= delay){
-        //paceMaker.updateVelocity(player, music.getPosition());
-          paceMaker.updateVelocity(player, currTime/1000000000);
+        paceMaker.updateVelocity(player, music.getPosition());
+         // paceMaker.updateVelocity(player, currTime/1000000000);
 
         //}
     }
 
     @Override
     public void handleInput(){
+        if(backButton.isClicked()){
+            System.out.println("Clicked");
+            gsm.setState(new Menu(gsm));
+            return;
+
+        }
         if(Input.isPressed(Input.BUTTON1))
             playerJump();
         if(Input.isPressed(Input.BUTTON2))

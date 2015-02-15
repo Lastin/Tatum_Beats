@@ -60,7 +60,7 @@ public class PaceMaker {
 
         //Vector2 velocity = player.getBody().getLinearVelocity();
         //velocity.x = 1.0f;
-
+        setTimeSig();
         if(newBeat){
             setPixelPoints();
             //float xPos = 32*(lastBeatHitId-1)/PPM;
@@ -151,4 +151,8 @@ public class PaceMaker {
     private void setSection(){
         lastSectionHitId = bars.get(lastBarHitId).getContainedIn();
     }
+    private void setTimeSig(){
+       timeSig= sections.get(lastSectionHitId).getTimeSignature();
+    }
+
 }
