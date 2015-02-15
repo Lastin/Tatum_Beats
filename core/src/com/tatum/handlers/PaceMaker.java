@@ -26,6 +26,7 @@ public class PaceMaker {
     private ArrayList<Double> pixelPoints;
     private int pixelPoint=0;
     private boolean gotFirstBeat = false;
+    private boolean hitSecondSection = false;
     public PaceMaker(TrackData trackData, TiledMap map){
         this.trackData = trackData;
         this.map = map;
@@ -48,6 +49,14 @@ public class PaceMaker {
         //System.out.println("Position " + position*100/32 + " Time: " + (int)musicTime);
         int beatId = findMatchingBeat(musicTime);
         if(beatId < 0) return;
+        if(newBeat) {
+            System.out.println(lastBeatHitId + " " + lastBarHitId + " " + lastSectionHitId);
+            //System.out.println(beats.get(lastBarHitId).getStart()+" ");
+        }
+        if(lastBeatHitId>0)
+            setBar();
+        if(lastBarHitId>0)
+            setSection();
 
         //Vector2 velocity = player.getBody().getLinearVelocity();
         //velocity.x = 1.0f;
@@ -59,12 +68,12 @@ public class PaceMaker {
         }
         try {
               if (musicTime > pixelPoints.get(pixelPoint)) {
-                    System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
+                    //System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
                     float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM;
                     player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
                     //player.getBody().setTransform(new Vector2(player.getPosition().x + (1/PPM), player.getPosition().y), 0);
                     //pixelPoints.remove(i);
-                    System.out.println("Pixel point: " +pixelPoint);
+                    //System.out.println("Pixel point: " +pixelPoint);
                     pixelPoint++;
                 }
 
@@ -92,6 +101,9 @@ public class PaceMaker {
                     if(i == 1){
                         gotFirstBeat =true;
                     }
+                    if(lastSectionHitId == 1){
+                        hitSecondSection=true;
+                    }
                     lastBeatHitId = i;
 
                     return i;
@@ -111,6 +123,8 @@ public class PaceMaker {
         return 0f;
     }
     public int getLastBeatHitId(){return lastBeatHitId;}
+    public int getLastBarHitId() {return lastBarHitId;}
+    public int getLastSectionHitId() { return lastSectionHitId;}
     public int getTimeSig(){return timeSig;}
     private void setPixelPoints(){
         TimedEvent beat = beats.get(lastBeatHitId);
@@ -124,7 +138,17 @@ public class PaceMaker {
     public boolean getNewBeat(){
         return newBeat;
     }
+
     public boolean gotFirstBeat(){
         return gotFirstBeat;
+    }
+    public boolean hitSecondSection(){
+        return hitSecondSection;
+    }
+    private void setBar(){
+        lastBarHitId = beats.get(lastBeatHitId).getContainedIn();
+    }
+    private void setSection(){
+        lastSectionHitId = bars.get(lastBarHitId).getContainedIn();
     }
 }

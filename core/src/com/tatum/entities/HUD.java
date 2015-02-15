@@ -102,18 +102,18 @@ public class HUD {
             space+=15;
         }
         if(debug) {
+            // X Y Z data
             String temp = game.getData()[1].replaceAll("\\.", " ");
-            drawString(sb, "x " + temp, game.getWidth() - 200, game.getHeight() - 70);
+            drawString(sb, "x " + temp, game.getWidth() - 132, game.getHeight() - 80);
             temp = game.getData()[2].replaceAll("\\.", " ");
-            drawString(sb, "y " + temp, game.getWidth() - 200, game.getHeight() - 90);
+            drawString(sb, "y " + temp, game.getWidth() - 132, game.getHeight() - 100);
             temp = game.getData()[3].replaceAll("\\.", " ");
-            drawString(sb, "z " + temp, game.getWidth() - 200, game.getHeight() - 110);
-            temp = String.valueOf(paceMaker.getLastBeatHitId());
-            drawString(sb, "beat " + temp, game.getWidth() - 250, game.getHeight() - 10);
+            drawString(sb, "z " + temp, game.getWidth() - 132, game.getHeight() - 120);
 
-            drawString(sb, "beat out of " + timePoint + " " + timeSig, game.getWidth() - 250, game.getHeight() - 30);
-
-            if (timePoint <= timeSig) {
+            //Beat Bar Section
+            temp = String.valueOf(paceMaker.getLastBeatHitId()+1);
+            drawString(sb, "beat " + temp, 30, game.getHeight() - 80);
+             if (timePoint <= timeSig) {
                 if (currbeat < Integer.parseInt(temp)) {
                     timePoint++;
                     currbeat = Integer.parseInt(temp);
@@ -121,6 +121,13 @@ public class HUD {
             } else {
                 timePoint = 1;
             }
+            drawString(sb, "beat out of " + timePoint + " " + timeSig, 30, game.getHeight() - 100);
+            temp = String.valueOf(paceMaker.getLastBarHitId()+1);
+            drawString(sb, "bar " + temp, 30, game.getHeight() - 120);
+            temp = String.valueOf(paceMaker.getLastSectionHitId()+1);
+            drawString(sb, "section "+ temp,30,game.getHeight() - 140);
+
+
         }
         sb.end();
     }

@@ -42,7 +42,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-        compile "com.facebook.android:facebook-android-sdk:3.21.1"
+    //    compile "com.facebook.android:facebook-android-sdk:3.21.1"
     }
 }
 

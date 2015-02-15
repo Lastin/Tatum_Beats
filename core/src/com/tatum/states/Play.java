@@ -186,7 +186,7 @@ public class Play extends GameState {
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         sb.setColor(1f, 1f, 1f, 1f);
-        if(!paceMaker.getNewBeat()&&music.getPosition()>5)
+        if(!paceMaker.getNewBeat()&&paceMaker.hitSecondSection())
            sb.setColor(0.5F, 0.5F, 0.5F, 1F);
        for (Background each : backgrounds) {
             each.render(sb);

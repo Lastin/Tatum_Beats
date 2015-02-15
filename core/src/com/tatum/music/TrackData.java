@@ -205,17 +205,25 @@ public class TrackData {
                 while (true) {
                     try {
                         TimedEvent unit = beats.get(tatumsCount);
+                        double unitDur = unit.getStart() + unit.getduration();
+                        double startDur = (start + duration);
+                        System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
+
+
                         if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
                             array.add(unit);
                             unit.setContainedIn(bars.size());
                             int count = bars.size() + 1;
-                            //System.out.println("Added beat " + tatumsCount + " to bar " + count);
+                            System.out.println("Added beat " + tatumsCount + " to bar " + count);
                             tatumsCount++;
                         } else if (unit.getStart() >= start + duration) {
                             break;
-                        } else {
-                            double unitDur = unit.getStart() + unit.getduration();
-                            double startDur = (start + duration);
+                        }else if (bars.size()==0 && unit.getStart()<start){
+                            beats.remove(tatumsCount);
+
+                        }else {
+                            //double unitDur = unit.getStart() + unit.getduration();
+                            //double startDur = (start + duration);
                             //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
                             if ((unit.getStart() + 0.0001 >= start + duration)) {
 
@@ -226,7 +234,7 @@ public class TrackData {
                                 int count = bars.size() + 1;
 
                                 unit.setContainedIn(bars.size());
-                                //System.out.println("Added beat " + tatumsCount + " to bar " + count);
+                                System.out.println("Added beat " + tatumsCount + " to bar " + count);
                                 array.add(unit);
                             }
                             //if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
@@ -251,6 +259,7 @@ public class TrackData {
 
             sections = new ArrayList<Section>();
             tatumsCount = 0;
+            boolean wierdBeat = false; // there are inbetween bars that seem to mess up, this flags them and adds to the next section
             for (JsonObject object : Jsections) {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
@@ -305,18 +314,36 @@ public class TrackData {
                 while (true) {
                     try {
                         TimedEvent unit = bars.get(tatumsCount);
-                        if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
+                        double unitDur = unit.getStart() + unit.getduration();
+                        double startDur = (start + duration);
+                        //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
+                        if(wierdBeat){
+                            wierdBeat=!wierdBeat;
+                            tatumsCount++;
                             array.add(unit);
+                            unit.setContainedIn(sections.size());
+
+                        }
+                        else if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
+                            array.add(unit);
+                            unit.setContainedIn(sections.size());
                             int count = sections.size() + 1;
-                            //System.out.println("Added bar " + tatumsCount + " to section " + count);
-                            double unitDur = unit.getStart() + unit.getduration();
-                            double startDur = (start + duration);
+                            System.out.println("Added bar " + tatumsCount + " to section " + count);
+                            //double unitDur = unit.getStart() + unit.getduration();
+                            //double startDur = (start + duration);
                             //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
 
                             tatumsCount++;
-                        } else if (unit.getStart() >= start + duration) {
+                        }
+
+                        else if (unit.getStart() >= start + duration) {
                             break;
-                        } else {
+                        }
+                        else if(unit.getStart()+unit.getduration() >start + duration){
+                            wierdBeat = true;
+                            break; //remove if you want in the previous bar
+                        }
+                        else {
 
                             if ((unit.getStart() + 0.0001 >= start + duration)) {
 
