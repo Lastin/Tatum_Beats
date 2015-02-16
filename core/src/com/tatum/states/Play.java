@@ -234,6 +234,7 @@ public class Play extends GameState {
     @Override
     public void update(float deltaTime){
         handleInput();
+        backButton.update(deltaTime);
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
         previousPosition = currPosition;
@@ -314,16 +315,16 @@ public class Play extends GameState {
             return;
 
         }
-        if(Input.isPressed(Input.BUTTON1))
-            playerJump();
-        if(Input.isPressed(Input.BUTTON2))
-            switchBlocks();
-        if(Input.isPressed()) {
-            if (Input.x < Gdx.graphics.getWidth() / 2)
-                switchBlocks();
-            else
-                playerJump();
-        }
+       // if(Input.isPressed(Input.BUTTON1))
+       //     playerJump();
+       // if(Input.isPressed(Input.BUTTON2))
+       //     switchBlocks();
+       // if(Input.isPressed()) {
+       //     if (Input.x < Gdx.graphics.getWidth() / 2)
+       //         switchBlocks();
+       //     else
+       //         playerJump();
+       // }
     }
 
     private void playerJump(){

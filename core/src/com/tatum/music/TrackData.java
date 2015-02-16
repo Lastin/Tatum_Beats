@@ -661,13 +661,27 @@ public class TrackData {
             }
             count++;
 
-        }
-        System.out.println("sections");
-        System.out.println(time);
-        System.out.println(bar);
-        System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());
+        }   // This is too slow, gonna write a new one where you add the section you are currently in
+//        System.out.println("sections");
+//        System.out.println(time);
+//        System.out.println(bar);
+//        System.out.println(timeBar.getStart());
+//        System.out.println(timeBar.getduration());
         return bar;
+    }
+
+    public int getSectionInRedux(double time, int currSection){
+        if(time<0) return -1;
+        TimedEvent timeBar = sections.get(sections.size() - 1);
+        if (time > timeBar.getStart() + timeBar.getduration()) return sections.size()-1;
+
+        for(int i = currSection;i<sections.size();i++){
+            timeBar = sections.get(i);
+            if ((time >= timeBar.getStart()) && (time <= timeBar.getStart() + timeBar.getduration()))
+                return i;
+        }
+        return sections.size()-1;
+
     }
 
     public int getSegmentIn(double time) {

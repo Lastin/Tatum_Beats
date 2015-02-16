@@ -56,7 +56,7 @@ public class PaceMaker {
         if(lastBeatHitId>0)
             setBar();
         if(lastBarHitId>0)
-            setSection();
+            setSection(musicTime);
 
         //Vector2 velocity = player.getBody().getLinearVelocity();
         //velocity.x = 1.0f;
@@ -148,8 +148,9 @@ public class PaceMaker {
     private void setBar(){
         lastBarHitId = beats.get(lastBeatHitId).getContainedIn();
     }
-    private void setSection(){
+    private void setSection(double musicTime){
         lastSectionHitId = bars.get(lastBarHitId).getContainedIn();
+        //lastSectionHitId = trackData.getSectionInRedux(musicTime,lastSectionHitId);
     }
     private void setTimeSig(){
        timeSig= sections.get(lastSectionHitId).getTimeSignature();
