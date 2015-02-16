@@ -106,7 +106,7 @@ public class Play extends GameState {
         music.play();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
-        backButton = new MusicItem(sb, FontGenerator.listFont,"Back",cam,game.width/2,game.height/2);
+        backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -161,7 +161,7 @@ public class Play extends GameState {
         shape.dispose();
 
         // create new player
-        player = new Player(body, resources, userName, path);
+        player = new Player(body, resources, userName, path,paceMaker);
         body.setUserData(player);
 
         // final tweaks, manually set the player body mass to 1 kg
@@ -234,7 +234,6 @@ public class Play extends GameState {
     @Override
     public void update(float deltaTime){
         handleInput();
-        backButton.update(deltaTime);
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
         previousPosition = currPosition;
@@ -250,7 +249,7 @@ public class Play extends GameState {
         //set speed
         updateVelocity(deltaTime);
 
-        if(player.manageScore())
+        if(player.manageScore(music.getPosition()))
             player.scoreStep();
 
 
@@ -309,22 +308,57 @@ public class Play extends GameState {
 
     @Override
     public void handleInput(){
-        if(backButton.isClicked()){
+        backButton.update(0);
+        //System.out.println("start x" + 5);
+        //System.out.println("end x" + (backButton.getWidth()));
+        //System.out.println("input x "+ Input.x);
+        //System.out.println("start y" + 20);
+        //System.out.println("end y" + ((backButton.getHeight()*2)+20));
+        //System.out.println("input y "+ Input.y);
+     /*   if((Input.x >=10)){
+            System.out.println("first true");
+        }
+        else{
+            System.out.println("first false");
+        }
+        if((Input.x <=(backButton.getWidth()*2)+5)){
+            System.out.println("second true");
+        }
+        else{
+            System.out.println("second false");
+        }
+        if((Input.y >= 20)){
+            System.out.println("third true");
+        }
+        else{
+            System.out.println("third false");
+            System.out.println("start y" + 20);
+            System.out.println("input y "+ Input.y);
+        }
+        if(Input.y<= ((backButton.getHeight()*2)+20)){
+            System.out.println("forth true");
+        }
+        else{
+            System.out.println("forth false");
+        }
+        */
+        if((((Input.x >=10) && (Input.x <=(backButton.getWidth()*2)+5))&&((Input.y >= 20)&&(Input.y<= ((backButton.getHeight()*2)+20))))){
             System.out.println("Clicked");
+            sb.setColor(1f, 1f, 1f, 1f);
+            music.stop();
             gsm.setState(new Menu(gsm));
             return;
-
         }
-       // if(Input.isPressed(Input.BUTTON1))
-       //     playerJump();
-       // if(Input.isPressed(Input.BUTTON2))
-       //     switchBlocks();
-       // if(Input.isPressed()) {
-       //     if (Input.x < Gdx.graphics.getWidth() / 2)
-       //         switchBlocks();
-       //     else
-       //         playerJump();
-       // }
+        if(Input.isPressed(Input.BUTTON1))
+            playerJump();
+        if(Input.isPressed(Input.BUTTON2))
+            switchBlocks();
+        if(Input.isPressed()) {
+      if (Input.x < Gdx.graphics.getWidth() / 2)
+                switchBlocks();
+            else
+                playerJump();
+       }
     }
 
     private void playerJump(){

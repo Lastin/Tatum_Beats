@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.PaceMaker;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +26,7 @@ public class Player extends B2DSprite {
     private int multiplyer;
     private int step;
     private int stepStage;
-    private int scorespeedVar;
-    private int scorespeedConst;
+    private double lastTime;
     private String playerName;
     private int highScore;
     private TextureRegion[] sprites1 = new TextureRegion[11];
@@ -35,8 +35,10 @@ public class Player extends B2DSprite {
     private int playerNum;
     private boolean newHighScore;
     private String path;
+    private PaceMaker paceMaker;
 
-    public Player(Body body, ContentManager resources,String name,String path) {
+
+    public Player(Body body, ContentManager resources,String name,String path,PaceMaker paceMaker) {
         super(body, resources);
 
         playerName=name;
@@ -47,9 +49,9 @@ public class Player extends B2DSprite {
         multiplyer=1;
         step=0;
         stepStage=0;
-        scorespeedVar=0;
-        scorespeedConst=5;
+        lastTime = 0;
         playerNum = 1;
+        this.paceMaker = paceMaker;
         loadPlayers(resources);
         /*TextureRegion[][] spriteSplit = TextureRegion.split(tex,71,93);
         int count =0;
@@ -80,10 +82,10 @@ public class Player extends B2DSprite {
     public void scoreStep(){
 
         score = score +2*multiplyer;
-        stepStage+=1;
-        if(stepStage==7) {
+
+        if(paceMaker.getLastBeatHitId()>stepStage) {
             step = step + 1;
-            stepStage=0;
+            stepStage=paceMaker.getLastBarHitId();
         }
         if(step == 5)
             if(multiplyer<100) {
@@ -106,11 +108,11 @@ public class Player extends B2DSprite {
     public int getStep(){return step;}
     public int getMultiplyer(){return  multiplyer;}
 
-    public boolean manageScore(){
+    public boolean manageScore(double time){
 
-        scorespeedVar+=1;
-        if(scorespeedVar==scorespeedConst) {
-            scorespeedVar=0;
+
+        if(time >= lastTime + 0.1) {
+            lastTime = time;
             return true;
 
 

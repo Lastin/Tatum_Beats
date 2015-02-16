@@ -25,6 +25,7 @@ public class HUD {
     private int currbeat;
     private boolean debug =true;
 
+
     public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker) {
         this.game = game;
         this.cont = cont;
@@ -71,6 +72,7 @@ public class HUD {
         timePoint=1;
         this.paceMaker=paceMaker;
         currbeat=paceMaker.getLastBeatHitId();
+
     }
 
     public void render(SpriteBatch sb) {
@@ -111,8 +113,9 @@ public class HUD {
             drawString(sb, "z " + temp, game.getWidth() - 132, game.getHeight() - 120);
 
             //Beat Bar Section
-            temp = String.valueOf(paceMaker.getLastBeatHitId()+1);
+            temp = String.valueOf(paceMaker.getLastBeatHitId());
             drawString(sb, "beat " + temp, 30, game.getHeight() - 80);
+
              if (timePoint <= timeSig) {
                 if (currbeat < Integer.parseInt(temp)) {
                     timePoint++;
@@ -122,9 +125,9 @@ public class HUD {
                 timePoint = 1;
             }
             drawString(sb, "beat out of " + timePoint + " " + timeSig, 30, game.getHeight() - 100);
-            temp = String.valueOf(paceMaker.getLastBarHitId()+1);
+            temp = String.valueOf(paceMaker.getLastBarHitId());
             drawString(sb, "bar " + temp, 30, game.getHeight() - 120);
-            temp = String.valueOf(paceMaker.getLastSectionHitId()+1);
+            temp = String.valueOf(paceMaker.getLastSectionHitId());
             drawString(sb, "section "+ temp,30,game.getHeight() - 140);
 
 

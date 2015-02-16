@@ -61,6 +61,7 @@ public class MusicItem {
         } else {
             clicked = false;
         }
+
     }
 
     public String getText() {
@@ -71,6 +72,9 @@ public class MusicItem {
             text = text.substring(0,22) + "...";
         }
     }
+    public float getWidth(){return width;}
+
+    public float getHeight() {return height;}
 }
 
 

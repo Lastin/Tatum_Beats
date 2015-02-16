@@ -156,4 +156,6 @@ public class PaceMaker {
        timeSig= sections.get(lastSectionHitId).getTimeSignature();
     }
 
+    public TrackData getTrackData(){return trackData;}
+
 }
