@@ -64,6 +64,52 @@ public class MusicItem {
 
     }
 
+    public boolean isClickedPlay(){
+        //System.out.println("start x" + 5);
+        //System.out.println("end x" + (backButton.getWidth()));
+        //System.out.println("input x "+ Input.x);
+        //System.out.println("start y" + 20);
+        //System.out.println("end y" + ((backButton.getHeight()*2)+20));
+        //System.out.println("input y "+ Input.y);
+     /*   if((Input.x >=10)){
+            System.out.println("first true");
+        }
+        else{
+            System.out.println("first false");
+        }
+        if((Input.x <=(backButton.getWidth()*2)+5)){
+            System.out.println("second true");
+        }
+        else{
+            System.out.println("second false");
+        }
+        if((Input.y >= 20)){
+            System.out.println("third true");
+        }
+        else{
+            System.out.println("third false");
+            System.out.println("start y" + 20);
+            System.out.println("input y "+ Input.y);
+        }
+        if(Input.y<= ((backButton.getHeight()*2)+20)){
+            System.out.println("forth true");
+        }
+        else{
+            System.out.println("forth false");
+        }
+        */
+        //double inverseY = gameHeight - height;
+
+        //System.out.println(gameHeight+" das "+ height + " d ads " + inverseY*2);
+        double inverseY = height*2;
+
+        if((((Input.x >=x) && (Input.x <=(getWidth()*2)+x))&&((Input.y >= inverseY)&&(Input.y<= ((getHeight()*2)+inverseY))))) {
+            return true;
+        }
+        else
+            return false;
+    }
+
     public String getText() {
         return originalText;
     }

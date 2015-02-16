@@ -309,40 +309,8 @@ public class Play extends GameState {
     @Override
     public void handleInput(){
         backButton.update(0);
-        //System.out.println("start x" + 5);
-        //System.out.println("end x" + (backButton.getWidth()));
-        //System.out.println("input x "+ Input.x);
-        //System.out.println("start y" + 20);
-        //System.out.println("end y" + ((backButton.getHeight()*2)+20));
-        //System.out.println("input y "+ Input.y);
-     /*   if((Input.x >=10)){
-            System.out.println("first true");
-        }
-        else{
-            System.out.println("first false");
-        }
-        if((Input.x <=(backButton.getWidth()*2)+5)){
-            System.out.println("second true");
-        }
-        else{
-            System.out.println("second false");
-        }
-        if((Input.y >= 20)){
-            System.out.println("third true");
-        }
-        else{
-            System.out.println("third false");
-            System.out.println("start y" + 20);
-            System.out.println("input y "+ Input.y);
-        }
-        if(Input.y<= ((backButton.getHeight()*2)+20)){
-            System.out.println("forth true");
-        }
-        else{
-            System.out.println("forth false");
-        }
-        */
-        if((((Input.x >=10) && (Input.x <=(backButton.getWidth()*2)+5))&&((Input.y >= 20)&&(Input.y<= ((backButton.getHeight()*2)+20))))){
+        
+            if(backButton.isClickedPlay()){
             System.out.println("Clicked");
             sb.setColor(1f, 1f, 1f, 1f);
             music.stop();
