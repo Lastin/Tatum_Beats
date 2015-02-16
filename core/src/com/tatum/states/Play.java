@@ -309,7 +309,7 @@ public class Play extends GameState {
     @Override
     public void handleInput(){
         backButton.update(0);
-        
+
             if(backButton.isClickedPlay()){
             System.out.println("Clicked");
             sb.setColor(1f, 1f, 1f, 1f);

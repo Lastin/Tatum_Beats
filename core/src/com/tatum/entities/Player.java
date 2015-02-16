@@ -85,7 +85,7 @@ public class Player extends B2DSprite {
 
         if(paceMaker.getLastBeatHitId()>stepStage) {
             step = step + 1;
-            stepStage=paceMaker.getLastBarHitId();
+            stepStage=paceMaker.getLastBeatHitId();
         }
         if(step == 5)
             if(multiplyer<100) {
