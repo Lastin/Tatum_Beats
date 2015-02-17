@@ -5,7 +5,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.tatum.handlers.Animation;
+import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.PaceMaker;
 
@@ -17,6 +20,8 @@ import java.io.OutputStream;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+
+import static com.tatum.handlers.B2DVars.PPM;
 
 
 public class Player extends B2DSprite {
@@ -42,10 +47,16 @@ public class Player extends B2DSprite {
     private TextureRegion   sprite3Duck;
     private TextureRegion   sprite3Hurt;
     private boolean isJumping = false;
+    private boolean isDucking = false;
     private int playerNum;
     private boolean newHighScore;
     private String path;
     private PaceMaker paceMaker;
+
+    //reskin timers
+    private double jumpTime = 0;
+    private int duckBeat = 0;
+
 
 
     public Player(Body body, ContentManager resources,String name,String path,PaceMaker paceMaker) {
@@ -281,6 +292,8 @@ public class Player extends B2DSprite {
     public void setHighScore(){
         highScore=score;
     }
+
+
     public void setJumpSkin(){
         if(playerNum ==3){
             TextureRegion[] temp = {sprite3Jump,sprite3Jump};
@@ -299,7 +312,7 @@ public class Player extends B2DSprite {
         }
         setIsJumping(true);
     }
-    public void removeJumpSkin(){
+    public void removeSkin(){
         if(playerNum ==3){
             animation = new Animation(sprites3);
             animation.setFrames(sprites3, 1/15f);
@@ -313,11 +326,24 @@ public class Player extends B2DSprite {
             animation.setFrames(sprites1, 1/15f);
         }
     }
-    public void setCrouchSkin(){
-
+    public void setCrouchSkin(int beat){
+    if(!isJumping&&!isDucking) {
+        if (playerNum == 3) {
+            TextureRegion[] temp = {sprite3Duck, sprite3Duck};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        } else if (playerNum == 2) {
+            TextureRegion[] temp = {sprite2Duck, sprite2Duck};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        } else {
+            TextureRegion[] temp = {sprite1Duck, sprite1Duck};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        }
+        setDuckBeat(beat);
+        setIsDucking(true);
     }
-    public void removeCrouchSkin(){
-
     }
 
 
@@ -326,6 +352,24 @@ public class Player extends B2DSprite {
     }
     public void setIsJumping(boolean temp){
         isJumping = temp;
+    }
+    public boolean getIsDucking(){
+        return isDucking;
+    }
+    public void setIsDucking(boolean temp){
+        isDucking = temp;
+    }
+    public double getJumpTime(){
+        return jumpTime;
+    }
+    public void setJumpTime(double time){
+        jumpTime=time;
+    }
+    public double getDuckBeat(){
+        return duckBeat;
+    }
+    public void setDuckBeat(int beat){
+        duckBeat = beat;
     }
 
 }

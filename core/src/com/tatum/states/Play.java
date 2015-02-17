@@ -85,8 +85,6 @@ public class Play extends GameState {
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
 
-    //reskin timers
-    private double jumpTime = 0;
 
 
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path) {
@@ -237,12 +235,7 @@ public class Play extends GameState {
     float total = 0;
     @Override
     public void update(float deltaTime){
-        //check if need to reskin
-        if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > jumpTime+0.1)){
-            player.removeJumpSkin();
-            player.setIsJumping(false);
-        }
-        System.out.println(player.getIsJumping() && cl.playerCanJump());
+
         handleInput();
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
@@ -289,7 +282,16 @@ public class Play extends GameState {
         //    player.randomSprite();
         //}
 
-
+        //check if need to reskin
+        if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > player.getJumpTime()+0.1)){
+            player.removeSkin();
+            player.setIsJumping(false);
+        }
+        if(player.getIsDucking() && (paceMaker.getLastBeatHitId() >= player.getDuckBeat()+2) ){
+            player.removeSkin();
+            player.setIsDucking(false);
+        }
+       
 
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
@@ -332,7 +334,7 @@ public class Play extends GameState {
         if(Input.isPressed(Input.BUTTON1))
             playerJump();
         if(Input.isPressed(Input.BUTTON2))
-            switchBlocks();
+            player.setCrouchSkin(paceMaker.getLastBeatHitId());
         if(Input.isPressed()) {
       if (Input.x < Gdx.graphics.getWidth() / 2)
                 switchBlocks();
@@ -342,11 +344,11 @@ public class Play extends GameState {
     }
 
     private void playerJump(){
-        if(cl.playerCanJump()){
+        if(cl.playerCanJump()&&(!player.getIsJumping())){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);
             player.setJumpSkin();
-            jumpTime = music.getPosition();
+            player.setJumpTime(music.getPosition());
             //resources.getSound("jump").play();
         }
     }
