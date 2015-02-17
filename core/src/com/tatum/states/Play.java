@@ -291,7 +291,7 @@ public class Play extends GameState {
             player.removeSkin();
             player.setIsDucking(false);
         }
-       
+
 
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
@@ -344,7 +344,7 @@ public class Play extends GameState {
     }
 
     private void playerJump(){
-        if(cl.playerCanJump()&&(!player.getIsJumping())){
+        if(cl.playerCanJump()&&(!player.getIsJumping())&&(!player.getIsDucking())){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);
             player.setJumpSkin();
