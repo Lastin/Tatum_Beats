@@ -10,7 +10,7 @@ public class GameStateManager {
 
     public GameStateManager(Game game) {
         this.game = game;
-        pushState(new Menu(this));
+        pushState(new Menu(this,"Downloads/Alt-J - An Awesome Wave (2012)/04 Breezeblocks.mp3"));
     }
     public void pushState(GameState state) {
         gameStates.push(state);

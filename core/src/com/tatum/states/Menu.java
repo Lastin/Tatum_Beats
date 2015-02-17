@@ -221,6 +221,7 @@ public class Menu extends GameState {
             if(musicSelectionPath == null){
                 gsm.setState(new Select(gsm));
             }
+            System.out.println(musicSelectionPath);
             Thread thread = new Thread() {
                 public void run(){
                     loading = true;

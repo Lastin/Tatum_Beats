@@ -30,8 +30,18 @@ public class Player extends B2DSprite {
     private String playerName;
     private int highScore;
     private TextureRegion[] sprites1 = new TextureRegion[11];
+    private TextureRegion   sprite1Jump;
+    private TextureRegion   sprite1Duck;
+    private TextureRegion   sprite1Hurt;
     private TextureRegion[] sprites2 = new TextureRegion[11];
+    private TextureRegion   sprite2Jump;
+    private TextureRegion   sprite2Duck;
+    private TextureRegion   sprite2Hurt;
     private TextureRegion[] sprites3 = new TextureRegion[11];
+    private TextureRegion   sprite3Jump;
+    private TextureRegion   sprite3Duck;
+    private TextureRegion   sprite3Hurt;
+    private boolean isJumping = false;
     private int playerNum;
     private boolean newHighScore;
     private String path;
@@ -203,6 +213,36 @@ public class Player extends B2DSprite {
         for(int i=0;i<11;i++) {
             sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
         }
+
+        setExtraSkins(resources);
+
+    }
+    public void setExtraSkins(ContentManager resources){
+
+        //load duck skins
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p1_duck.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p2_duck.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p3_duck.png");
+        sprite1Duck = TextureRegion.split(resources.getTexture("p1_duck"), 35, 36)[0][0];
+        sprite2Duck = TextureRegion.split(resources.getTexture("p2_duck"), 34, 36)[0][0];
+        sprite3Duck = TextureRegion.split(resources.getTexture("p3_duck"), 35, 36)[0][0];
+
+        //load jump skins
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p1_jump.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p2_jump.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p3_jump.png");
+        sprite1Jump = TextureRegion.split(resources.getTexture("p1_jump"), 34, 47)[0][0];
+        sprite2Jump = TextureRegion.split(resources.getTexture("p2_jump"), 33, 47)[0][0];
+        sprite3Jump = TextureRegion.split(resources.getTexture("p3_jump"), 34, 47)[0][0];
+
+        //load hurt skins
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p1_hurt.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p2_hurt.png");
+        resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p3_hurt.png");
+        sprite1Hurt = TextureRegion.split(resources.getTexture("p1_hurt"), 35, 46)[0][0];
+        sprite2Hurt = TextureRegion.split(resources.getTexture("p2_hurt"), 34, 46)[0][0];
+        sprite3Hurt = TextureRegion.split(resources.getTexture("p3_hurt"), 35, 46)[0][0];
+
     }
     public int loadHighScore(){
         String trackName = path.replaceAll("/","");
@@ -241,4 +281,51 @@ public class Player extends B2DSprite {
     public void setHighScore(){
         highScore=score;
     }
+    public void setJumpSkin(){
+        if(playerNum ==3){
+            TextureRegion[] temp = {sprite3Jump,sprite3Jump};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        }
+        else if(playerNum ==2){
+            TextureRegion[] temp = {sprite2Jump,sprite2Jump};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        }
+        else {
+            TextureRegion[] temp = {sprite1Jump,sprite1Jump};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1f);
+        }
+        setIsJumping(true);
+    }
+    public void removeJumpSkin(){
+        if(playerNum ==3){
+            animation = new Animation(sprites3);
+            animation.setFrames(sprites3, 1/15f);
+        }
+        else if(playerNum ==2){
+            animation = new Animation(sprites2);
+            animation.setFrames(sprites2, 1/15f);
+        }
+        else {
+            animation = new Animation(sprites1);
+            animation.setFrames(sprites1, 1/15f);
+        }
+    }
+    public void setCrouchSkin(){
+
+    }
+    public void removeCrouchSkin(){
+
+    }
+
+
+    public boolean getIsJumping(){
+        return isJumping;
+    }
+    public void setIsJumping(boolean temp){
+        isJumping = temp;
+    }
+
 }

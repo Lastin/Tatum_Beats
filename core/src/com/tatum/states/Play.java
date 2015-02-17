@@ -85,6 +85,9 @@ public class Play extends GameState {
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
 
+    //reskin timers
+    private double jumpTime = 0;
+
 
     public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path) {
         super(gsm);
@@ -234,6 +237,12 @@ public class Play extends GameState {
     float total = 0;
     @Override
     public void update(float deltaTime){
+        //check if need to reskin
+        if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > jumpTime+0.1)){
+            player.removeJumpSkin();
+            player.setIsJumping(false);
+        }
+        System.out.println(player.getIsJumping() && cl.playerCanJump());
         handleInput();
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
@@ -279,6 +288,9 @@ public class Play extends GameState {
         //    player.scoreBreak();
         //    player.randomSprite();
         //}
+
+
+
         if(cl.isPlayerDead()) {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
@@ -333,6 +345,8 @@ public class Play extends GameState {
         if(cl.playerCanJump()){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);
+            player.setJumpSkin();
+            jumpTime = music.getPosition();
             //resources.getSound("jump").play();
         }
     }
