@@ -54,7 +54,7 @@ public class Play extends GameState {
     private Music music;
     //other settings
     private String userName = "test";
-    private String path = "tempPath";
+    private String path;
     private String[] data;
     private float shaderVal = 0.1f;
     private float walkCheck = 32/PPM;
@@ -86,10 +86,11 @@ public class Play extends GameState {
     private boolean yResetRight = true;
 
 
-    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker) {
+    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path) {
         super(gsm);
         this.map = map;
         this.music = music;
+        this.path = path;
         this.paceMaker = paceMaker;
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
@@ -255,8 +256,7 @@ public class Play extends GameState {
 
         //check if level is finished
         if(player.getBody().getPosition().x>=width){
-            if(player.getHighScore()>player.loadHighScore())
-                player.saveHighScore();
+            player.saveHighScore();
             gsm.setState(new Menu(gsm));
         }
 

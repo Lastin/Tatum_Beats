@@ -236,7 +236,7 @@ public class Menu extends GameState {
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker));
+                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker,musicSelectionPath));
                             }
                         });
                     } catch (Exception e) {

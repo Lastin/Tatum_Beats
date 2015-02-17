@@ -92,15 +92,15 @@ public class HUD {
         //draw crystals
         //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
         //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
-        drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-132,game.getHeight()-10);
-        drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-132,game.getHeight()-30);
-        drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-132,game.getHeight()-50);
+        drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-160,game.getHeight()-10);
+        drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-160,game.getHeight()-30);
+        drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-160,game.getHeight()-50);
         int space = 0;
         //System.out.println("here");
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], game.getWidth() - 110 + space, game.getHeight() - 60);
+            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 60);
             space+=15;
         }
         if(debug) {

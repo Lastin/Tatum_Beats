@@ -30,7 +30,7 @@ public class MusicItem {
         this.x = x;
         this.y = y;
         batch.begin();
-        TextBounds tb = font.draw(batch, text, x, y);
+        TextBounds tb = font.draw(batch, this.text, x, y);
         batch.end();
         width = tb.width;
         height = tb.height;
