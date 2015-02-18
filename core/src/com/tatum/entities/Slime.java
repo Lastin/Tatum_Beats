@@ -10,7 +10,9 @@ import com.tatum.handlers.ContentManager;
  */
 public class Slime extends B2DSprite {
 
-    public Slime(Body body, ContentManager cont) {
+    private int beat;
+
+    public Slime(Body body, ContentManager cont,int beat) {
         super(body, cont);
         cont.loadTexture("res/images/PlatformerPack/Enemies/slime.png");
         cont.loadTexture("res/images/PlatformerPack/Enemies/slime_walk.png");
@@ -22,6 +24,9 @@ public class Slime extends B2DSprite {
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
-
+        this.beat = beat;
+    }
+    public int getBeat(){
+        return beat;
     }
 }

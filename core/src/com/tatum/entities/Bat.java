@@ -10,7 +10,9 @@ import com.tatum.handlers.ContentManager;
  */
 public class Bat extends B2DSprite {
 
-    public Bat(Body body, ContentManager cont) {
+    private int beat;
+
+    public Bat(Body body, ContentManager cont, int Beat) {
         super(body, cont);
         cont.loadTexture("res/images/PlatformerPack/Enemies/bat.png");
         cont.loadTexture("res/images/PlatformerPack/Enemies/bat_fly.png");
@@ -22,6 +24,9 @@ public class Bat extends B2DSprite {
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
-
+        this.beat = Beat;
+    }
+    public int getBeat(){
+        return beat;
     }
 }
