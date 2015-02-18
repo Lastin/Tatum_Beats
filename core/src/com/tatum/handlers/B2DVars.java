@@ -11,7 +11,7 @@ public class B2DVars {
     public static final short BIT_GRASS_BLOCK = 4;
     public static final short BIT_ICE_BLOCK = 8;
     public static final short BIT_SAND_BLOCK = 16;
-    public static final short BIT_CRYSTAL = 32;
+    public static final short BIT_BAT = 32;
     public static final short BIT_SPIKE = 64;
 
     public static final short BIT_TOP_BLOCK = 2;

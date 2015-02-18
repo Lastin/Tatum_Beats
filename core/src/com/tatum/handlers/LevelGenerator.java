@@ -7,6 +7,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.tatum.entities.Bat;
 import com.tatum.music.TimedEvent;
 import com.tatum.music.TrackData;
 
@@ -41,7 +46,7 @@ public class LevelGenerator {
         System.out.println("number of beats:" + beats.size());
         for(int i=0; i<beats.size(); i++) {
             //for(int j=0; j<3; j++) {
-                layer.setCell(i, 0, cells[0]);
+            layer.setCell(i, 0, cells[0]);
             //}
         }
         return layer;

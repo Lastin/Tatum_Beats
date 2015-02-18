@@ -85,7 +85,7 @@ public class PaceMaker {
         //player.getBody().setLinearVelocity(velocity);
     }
 
-    private int findMatchingBeat(double musicTime){
+    public int findMatchingBeat(double musicTime){
         int attempts = 0;
         for(int i=lastBeatHitId;i>-1 && i< beats.size() && attempts<2;){
             double beatStart = beats.get(i).getStart();

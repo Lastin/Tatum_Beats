@@ -20,6 +20,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.tatum.entities.Bat;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
 import com.tatum.handlers.B2DVars;
@@ -33,6 +34,9 @@ import com.tatum.Game;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.music.MusicItem;
+import com.tatum.music.TrackData;
+
+import java.util.ArrayList;
 
 public class Play extends GameState {
     private boolean debug = false;
@@ -58,6 +62,9 @@ public class Play extends GameState {
     private String[] data;
     private float shaderVal = 0.1f;
     private float walkCheck = 32/PPM;
+
+    //bats and bats
+    ArrayList<Bat> bats;
 
     //buttons
     MusicItem backButton;
@@ -87,7 +94,7 @@ public class Play extends GameState {
 
 
 
-    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path) {
+    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
         super(gsm);
         this.map = map;
         this.music = music;
@@ -104,6 +111,7 @@ public class Play extends GameState {
         hud.setPaceMaker(paceMaker);
         backgrounds = createBackground();
         GameBodiesCreator.createBlocks(map, world);
+        bats = GameBodiesCreator.createBats(world, resources, trackData);
         initialiseCamerasAndRenderers();
         music.play();
         startTime= System.nanoTime();
@@ -142,7 +150,7 @@ public class Play extends GameState {
         fdef.density = 1;
         fdef.friction = 0;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK | B2DVars.BIT_CRYSTAL | B2DVars.BIT_SPIKE;
+        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK | B2DVars.BIT_BAT | B2DVars.BIT_SPIKE;
 
         // create player collision box fixture
         body.createFixture(fdef);
@@ -205,6 +213,7 @@ public class Play extends GameState {
         mapRenderer.render();
         sb.setColor(1f, 1f, 1f, shaderVal);
 
+
         if(paceMaker.gotFirstBeat()) {
 
             // draw player
@@ -219,6 +228,9 @@ public class Play extends GameState {
                 if(shaderVal>1f)
                     shaderVal=1f;
             }
+        }
+        for(Bat each : bats){
+            each.render(sb);
         }
         // debug draw box2d
         if(debug) {

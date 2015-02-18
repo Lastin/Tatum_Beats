@@ -4,10 +4,17 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.tatum.entities.Bat;
+import com.tatum.music.TimedEvent;
+import com.tatum.music.TrackData;
+
+import java.util.ArrayList;
 
 public class GameBodiesCreator {
     public static void createBlocks(TiledMap map, World world){
@@ -46,5 +53,30 @@ public class GameBodiesCreator {
                 cs.dispose();
             }
         }
+    }
+
+    public static ArrayList<Bat> createBats(World world, ContentManager resources, TrackData trackData){
+        ArrayList<Bat> bats = new ArrayList<Bat>();
+        ArrayList<TimedEvent> beats = trackData.getBeats();
+        for(int i = 0; i < beats.size(); i++){
+            int ppm = 100;
+            int blocksize = 32;
+            float y = blocksize * 4 / 100;
+            BodyDef bdef = new BodyDef();
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set(i, y);
+            Body body = world.createBody(bdef);
+            CircleShape cs = new CircleShape();
+            cs.setRadius(4/ppm);
+            FixtureDef fd = new FixtureDef();
+            fd.shape = cs;
+            fd.isSensor = true;
+            fd.filter.categoryBits = B2DVars.BIT_BAT;
+            fd.filter.maskBits = B2DVars.BIT_PLAYER;
+            body.createFixture(fd).setUserData("bat");
+            cs.dispose();
+            bats.add(new Bat(body, resources, i));
+        }
+        return bats;
     }
 }
