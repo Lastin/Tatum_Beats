@@ -510,7 +510,7 @@ public class Play extends GameState {
                     if(yResetRight){
                         if ((y>0)&&(y > lastY)) {
                             if (!(lastY + Ythreshold > y)) {
-                                resources.getSound("crystal").play();
+                                player.setCrouchSkin(paceMaker.getLastBeatHitId());
                                 yResetRight = false;
                                 lastX = x;
                                 lastY = y;
