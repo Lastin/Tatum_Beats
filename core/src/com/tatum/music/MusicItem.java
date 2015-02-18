@@ -1,5 +1,6 @@
 package com.tatum.music;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,7 +20,7 @@ public class MusicItem {
     private boolean clicked;
     private Vector3 vec = new Vector3();
     private OrthographicCamera cam;
-
+    private TextBounds tb;
     public MusicItem(Batch batch, BitmapFont font, String text, OrthographicCamera cam, int x, int y) {
         this.font = font;
         this.text = text;
@@ -30,13 +31,12 @@ public class MusicItem {
         this.x = x;
         this.y = y;
         batch.begin();
-        TextBounds tb = font.draw(batch, this.text, x, y);
+        tb = font.draw(batch, this.text, x, y);
         batch.end();
         width = tb.width;
         height = tb.height;
 
     }
-
     public void render() {
         batch.begin();
         font.draw(batch, text, x, y);
@@ -46,6 +46,14 @@ public class MusicItem {
         batch.begin();
         font.draw(batch, originalText, x, y);
         batch.end();
+    }
+    public void renderFade(float fade){
+        Color temp =batch.getColor();
+        batch.setColor(1f,1f,1f,fade);
+        batch.begin();
+        font.draw(batch, text, x, y);
+        batch.end();
+        batch.setColor(temp);
     }
     public boolean isClicked() {
         return clicked;
@@ -121,6 +129,12 @@ public class MusicItem {
     public float getWidth(){return width;}
 
     public float getHeight() {return height;}
+
+    public TextBounds getTb(){ return tb;}
+
+    public BitmapFont getFont(){
+        return font;
+    }
 }
 
 

@@ -18,6 +18,8 @@ public class FontGenerator {
 
     public static BitmapFont listFont = makeFont(36, Color.BLACK);
 
+    public static BitmapFont artistSongFont = makeFont(60, Color.BLACK);
+
 
     public static BitmapFont makeFont(int size, float r, float g, float b, float o){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();

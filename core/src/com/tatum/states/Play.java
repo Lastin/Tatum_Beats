@@ -4,7 +4,9 @@ import static com.tatum.handlers.B2DVars.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapProperties;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.echonest.api.v4.Song;
 import com.tatum.entities.Bat;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
@@ -66,9 +69,12 @@ public class Play extends GameState {
     //bats and bats
     ArrayList<Bat> bats;
 
-    //buttons
-    MusicItem backButton;
-
+    //MusicItems
+    private MusicItem backButton;
+    private MusicItem SongName;
+    private MusicItem ArtistName;
+    float titleFade = 0.1f;
+    float titleTimer =0;
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
@@ -113,10 +119,37 @@ public class Play extends GameState {
         GameBodiesCreator.createBlocks(map, world);
         bats = GameBodiesCreator.createBats(world, resources, trackData);
         initialiseCamerasAndRenderers();
-        music.play();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
         backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
+        System.out.println(backButton.getWidth());
+        setArtistSong();
+        music.play();
+    }
+    private void setArtistSong(){
+
+        float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
+        float widthS = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+
+        float newXArtist = (320/2)-(widthA/2);
+        float newXSong = (320/2)-(widthS/2);
+        int size =70;
+        sb.setColor(0,0,0,0);
+        while(true)
+        if(newXArtist<10 || newXSong < 10 || widthA>310 || widthS>310){
+            size--;
+            widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
+            widthS = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+            newXArtist = (320/2)-(widthA/2);
+            newXSong = (320/2)-(widthS/2);
+        }
+        else break;
+
+        //System.out.println("Width: "+width+" Artist Width: "+ widthA + " newX: " + newXArtist);
+        //System.out.println("Width: "+width+" Song Width: "+ widthS + " newX: " + newXSong);
+        ArtistName = new MusicItem(sb,FontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,(int)newXArtist,game.getHeight()-130);
+        SongName =  new MusicItem(sb,FontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,(int)newXSong,game.getHeight()-100);
+        System.out.println(ArtistName.getWidth());
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -240,6 +273,34 @@ public class Play extends GameState {
         }
 
         backButton.render();
+        if(music.getPosition()<5) {
+            System.out.println("inside 1 " + titleFade);
+            //sb.setColor(255f,0f,0f,titleFade);
+            SongName.getFont().setColor(0,0,0,titleFade);
+            SongName.render();
+            ArtistName.getFont().setColor(0,0,0,titleFade);
+            ArtistName.render();
+            if(titleFade<1f&&(music.getPosition()>titleTimer+0.1)) {
+                titleFade += 0.05;
+                titleTimer=music.getPosition();
+                if(titleFade>1f){
+                    titleFade=1f;
+                }
+            }
+        }
+        else if(music.getPosition()>5 && titleFade>0){
+            System.out.println("inside 2 " + titleFade);
+          //  sb.setColor(255f,0f,0f,titleFade);
+            SongName.getFont().setColor(0,0,0,titleFade);
+            SongName.render();
+            ArtistName.getFont().setColor(0,0,0,titleFade);
+            ArtistName.render();
+            if((music.getPosition()>titleTimer+0.1))
+                titleFade -= 0.03;
+        }
+        else{
+            //don't render
+        }
     }
 
     float previousPosition  = 0;
@@ -317,7 +378,6 @@ public class Play extends GameState {
             walkCheck+=(32/PPM);
         }
         checkMotion();
-
     }
 
 
@@ -337,7 +397,6 @@ public class Play extends GameState {
     @Override
     public void handleInput(){
         backButton.update(0);
-
             if(backButton.isClickedPlay()){
             System.out.println("Clicked");
             sb.setColor(1f, 1f, 1f, 1f);
