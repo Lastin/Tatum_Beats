@@ -58,10 +58,10 @@ public class GameBodiesCreator {
     public static ArrayList<Bat> createBats(World world, ContentManager resources, TrackData trackData){
         ArrayList<Bat> bats = new ArrayList<Bat>();
         ArrayList<TimedEvent> beats = trackData.getBeats();
-        for(int i = 0; i < beats.size(); i++){
+        for(int i = 0; i < 10; i++){
             int ppm = 100;
             int blocksize = 32;
-            float y = blocksize * 4 / 100;
+            float y = (blocksize * 4) / 100;
             BodyDef bdef = new BodyDef();
             bdef.type = BodyDef.BodyType.StaticBody;
             bdef.position.set(i, y);

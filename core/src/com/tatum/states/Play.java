@@ -247,7 +247,9 @@ public class Play extends GameState {
     float total = 0;
     @Override
     public void update(float deltaTime){
-
+        for(Bat each : bats){
+            each.update(deltaTime);
+        }
         handleInput();
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;

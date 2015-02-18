@@ -21,7 +21,7 @@ public class Bat extends B2DSprite {
         sprites[0] = TextureRegion.split(tex, 35, 24)[0][0];
         tex = cont.getTexture("bat_fly");
         sprites[1] = TextureRegion.split(tex, 44, 19)[0][0];
-        animation.setFrames(sprites, 1 / 12f);
+        animation.setFrames(sprites, 1 / 6f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
         this.beat = Beat;
