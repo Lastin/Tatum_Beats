@@ -318,7 +318,7 @@ public class Menu extends GameState {
 
         long tempTime = System.nanoTime();
         float tempTimeF = tempTime/1000000000;
-        if(tempTimeF >= time+0.5){
+        if(tempTimeF >= time+0.3){
             timeChange=true;
             time = tempTimeF;
         }

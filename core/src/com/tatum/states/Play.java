@@ -97,6 +97,7 @@ public class Play extends GameState {
     private float interval = 10;
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
+    private float movementTimer =0;
 
 
 
@@ -377,7 +378,10 @@ public class Play extends GameState {
             //resources.getSound("crystal").play();
             walkCheck+=(32/PPM);
         }
-        checkMotion();
+        if(music.getPosition()>=movementTimer+0.2) {
+            checkMotion();
+            movementTimer= music.getPosition();
+        }
     }
 
 
@@ -492,7 +496,7 @@ public class Play extends GameState {
                     if(yResetLeft) {
                          if ((y<0)&&(y < lastY)) {
                             if (!(y + Ythreshold > lastY)) {
-                                resources.getSound("jump").play();
+                                player.randomSprite();
                                 yResetLeft=false;
                                 lastX = x;
                                 lastY = y;
@@ -504,8 +508,15 @@ public class Play extends GameState {
                         }
                     }
                     else if(!yResetLeft)
-                        if(y>0)
+                        if(y>0) {
                             yResetLeft = true;
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                            lastUpdate = now;
+                            lastShake = now;
+                            return;
+                        }
 
                     if(yResetRight){
                         if ((y>0)&&(y > lastY)) {
@@ -522,8 +533,14 @@ public class Play extends GameState {
                         }
                     }
                     else if(!yResetRight)
-                        if(y<0)
+                        if(y<0) {
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                            lastUpdate = now;
+                            lastShake = now;
                             yResetRight = true;
+                        }
                 }
 
 

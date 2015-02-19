@@ -143,24 +143,22 @@ public class Player extends B2DSprite {
     public int getHighScore(){return highScore;}
     public String getPlayerName(){return playerName;}
     public void randomSprite(){
-
-        if(playerNum ==3){
+    if(!isJumping&&!isDucking) {
+        if (playerNum == 3) {
             animation = new Animation(sprites1);
-            animation.setFrames(sprites1, 1/15f);
-            playerNum=1;
-        }
-        else if(playerNum ==2){
+            animation.setFrames(sprites1, 1 / 15f);
+            playerNum = 1;
+        } else if (playerNum == 2) {
             animation = new Animation(sprites3);
-            animation.setFrames(sprites3, 1/15f);
-            playerNum=3;
-        }
-        else {
+            animation.setFrames(sprites3, 1 / 15f);
+            playerNum = 3;
+        } else {
             animation = new Animation(sprites2);
-            animation.setFrames(sprites2, 1/15f);
-            playerNum=2;
+            animation.setFrames(sprites2, 1 / 15f);
+            playerNum = 2;
         }
 
-
+    }
     }
     public int getPlayerNum(){return playerNum;}
 
