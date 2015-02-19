@@ -262,9 +262,9 @@ public class Play extends GameState {
                     shaderVal=1f;
             }
         }
-        for(Bat each : bats){
-            each.render(sb);
-        }
+//        for(Bat each : bats){
+//            each.render(sb);
+//        }
         // debug draw box2d
         if(debug) {
             b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);

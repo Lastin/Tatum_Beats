@@ -13,6 +13,8 @@ public class TrackLoader {
     private Music music;
     private TrackData trackData;
     private boolean ready = false;
+    private boolean uploadingFinished = false;
+
 
     public TrackLoader(ContentManager resources, String path) {
         this.resources = resources;
@@ -22,9 +24,7 @@ public class TrackLoader {
         if(music == null){
             throw new NullPointerException("Music was not found on given path");
         }
-        trackData = loadTrackData();
-        ready = true;
-    }
+       }
 
     private Music loadMusic(){
         Music music = resources.getMusic(key);
@@ -34,13 +34,13 @@ public class TrackLoader {
         return music;
     }
 
-    private TrackData loadTrackData(){
+    public void loadTrackData(){
         trackData = resources.getTrackData(key);
         if(trackData == null){
             trackData = new TrackData(path);
-            trackData.initilize();
+
         }
-        return trackData;
+
     }
 
     public Music getMusic(){
@@ -50,4 +50,6 @@ public class TrackLoader {
     public TrackData getTrackData(){
         return trackData;
     }
+
+
 }

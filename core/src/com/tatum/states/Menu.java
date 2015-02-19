@@ -1,6 +1,7 @@
 package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -26,6 +27,8 @@ import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TrackLoader;
+import com.tatum.music.MusicItem;
+import com.tatum.music.TrackData;
 
 import java.util.Timer;
 
@@ -49,9 +52,17 @@ public class Menu extends GameState {
     private String musicSelectionPath;
     private boolean loading = false;
     private boolean generating = false;
+    private boolean uploading = false;
     private boolean done = false;
     private TextureRegion[] signs;
     private Texture miniLogo;
+    private MusicItem uploadingText;
+    private MusicItem loadingText;
+    private MusicItem generatingText;
+
+    private float time;
+    private boolean timeChange = false;
+    private int dotCount = 0;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
@@ -75,8 +86,9 @@ public class Menu extends GameState {
         world = new World(new Vector2(0, -9.8f * 5), true);
         //world = new World(new Vector2(10, 10), true);
         b2dRenderer = new Box2DDebugRenderer();
-
+        createLoadings();
         createTitleBodies();
+        time = System.nanoTime()/1000000000;
 
     }
     public Menu(GameStateManager gsm, String Path){
@@ -102,8 +114,31 @@ public class Menu extends GameState {
         world = new World(new Vector2(0, -9.8f * 5), true);
         //world = new World(new Vector2(10, 10), true);
         b2dRenderer = new Box2DDebugRenderer();
-
+        createLoadings();
         createTitleBodies();
+    }
+    public void createLoadings(){
+        MusicItem temp = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Loading",cam,0,game.getHeight()-100);
+        float widthL = temp.getWidth();
+        float height = temp.getHeight();
+        float widthG = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Generating",cam,0,game.getHeight()-130).getWidth();
+        float widthU = new MusicItem(sb,FontGenerator.makeFont(70, new Color(255,120,120,1)),"Uploading",cam,0,game.getHeight()-130).getWidth();
+
+        float newXLoading = (320/2)-(widthL/2);
+        float newXGenerating = (320/2)-(widthG/2);
+        float newXUploading = (320/2)-(widthU/2);
+        float newY = (320/2)-(height/2);
+//        java.awt.Color red = new java.awt.Color(255,120,120);
+//        java.awt.Color yellow = new java.awt.Color(241,217,116);
+//        java.awt.Color green = new java.awt.Color(90,250,183);
+        Color yellow = Color.valueOf("F1D974");
+        yellow.a=0.8f;
+        Color green = Color.valueOf("68F367");
+        green.a=0.8f;
+        uploadingText =  new MusicItem(sb,FontGenerator.makeFont(70, new Color((255/255),(120/255),(120/255),0.7f)),"Uploading",cam,(int)newXUploading,(int)newY);
+        loadingText =  new MusicItem(sb,FontGenerator.makeFont(70, yellow),"Loading",cam,(int)newXLoading,(int)newY);
+        generatingText = new MusicItem(sb,FontGenerator.makeFont(70, green),"Generating",cam,(int)newXGenerating,(int)newY);
+
     }
 
     private TextureRegion[] loadSigns() {
@@ -224,11 +259,16 @@ public class Menu extends GameState {
             System.out.println(musicSelectionPath);
             Thread thread = new Thread() {
                 public void run(){
-                    loading = true;
+                    uploading = true;
                     try{
                         final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
-                        loading = false;
-                        generating = true;
+                        trackLoader.loadTrackData();
+                        trackLoader.getTrackData().upload();
+                        uploading=false;
+                        loading=true;
+                        trackLoader.getTrackData().initilize();
+                        loading=false;
+                        generating=true;
                         final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                         final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map);
                         sleep(1000);
@@ -266,6 +306,7 @@ public class Menu extends GameState {
 
     @Override
     public void update(float dt) {
+        if(!uploading&& !loading && !generating && !done)
         handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
@@ -274,25 +315,68 @@ public class Menu extends GameState {
         p3Animation.update(dt);
         playButton.update(dt);
         selectTrackButton.update(dt);
+
+        long tempTime = System.nanoTime();
+        float tempTimeF = tempTime/1000000000;
+        if(tempTimeF >= time+0.5){
+            timeChange=true;
+            time = tempTimeF;
+        }
+        else{
+            timeChange=false;
+        }
+
     }
 
     @Override
     public void render() {
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
-        playButton.render(sb);
-        selectTrackButton.render(sb);
+        if(!uploading&& !loading && !generating && !done) {
+            playButton.render(sb);
+            selectTrackButton.render(sb);
+        }
         sb.begin();
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
-        if(loading)
-            sb.draw(signs[2], 110, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
-            if(generating)
-                sb.draw(signs[1], 160, 41, signs[0].getRegionWidth()/2, signs[0].getRegionHeight()/2);
-        if(loading && !done){
-        }
         sb.end();
+        if(timeChange){
+            if(dotCount==0){
+                dotCount=1;
+                uploadingText.setText("Uploading.");
+                loadingText.setText("Loading.");
+                generatingText.setText("Generating.");
+            }
+            else if(dotCount==1){
+                dotCount=2;
+                uploadingText.setText("Uploading..");
+                loadingText.setText("Loading..");
+                generatingText.setText("Generating..");
+            }
+            else if(dotCount==2){
+                dotCount=3;
+                uploadingText.setText("Uploading...");
+                loadingText.setText("Loading...");
+                generatingText.setText("Generating...");
+            }
+            else {
+                dotCount=0;
+                uploadingText.setText("Uploading");
+                loadingText.setText("Loading");
+                generatingText.setText("Generating");
+            }
+        }
+        if(uploading) {
+            uploadingText.render();
+        }
+        if(loading) {
+            loadingText.render();
+        }
+        if(generating) {
+            generatingText.render();
+        }
+
         if (debug) {
             cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
             b2dRenderer.render(world, cam.combined);

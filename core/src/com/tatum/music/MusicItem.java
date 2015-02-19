@@ -135,6 +135,10 @@ public class MusicItem {
     public BitmapFont getFont(){
         return font;
     }
+
+    public void setText(String text){
+        this.text = text;
+    }
 }
 
 

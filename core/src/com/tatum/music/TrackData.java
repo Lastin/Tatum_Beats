@@ -81,10 +81,17 @@ public class TrackData {
         fileUploader = new FileUploaderGDX(trackPath);
 
     }
-
-    public void initilize() {
+    public void upload(){
         try {
             fileUploader.uploadGDX();
+        } catch (EchoNestException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void initilize() {
+        try {
             trackInformation = fileUploader.getJsonMap();
             JsonObject meta = (JsonObject) trackInformation.get("Meta");
             JsonObject track = (JsonObject) trackInformation.get("Track");
