@@ -27,12 +27,13 @@ public class ContentManager {
         loadResources();
     }
     private void loadResources(){
-        loadTexture("res/images/menu2.png");
+        loadTexture("res/images/backgrounds/menu2.png");
         loadTexture("res/images/bgs.png");
         loadTexture("res/images/hud2.png");
         loadTexture("res/images/bunny.png");
         loadTexture("res/images/crystal.png");
         loadTexture("res/images/blocks2.png");
+        loadTexture("res/images/backgrounds/GrassColour.png");
         //resources.loadTexture("res/images/spikes.png");
         loadTexture("res/images/Play.png");
         loadTexture("res/images/Leader.png");
