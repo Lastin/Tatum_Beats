@@ -133,10 +133,10 @@ public class Menu extends GameState {
 //        java.awt.Color yellow = new java.awt.Color(241,217,116);
 //        java.awt.Color green = new java.awt.Color(90,250,183);
         Color yellow = Color.valueOf("F1D974");
-        yellow.a=0.8f;
+        yellow.a=1f;
         Color green = Color.valueOf("68F367");
-        green.a=0.8f;
-        uploadingText =  new MusicItem(sb,FontGenerator.makeFont(70, new Color((255/255),(120/255),(120/255),0.7f)),"Uploading",cam,(int)newXUploading,(int)newY);
+        green.a=1f;
+        uploadingText =  new MusicItem(sb,FontGenerator.makeFont(70, new Color((255/255),(120/255),(120/255),1f)),"Uploading",cam,(int)newXUploading,(int)newY);
         loadingText =  new MusicItem(sb,FontGenerator.makeFont(70, yellow),"Loading",cam,(int)newXLoading,(int)newY);
         generatingText = new MusicItem(sb,FontGenerator.makeFont(70, green),"Generating",cam,(int)newXGenerating,(int)newY);
 
