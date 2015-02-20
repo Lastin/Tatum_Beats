@@ -56,11 +56,11 @@ public class LevelGenerator {
     }
 
     private TiledMapTileLayer makeBatsLayer(int[] barPositions, TrackData trackData){
-        TiledMapTileLayer bats_layer = new TiledMapTileLayer(trackData.getBeats().size(), 20, 32, 32);
+        TiledMapTileLayer makeBatsLayer = new TiledMapTileLayer(trackData.getBeats().size(), 20, 32, 32);
         for(int each : barPositions){
-            bats_layer.setCell(each, 2, cells[2]);
+            makeBatsLayer.setCell(each, 2, null);
         }
-        return bats_layer;
+        return makeBatsLayer;
     }
 
     private int[] getBarsPositions(TrackData trackData){

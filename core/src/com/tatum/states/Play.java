@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Play extends GameState {
-    private boolean debug = true;
+    private boolean debug = false;
     private World world;
     private CollisionListener cl;
     //renderers
@@ -249,7 +249,6 @@ public class Play extends GameState {
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
 
-
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         sb.setColor(1f, 1f, 1f, 1f);
@@ -258,20 +257,21 @@ public class Play extends GameState {
        for (Background each : backgrounds) {
             each.render(sb);
         }
-        for(Slime each : slimes){
-            each.render(sb);
-        }
+
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
+
         sb.setColor(1f, 1f, 1f, shaderVal);
 
         if(paceMaker.gotFirstBeat()) {
-
             // draw player
             sb.setProjectionMatrix(cam.combined);
             player.render(sb);
-
+            //draw slimes
+            for(Slime each : slimes){
+                each.render(sb);
+            }
             // draw hud
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);
@@ -281,6 +281,7 @@ public class Play extends GameState {
                     shaderVal=1f;
             }
         }
+
         // debug draw box2d
         if(debug) {
             b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);

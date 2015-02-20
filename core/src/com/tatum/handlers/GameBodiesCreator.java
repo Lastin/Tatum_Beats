@@ -19,8 +19,7 @@ public class GameBodiesCreator {
     public static void createBlocks(TiledMap map, World world){
         for(MapLayer layer : map.getLayers()){
             String name = layer.getName();
-            if(name.equals("blocks"))
-                createBlocks((TiledMapTileLayer)layer, B2DVars.BIT_GRASS_BLOCK, world);
+            createBlocks((TiledMapTileLayer)layer, B2DVars.BIT_GRASS_BLOCK, world);
         }
     }
     public static void createBlocks(TiledMapTileLayer layer, short filter, World world) {
@@ -80,13 +79,13 @@ public class GameBodiesCreator {
     public static Slime createSlime(int position, World world, ContentManager resources){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position * 0.5f) * 32 / 100;
-        float y = (3*0.5f) * 32 / 100;
+        float x = (position+1) * 32 / 100;
+        float y = 3 * (32 / 100);
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(5/100);
+        circleShape.setRadius(8/100);
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = B2DVars.BIT_SLIME;
