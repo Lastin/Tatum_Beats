@@ -390,24 +390,17 @@ public class Play extends GameState {
             //resources.getSound("crystal").play();
             walkCheck+=(32/PPM);
         }
-<<<<<<< HEAD
         if(music.getPosition()>=movementTimer+0.2) {
             checkMotion();
             movementTimer= music.getPosition();
         }
-=======
         //if(music.getPosition()>=movementTimer+0.2) {
             checkMotion2ElectricBoogaloo();
         //    movementTimer= music.getPosition();
        // }
-    }
-
->>>>>>> f65a9c3cc070bb541384909cd298d7aed002dace
-
         for(Slime each : slimes){
             each.update(deltaTime);
         }
-        //update enemies
     }
 
     private void updateVelocity(float deltaTime){
