@@ -232,14 +232,14 @@ public class Play extends GameState {
     }
 
     private Background[] createBackground() {
-        Texture bgs = resources.getTexture("bgs");
+        Texture bgs = resources.getTexture("GrassColour");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
         TextureRegion clouds = new TextureRegion(bgs, 0, 240, 320, 240);
         TextureRegion mountains = new TextureRegion(bgs, 0, 480, 320, 240);
         Background[] backgrounds = new Background[3];
-        backgrounds[0] = new Background(game, sky, cam, 0f);
-        backgrounds[1] = new Background(game, clouds, cam, 0.1f);
-        backgrounds[2] = new Background(game, mountains, cam, 0.2f);
+        backgrounds[0] = new Background(game, sky, cam, 0.1f);
+        backgrounds[1] = new Background(game, clouds, cam, 0.15f);
+        backgrounds[2] = new Background(game, mountains, cam, 0.25f);
         return backgrounds;
     }
 
