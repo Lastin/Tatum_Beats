@@ -96,7 +96,7 @@ public class Play extends GameState {
     private float lastY = 0;
     private float lastZ = 0;
     private float force = 0;
-    private float Zthreshold = 3;
+    private float Zthreshold = 4f;
     private float Ythreshold = 1.5f;
     private float interval = 10;
     private boolean yResetLeft = true;
@@ -390,10 +390,19 @@ public class Play extends GameState {
             //resources.getSound("crystal").play();
             walkCheck+=(32/PPM);
         }
+<<<<<<< HEAD
         if(music.getPosition()>=movementTimer+0.2) {
             checkMotion();
             movementTimer= music.getPosition();
         }
+=======
+        //if(music.getPosition()>=movementTimer+0.2) {
+            checkMotion2ElectricBoogaloo();
+        //    movementTimer= music.getPosition();
+       // }
+    }
+
+>>>>>>> f65a9c3cc070bb541384909cd298d7aed002dace
 
         for(Slime each : slimes){
             each.update(deltaTime);
@@ -556,6 +565,96 @@ public class Play extends GameState {
                             lastShake = now;
                             yResetRight = true;
                         }
+                }
+
+
+
+                lastShake = now;
+            }
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+            lastUpdate = now;
+        }
+    }
+    public void checkMotion2ElectricBoogaloo(){
+        now = Long.parseLong(data[0]);
+
+        x = Float.parseFloat(data[1]);
+        y = Float.parseFloat(data[2]);
+        z = Float.parseFloat(data[3]);
+
+
+        if (lastUpdate == 0) {
+            lastUpdate = now;
+            lastShake = now;
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+
+
+        } else {
+            timeDiff = now - lastUpdate;
+
+            if (timeDiff > 0) {
+
+                float Zforce = Math.abs(z - lastZ);
+                if (now - lastShake >= interval ) {
+
+                    if(yResetRight){
+                        if (y>5) {
+                            player.setCrouchSkin(paceMaker.getLastBeatHitId());
+                            yResetRight = false;
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                            lastUpdate = now;
+                            lastShake = now;
+                            return;
+                        }
+                    }
+                    else if(!yResetRight)
+                        if(y<0) {
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                            lastUpdate = now;
+                            lastShake = now;
+                            yResetRight = true;
+                        }
+                    if (Float.compare(Zforce, Zthreshold) >0) {
+
+                        playerJump();
+                        lastX = x;
+                        lastY = y;
+                        lastZ = z;
+                        lastUpdate = now;
+                        lastShake = now;
+                        return;
+                    }
+                    if(yResetLeft) {
+                            if (y<-5) {
+                                player.randomSprite();
+                                yResetLeft=false;
+                                lastX = x;
+                                lastY = y;
+                                lastZ = z;
+                                lastUpdate = now;
+                                lastShake = now;
+                                return;
+                            }
+                    }
+                    else if(!yResetLeft)
+                        if(y>0) {
+                            yResetLeft = true;
+                            lastX = x;
+                            lastY = y;
+                            lastZ = z;
+                            lastUpdate = now;
+                            lastShake = now;
+                            return;
+                        }
+
                 }
 
 
