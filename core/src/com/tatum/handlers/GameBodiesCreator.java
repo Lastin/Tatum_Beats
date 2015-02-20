@@ -79,16 +79,16 @@ public class GameBodiesCreator {
     public static Slime createSlime(int position, World world, ContentManager resources){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position+1) * 32 / 100;
-        float y = 3 * (32 / 100);
+        float x = position * 0.32f;
+        float y = 0.4f;
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(8/100);
+        circleShape.setRadius(0.15f);
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = B2DVars.BIT_SLIME;
+        fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("slime");
         Slime slime = new Slime(body, resources);
