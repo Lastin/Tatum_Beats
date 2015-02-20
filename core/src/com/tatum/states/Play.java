@@ -26,6 +26,7 @@ import com.echonest.api.v4.Song;
 import com.tatum.entities.Bat;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
+import com.tatum.entities.Slime;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.Background;
@@ -36,13 +37,16 @@ import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.handlers.TatumMap;
 import com.tatum.music.MusicItem;
 import com.tatum.music.TrackData;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Play extends GameState {
-    private boolean debug = false;
+    private boolean debug = true;
     private World world;
     private CollisionListener cl;
     //renderers
@@ -50,12 +54,15 @@ public class Play extends GameState {
     private BoundedCamera b2dCam;
     private OrthogonalTiledMapRenderer mapRenderer;
     //map and properties
-    private TiledMap map;
+    private final TatumMap tatumMap;
+    private TiledMap tiledMap;
     private int height;
     private float width;
     private final int tileSide = 32;
     //rendered components
     private Player player;
+    private ArrayList<Bat> bats = new ArrayList<Bat>();
+    private ArrayList<Slime> slimes = new ArrayList<Slime>();
     private HUD hud;
     private Background[] backgrounds;
     private Music music;
@@ -65,9 +72,6 @@ public class Play extends GameState {
     private String[] data;
     private float shaderVal = 0.1f;
     private float walkCheck = 32/PPM;
-
-    //bats and bats
-    ArrayList<Bat> bats;
 
     //MusicItems
     private MusicItem backButton;
@@ -101,24 +105,25 @@ public class Play extends GameState {
 
 
 
-    public Play(GameStateManager gsm, TiledMap map, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
+    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path) {
         super(gsm);
-        this.map = map;
+        this.tatumMap = tatumMap;
+        this.tiledMap = tatumMap.getTiledMap();
         this.music = music;
         this.path = path;
         this.paceMaker = paceMaker;
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
-        MapProperties properties = map.getProperties();
+        MapProperties properties = tiledMap.getProperties();
         width = (Float) properties.get("width");
         height = (Integer) properties.get("height");
         player = createPlayer();
+        createObstacles();
         hud = new HUD(resources, game, player,paceMaker);
         hud.setPaceMaker(paceMaker);
         backgrounds = createBackground();
-        GameBodiesCreator.createBlocks(map, world);
-        bats = GameBodiesCreator.createBats(world, resources, trackData);
+        GameBodiesCreator.createBlocks(tiledMap, world);
         initialiseCamerasAndRenderers();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
@@ -127,6 +132,7 @@ public class Play extends GameState {
         setArtistSong();
         music.play();
     }
+
     private void setArtistSong(){
 
         float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
@@ -159,7 +165,7 @@ public class Play extends GameState {
         b2dCam.setBounds(0, (width * tileSide) / PPM, 0, (height * tileSide) / PPM);
         b2dRenderer = new Box2DDebugRenderer();
         cam.setBounds(0, width * PPM, 0, height * tileSide);
-        mapRenderer = new OrthogonalTiledMapRenderer(map);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
     private Player createPlayer() {
@@ -184,7 +190,7 @@ public class Play extends GameState {
         fdef.density = 1;
         fdef.friction = 0;
         fdef.filter.categoryBits = B2DVars.BIT_PLAYER;
-        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK | B2DVars.BIT_BAT | B2DVars.BIT_SPIKE;
+        fdef.filter.maskBits = B2DVars.BIT_GRASS_BLOCK | B2DVars.BIT_BAT | B2DVars.BIT_SLIME;
 
         // create player collision box fixture
         body.createFixture(fdef);
@@ -217,6 +223,14 @@ public class Play extends GameState {
         // so at 1kg, i need 200 N jump force
     }
 
+    private void createObstacles(){
+        int[] barsPositions = tatumMap.getBarsPositions();
+        for(int each : barsPositions){
+            slimes.add(GameBodiesCreator.createSlime(each, world, resources));
+            //bats.add(GameBodiesCreator.createBat(each, world, resources));
+        }
+    }
+
     private Background[] createBackground() {
         Texture bgs = resources.getTexture("bgs");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -234,6 +248,8 @@ public class Play extends GameState {
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
+
+
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         sb.setColor(1f, 1f, 1f, 1f);
@@ -242,11 +258,13 @@ public class Play extends GameState {
        for (Background each : backgrounds) {
             each.render(sb);
         }
+        for(Slime each : slimes){
+            each.render(sb);
+        }
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
         sb.setColor(1f, 1f, 1f, shaderVal);
-
 
         if(paceMaker.gotFirstBeat()) {
 
@@ -263,9 +281,6 @@ public class Play extends GameState {
                     shaderVal=1f;
             }
         }
-//        for(Bat each : bats){
-//            each.render(sb);
-//        }
         // debug draw box2d
         if(debug) {
             b2dCam.setPosition(player.getPosition().x + game.getWidth() / 4 / PPM, game.getHeight() / 2 / PPM);
@@ -309,9 +324,6 @@ public class Play extends GameState {
     float total = 0;
     @Override
     public void update(float deltaTime){
-        for(Bat each : bats){
-            each.update(deltaTime);
-        }
         handleInput();
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
@@ -382,9 +394,12 @@ public class Play extends GameState {
             checkMotion();
             movementTimer= music.getPosition();
         }
+
+        for(Slime each : slimes){
+            each.update(deltaTime);
+        }
+        //update enemies
     }
-
-
 
     private void updateVelocity(float deltaTime){
         double currTime = (System.nanoTime()-startTime);

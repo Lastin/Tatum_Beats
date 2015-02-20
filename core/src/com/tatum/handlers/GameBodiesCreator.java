@@ -11,15 +11,16 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tatum.entities.Bat;
-import com.tatum.music.TimedEvent;
-import com.tatum.music.TrackData;
+import com.tatum.entities.Slime;
 
 import java.util.ArrayList;
 
 public class GameBodiesCreator {
     public static void createBlocks(TiledMap map, World world){
         for(MapLayer layer : map.getLayers()){
-            createBlocks((TiledMapTileLayer)layer, B2DVars.BIT_GRASS_BLOCK, world);
+            String name = layer.getName();
+            if(name.equals("blocks"))
+                createBlocks((TiledMapTileLayer)layer, B2DVars.BIT_GRASS_BLOCK, world);
         }
     }
     public static void createBlocks(TiledMapTileLayer layer, short filter, World world) {
@@ -55,28 +56,45 @@ public class GameBodiesCreator {
         }
     }
 
-    public static ArrayList<Bat> createBats(World world, ContentManager resources, TrackData trackData){
-        ArrayList<Bat> bats = new ArrayList<Bat>();
-        ArrayList<TimedEvent> beats = trackData.getBeats();
-        for(int i = 0; i < 10; i++){
-            int ppm = 100;
-            int blocksize = 32;
-            float y = (blocksize * 4) / 100;
-            BodyDef bdef = new BodyDef();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(i, y);
-            Body body = world.createBody(bdef);
-            CircleShape cs = new CircleShape();
-            cs.setRadius(4/ppm);
-            FixtureDef fd = new FixtureDef();
-            fd.shape = cs;
-            fd.isSensor = true;
-            fd.filter.categoryBits = B2DVars.BIT_BAT;
-            fd.filter.maskBits = B2DVars.BIT_PLAYER;
-            body.createFixture(fd).setUserData("bat");
-            cs.dispose();
-            bats.add(new Bat(body, resources, i));
-        }
-        return bats;
+    public static Bat createBat(int position, World world, ContentManager resources){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        float x = (position * 0.5f) * 32 / 100;
+        float y = (3*0.5f) * 32 / 100;
+        bodyDef.position.set(x, y);
+        Body body = world.createBody(bodyDef);
+        FixtureDef fixtureDef = new FixtureDef();
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(5/100);
+        fixtureDef.shape = circleShape;
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
+        fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
+        body.createFixture(fixtureDef).setUserData("bat");
+        Bat bat = new Bat(body, resources);
+        //body.setUserData(bat);
+        circleShape.dispose();
+        return bat;
+    }
+
+    public static Slime createSlime(int position, World world, ContentManager resources){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        float x = (position * 0.5f) * 32 / 100;
+        float y = (3*0.5f) * 32 / 100;
+        bodyDef.position.set(x, y);
+        Body body = world.createBody(bodyDef);
+        FixtureDef fixtureDef = new FixtureDef();
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(5/100);
+        fixtureDef.shape = circleShape;
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = B2DVars.BIT_SLIME;
+        fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
+        body.createFixture(fixtureDef).setUserData("slime");
+        Slime slime = new Slime(body, resources);
+        body.setUserData(slime);
+        circleShape.dispose();
+        return slime;
     }
 }

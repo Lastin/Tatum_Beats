@@ -16,6 +16,7 @@ import com.tatum.music.TimedEvent;
 import com.tatum.music.TrackData;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class LevelGenerator {
     private ContentManager resources;
@@ -27,29 +28,54 @@ public class LevelGenerator {
         cells = loadCells();
     }
 
-    public TiledMap makeMap(TrackData trackData){
+    public TatumMap makeMap(TrackData trackData){
         float width = ((trackData.getBeats().size()/B2DVars.PPM)*32)-(32/B2DVars.PPM);
-        int height = 100;
+        int height = 20;
         //set properties
         TiledMap map = new TiledMap();
         MapProperties properties = map.getProperties();
         properties.put("width", width);
         properties.put("height", height);
         properties.put("tilewidth", cellSide);
-        map.getLayers().add(makeLayer(trackData));
-        return map;
+        map.getLayers().add(makeBeatsLayer(trackData));
+
+        int[] barsPositions = getBarsPositions(trackData);
+
+        return new TatumMap(map, barsPositions);
     }
 
-    private TiledMapTileLayer makeLayer(TrackData trackData){
+    private TiledMapTileLayer makeBeatsLayer(TrackData trackData){
         ArrayList<TimedEvent> beats = trackData.getBeats();
-        TiledMapTileLayer layer = new TiledMapTileLayer(beats.size(), 20, cellSide, cellSide);
+        TiledMapTileLayer beats_layer = new TiledMapTileLayer(beats.size(), 20, cellSide, cellSide);
+        beats_layer.setName("blocks");
         System.out.println("number of beats:" + beats.size());
         for(int i=0; i<beats.size(); i++) {
-            //for(int j=0; j<3; j++) {
-            layer.setCell(i, 0, cells[0]);
-            //}
+            beats_layer.setCell(i, 0, cells[0]);
         }
-        return layer;
+        return beats_layer;
+    }
+
+    private TiledMapTileLayer makeBatsLayer(int[] barPositions, TrackData trackData){
+        TiledMapTileLayer bats_layer = new TiledMapTileLayer(trackData.getBeats().size(), 20, 32, 32);
+        for(int each : barPositions){
+            bats_layer.setCell(each, 2, cells[2]);
+        }
+        return bats_layer;
+    }
+
+    private int[] getBarsPositions(TrackData trackData){
+        ArrayList<TimedEvent> beats = trackData.getBeats();
+        ArrayList<TimedEvent> bars = trackData.getBars();
+        int[] barsPositions = new int[bars.size()-1];
+        int last_bar = 0;
+        for(int i=0; i< beats.size()-1; i++){
+            int currentBar = beats.get(i).getContainedIn();
+            if(last_bar < currentBar){
+                barsPositions[last_bar] = i;
+                last_bar = currentBar;
+            }
+        }
+        return barsPositions;
     }
 
     private Cell[] loadCells() {

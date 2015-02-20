@@ -1,8 +1,10 @@
 package com.tatum.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 
 /**
@@ -10,9 +12,7 @@ import com.tatum.handlers.ContentManager;
  */
 public class Bat extends B2DSprite {
 
-    private int beat;
-
-    public Bat(Body body, ContentManager cont, int Beat) {
+    public Bat(Body body, ContentManager cont) {
         super(body, cont);
         cont.loadTexture("res/images/PlatformerPack/Enemies/bat.png");
         cont.loadTexture("res/images/PlatformerPack/Enemies/bat_fly.png");
@@ -24,9 +24,5 @@ public class Bat extends B2DSprite {
         animation.setFrames(sprites, 1 / 6f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
-        this.beat = Beat;
-    }
-    public int getBeat(){
-        return beat;
     }
 }

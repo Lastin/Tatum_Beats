@@ -26,6 +26,7 @@ import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.TrackLoader;
 import com.tatum.music.MusicItem;
 import com.tatum.music.TrackData;
@@ -269,15 +270,15 @@ public class Menu extends GameState {
                         trackLoader.getTrackData().initilize();
                         loading=false;
                         generating=true;
-                        final TiledMap map = levelGenerator.makeMap(trackLoader.getTrackData());
-                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map);
+                        final TatumMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map.getTiledMap());
                         sleep(1000);
                         generating = false;
                         done = true;
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker,musicSelectionPath, trackLoader.getTrackData()));
+                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker,musicSelectionPath));
                             }
                         });
                     } catch (Exception e) {
