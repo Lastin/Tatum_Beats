@@ -60,6 +60,7 @@ public class TrackData {
     private ArrayList<Section> sections;
     private ArrayList<Segment> segments;
 
+
     //to be worked out
     private String locationName;
     private double latitude;
@@ -167,15 +168,17 @@ public class TrackData {
                 e.printStackTrace();
             }
             tatums = new ArrayList<TimedEvent>();
-
+            int position =0;
             for (JsonObject object : Jtatums) {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
                 double confidence = object.getJsonNumber("confidence").doubleValue();
-                tatums.add(new TimedEvent(start, duration, confidence, new ArrayList<TimedEvent>()));
+                tatums.add(new TimedEvent(start, duration, confidence, new ArrayList<TimedEvent>(),position));
+                position++;
             }
             beats = new ArrayList<TimedEvent>();
             int tatumsCount = 0;
+            position =0;
             for (JsonObject object : Jbeats) {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
@@ -219,11 +222,12 @@ public class TrackData {
                         break;
                     }
                 }
-                beats.add(new TimedEvent(start, duration, confidence, array));
-
+                beats.add(new TimedEvent(start, duration, confidence, array,position));
+                position++;
             }
             bars = new ArrayList<TimedEvent>();
             tatumsCount = 0;
+            position =0;
             for (JsonObject object : Jbars) {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
@@ -284,11 +288,13 @@ public class TrackData {
                 if (Testcount != 3) {
                     //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 }
-                bars.add(new TimedEvent(start, duration, confidence, array));
+                bars.add(new TimedEvent(start, duration, confidence, array,position));
+                position++;
             }
 
             sections = new ArrayList<Section>();
             tatumsCount = 0;
+            position =0;
             boolean wierdBeat = false; // there are inbetween bars that seem to mess up, this flags them and adds to the next section
             for (JsonObject object : Jsections) {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
@@ -399,8 +405,9 @@ public class TrackData {
                     }
 
                 }
-                sections.add(new Section(start, duration, confidence, loudness, tempo, tempoConf, key, keyConf, mode, modeConf, timeSig, timeSigConf, array));
+                sections.add(new Section(start, duration, confidence, loudness, tempo, tempoConf, key, keyConf, mode, modeConf, timeSig, timeSigConf, array,position));
             }
+            position =0;
             segments = new ArrayList<Segment>();
             for (JsonObject object : Jsegments) {
                 double start = object.getJsonNumber("start").doubleValue();
@@ -434,7 +441,7 @@ public class TrackData {
                     //end of array because I am a lazy bastard and can't be bothered to find out how to get the length
                 }
 
-                segments.add(new Segment(start, duration, confidence, loudness_start, loudness_max_time, loudness_max, pitchArray, timbreArray));
+                segments.add(new Segment(start, duration, confidence, loudness_start, loudness_max_time, loudness_max, pitchArray, timbreArray,position));
             }
         } catch (Exception e) {
             e.printStackTrace();

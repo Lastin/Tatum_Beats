@@ -17,9 +17,9 @@ public class Section extends TimedEvent {
 	
 	public Section(double start, double duration, double confidence,double loudness,double tempo,
 				   double tempoConfidence, int key, double keyConfidence, int mode, double modeConfidence,
-			       int timeSignature, double timeSignatureConfidence,ArrayList<TimedEvent> array) {
+			       int timeSignature, double timeSignatureConfidence,ArrayList<TimedEvent> array,int position) {
 		
-		super(start, duration, confidence,array);
+		super(start, duration, confidence,array,position);
 		this.setLoudness(loudness);
 		this.setTempo(tempo);
 		this.setTempoConfidence(tempoConfidence);

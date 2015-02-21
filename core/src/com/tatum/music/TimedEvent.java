@@ -8,12 +8,14 @@ public class TimedEvent {
 	private double confidence;
 	private ArrayList<TimedEvent> array;
 	private int containedIn;
-	public TimedEvent(double start, double duration, double confidence, ArrayList<TimedEvent> array){
+    private int position;
+	public TimedEvent(double start, double duration, double confidence, ArrayList<TimedEvent> array, int position){
 		this.start = start;
 		this.duration=duration;
 		this.confidence=confidence;
 		this.array = array;
 		containedIn =-1;
+        this.position = position;
 	}
 	public double getStart(){
 		return start;
@@ -35,4 +37,7 @@ public class TimedEvent {
 			containedIn=cont;
 		}
 	}
+    public int getPosition(){
+        return position;
+    }
 }

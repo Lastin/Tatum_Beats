@@ -36,6 +36,7 @@ import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
+import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumMap;
 import com.tatum.music.MusicItem;
@@ -225,10 +226,13 @@ public class Play extends GameState {
 
     private void createObstacles(){
         int[] barsPositions = tatumMap.getBarsPositions();
+        MonsterCoinLocation monsterCoinLocation = new MonsterCoinLocation(); // contains all event data for collision
         for(int each : barsPositions){
             slimes.add(GameBodiesCreator.createSlime(each, world, resources));
+            monsterCoinLocation.addEvent("Slime"); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             //bats.add(GameBodiesCreator.createBat(each, world, resources));
         }
+        paceMaker.setMonsterCoinLocation(monsterCoinLocation);
     }
 
     private Background[] createBackground() {
@@ -291,8 +295,7 @@ public class Play extends GameState {
 
         backButton.render();
         if(music.getPosition()<5) {
-            System.out.println("inside 1 " + titleFade);
-            //sb.setColor(255f,0f,0f,titleFade);
+             //sb.setColor(255f,0f,0f,titleFade);
             SongName.getFont().setColor(0,0,0,titleFade);
             SongName.render();
             ArtistName.getFont().setColor(0,0,0,titleFade);
@@ -306,7 +309,6 @@ public class Play extends GameState {
             }
         }
         else if(music.getPosition()>5 && titleFade>0){
-            System.out.println("inside 2 " + titleFade);
           //  sb.setColor(255f,0f,0f,titleFade);
             SongName.getFont().setColor(0,0,0,titleFade);
             SongName.render();

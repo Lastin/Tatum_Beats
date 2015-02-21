@@ -13,8 +13,8 @@ public class Segment extends TimedEvent{
 	
 	public Segment(double start, double duration, double confidence, double loudnessStart,
 					double loudnessMaxTime, double loudnessMax, ArrayList<Double> pitches,
-					 ArrayList<Double> timbres) {
-		super(start, duration, confidence,new ArrayList<TimedEvent>());
+					 ArrayList<Double> timbres,int position) {
+		super(start, duration, confidence,new ArrayList<TimedEvent>(),position);
 		setLoudnessStart(loudnessStart);
 		setLoudnessMaxTime(loudnessMaxTime);
 		setLoudnessMax(loudnessMax);

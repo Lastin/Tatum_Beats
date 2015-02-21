@@ -344,6 +344,14 @@ public class Player extends B2DSprite {
     }
     }
 
+    public void coinCollect(){
+        score+=1000;
+        multiplyer*=1.5;
+        if(multiplyer>100){
+            multiplyer=100;
+        }
+    }
+
 
     public boolean getIsJumping(){
         return isJumping;

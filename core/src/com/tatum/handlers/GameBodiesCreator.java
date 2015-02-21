@@ -79,7 +79,7 @@ public class GameBodiesCreator {
     public static Slime createSlime(int position, World world, ContentManager resources){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = position * 0.32f;
+        float x = (position) * 0.32f;
         float y = 0.4f;
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
