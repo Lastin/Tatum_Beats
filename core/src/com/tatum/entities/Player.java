@@ -46,8 +46,10 @@ public class Player extends B2DSprite {
     private TextureRegion   sprite3Jump;
     private TextureRegion   sprite3Duck;
     private TextureRegion   sprite3Hurt;
+    private TextureRegion   spriteHurt;
     private boolean isJumping = false;
     private boolean isDucking = false;
+    private boolean isHurt = false;
     private int playerNum;
     private boolean newHighScore;
     private String path;
@@ -123,6 +125,7 @@ public class Player extends B2DSprite {
         else
             multiplyer= multiplyer/2;
         step=0;
+        setHurt();
     }
 
     public int getScore(){return score;}
@@ -249,6 +252,7 @@ public class Player extends B2DSprite {
         resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p2_hurt.png");
         resources.loadTexture("res/images/PlatformerPack/Player/extraSkins/p3_hurt.png");
         sprite1Hurt = TextureRegion.split(resources.getTexture("p1_hurt"), 35, 46)[0][0];
+        spriteHurt  = TextureRegion.split(resources.getTexture("p1_hurt"), 35, 46)[0][1];
         sprite2Hurt = TextureRegion.split(resources.getTexture("p2_hurt"), 34, 46)[0][0];
         sprite3Hurt = TextureRegion.split(resources.getTexture("p3_hurt"), 35, 46)[0][0];
 
@@ -293,6 +297,7 @@ public class Player extends B2DSprite {
 
 
     public void setJumpSkin(){
+        setIsHurt(false);
         if(playerNum ==3){
             TextureRegion[] temp = {sprite3Jump,sprite3Jump};
             animation = new Animation(temp);
@@ -326,6 +331,7 @@ public class Player extends B2DSprite {
     }
     public void setCrouchSkin(int beat){
     if(!isJumping&&!isDucking) {
+        setIsHurt(false);
         if (playerNum == 3) {
             TextureRegion[] temp = {sprite3Duck, sprite3Duck};
             animation = new Animation(temp);
@@ -343,10 +349,27 @@ public class Player extends B2DSprite {
         setIsDucking(true);
     }
     }
-
+    public void setHurt(){
+        if(playerNum ==3){
+            TextureRegion[] temp = {sprite3Hurt,spriteHurt};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1/12f);
+        }
+        else if(playerNum ==2){
+            TextureRegion[] temp = {sprite2Hurt,spriteHurt};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1/12f);
+        }
+        else {
+            TextureRegion[] temp = {sprite1Hurt,spriteHurt};
+            animation = new Animation(temp);
+            animation.setFrames(temp, 1/12f);
+        }
+        setIsHurt(true);
+    }
     public void coinCollect(){
         score+=1000;
-        multiplyer*=1.5;
+        multiplyer+=2;
         if(multiplyer>100){
             multiplyer=100;
         }
@@ -377,5 +400,7 @@ public class Player extends B2DSprite {
     public void setDuckBeat(int beat){
         duckBeat = beat;
     }
+    public void setIsHurt(boolean temp ){isHurt = temp;}
+    public boolean getIsHurt(){return isHurt;}
 
 }

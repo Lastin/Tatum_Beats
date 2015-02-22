@@ -1,5 +1,7 @@
 package com.tatum.handlers;
 
+import com.tatum.entities.B2DSprite;
+
 import java.util.ArrayList;
 
 /**
@@ -15,22 +17,22 @@ public class MonsterCoinLocation {
         position=0;
     }
 
-    public void addEvent(String event,int bar){
-        contents.add(new GameEvent(event,bar));
+    public void addEvent(String event,int bar,B2DSprite sprite){
+        contents.add(new GameEvent(event,bar,sprite));
     }
 
-    public String checkForEvent(int barToCheck){
+    public GameEvent checkForEvent(int barToCheck){
         //System.out.println(barToCheck+" "+contents.get(position).getBar());
         try {
             if (contents.get(position).getBar() == barToCheck) {
                 position++;
-                return contents.get(position - 1).getEvent();
+                return contents.get(position - 1);
             } else {
-                return "There be no events here boyo";
+                return null;
             }
         }catch (IndexOutOfBoundsException e){
             //end of song
-            return "End of song";
+            return null;
         }
     }
 

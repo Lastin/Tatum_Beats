@@ -13,6 +13,7 @@ public class B2DVars {
     public static final short BIT_SAND_BLOCK = 16;
     public static final short BIT_BAT = 32;
     public static final short BIT_SLIME = 64;
+    public static final short BIT_COIN = 128;
 
     public static final short BIT_TOP_BLOCK = 2;
     public static final short BIT_BOTTOM_BLOCK = 4;

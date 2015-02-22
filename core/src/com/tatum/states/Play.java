@@ -25,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.echonest.api.v4.Song;
 import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
+import com.tatum.entities.Coin;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
 import com.tatum.entities.Slime;
@@ -97,9 +98,9 @@ public class Play extends GameState {
     private float lastY = 0;
     private float lastZ = 0;
     private float force = 0;
-    private float Zthreshold = 4f;
+    private float Zthreshold = 3f;
     private float Ythreshold = 1.5f;
-    private float interval = 10;
+    private float interval = 20;
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
     private float movementTimer =0;
@@ -229,14 +230,32 @@ public class Play extends GameState {
         MonsterCoinLocation monsterCoinLocation = new MonsterCoinLocation(); // contains all event data for collision
         Random random = new Random();
         for(int each : barsPositions){
-            boolean temp =random.nextBoolean();
-            if(temp) {
-                events.add(GameBodiesCreator.createSlime(each, world, resources));
-                monsterCoinLocation.addEvent("Slime", each); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            float temp =random.nextFloat();
+            System.out.println("FLoat = "+temp);
+            if(temp<=0.3) {
+                Slime slime = GameBodiesCreator.createSlime(each, world, resources);
+                events.add(slime);
+                monsterCoinLocation.addEvent("Slime", each,slime); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            }
+            else if((temp>0.3)&&(temp<=0.6)){
+                Bat bat = GameBodiesCreator.createBat(each, world, resources);
+                events.add(bat);
+                monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            }
+            else if((temp>0.6)&&(temp<=0.7)){
+                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Blue");
+                events.add(coin);
+                monsterCoinLocation.addEvent("BlueCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            }
+            else if((temp>0.7)&&(temp<=0.8)){
+                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Pink");
+                events.add(coin);
+                monsterCoinLocation.addEvent("PinkCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
             else{
-                events.add(GameBodiesCreator.createBat(each, world, resources));
-                monsterCoinLocation.addEvent("Bat", each); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
+                events.add(coin);
+                monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
             //bats.add(GameBodiesCreator.createBat(each, world, resources));
         }
@@ -285,17 +304,19 @@ public class Play extends GameState {
                 if(i<0)
                     continue;
                 try {
-                    events.get(i).render(sb);
+                    if(events.get(i)instanceof Coin){
+                        Coin coin = (Coin) events.get(i);
+                       if(coin.doRender()){
+                            coin.render(sb);
+                        }
+                    }
+                    else
+                        events.get(i).render(sb);
                 }catch (IndexOutOfBoundsException e){
                     break; //end of song
                 }
             }
-            //for(Slime each : slimes){
-            //    each.render(sb);
-            // }
-            //for(Bat each:bats){
-            //    each.render(sb);
-            // }
+
             // draw hud
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);
@@ -413,10 +434,7 @@ public class Play extends GameState {
             //resources.getSound("crystal").play();
             walkCheck+=(32/PPM);
         }
-        if(music.getPosition()>=movementTimer+0.2) {
-            checkMotion();
-            movementTimer= music.getPosition();
-        }
+
         //if(music.getPosition()>=movementTimer+0.2) {
         checkMotion2ElectricBoogaloo();
         //    movementTimer= music.getPosition();
@@ -654,8 +672,10 @@ public class Play extends GameState {
                         }
                         */
                     if (Float.compare(Zforce, Zthreshold) >0) {
-                        player.randomSprite();
-
+                        if(paceMaker.canShake()) {
+                            player.randomSprite();
+                            paceMaker.cantShake();
+                        }
                         lastX = x;
                         lastY = y;
                         lastZ = z;

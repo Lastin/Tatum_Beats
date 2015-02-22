@@ -2,6 +2,7 @@ package com.tatum.handlers;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
+import com.tatum.entities.Coin;
 import com.tatum.entities.Player;
 import com.tatum.music.Section;
 import com.tatum.music.TimedEvent;
@@ -31,6 +32,8 @@ public class PaceMaker {
     private boolean newBar = false;
     private int renderCounter=0;
     private int newBarChecker = 0;
+    private boolean canShake =false;
+    private double hitTime =0;
     public PaceMaker(TrackData trackData, TiledMap map){
         this.trackData = trackData;
         this.map = map;
@@ -64,35 +67,65 @@ public class PaceMaker {
             //float xPos = 32*(lastBeatHitId-1)/PPM;
             //player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
 
-            String event = monsterCoinLocation.checkForEvent(lastBeatHitId-1);
+            GameEvent gm = monsterCoinLocation.checkForEvent(lastBeatHitId-1);
+            String event = "null";
+            if(gm!=null) {
+               event = gm.getEvent();
+            }
+            if(hitTime<=hitTime+0.4&&player.getIsHurt()){
+                player.setIsHurt(false);
+                player.removeSkin();
+            }
+
            // System.out.println(event);
             if (event.equals("Bat")) {
                 renderCounter++;
                 if (player.getIsDucking()) {
                     //they safe from dem bats doe
-                } else player.scoreBreak();
+                } else{
+                    player.scoreBreak();
+                    hitTime = musicTime;
+                }
             } else if (event.equals("Slime")) {
                 renderCounter++;
                 if (player.getIsJumping()) {
                     //they safe from dem slimes doe
-                } else player.scoreBreak();
-            } else if (event.equals("RedCoin")) {
+                } else{
+                    player.scoreBreak();
+                    hitTime = musicTime;
+                }
+            } else if (event.equals("PinkCoin")) {
                 renderCounter++;
                 if (player.getPlayerNum() == 3) {
                     //they get dem coins doe
                     player.coinCollect();
+                    Coin coin =(Coin) gm.getSprite();
+                    coin.collected();
+                }else{
+                    player.scoreBreak();
+                    hitTime = musicTime;
                 }
             } else if (event.equals("BlueCoin")) {
                 renderCounter++;
                 if (player.getPlayerNum() == 2) {
                     //they get dem coins doe
                     player.coinCollect();
+                    Coin coin =(Coin) gm.getSprite();
+                    coin.collected();
+                }else{
+                    player.scoreBreak();
+                    hitTime = musicTime;
                 }
             } else if (event.equals("GreenCoin")) {
                 renderCounter++;
-                if (player.getPlayerNum() == 3) {
+                if (player.getPlayerNum() == 1) {
                     //they get dem coins doe
                     player.coinCollect();
+                    Coin coin =(Coin) gm.getSprite();
+                    coin.collected();
+                }else{
+                    player.scoreBreak();
+                    hitTime = musicTime;
                 }
             }
         }
@@ -132,6 +165,7 @@ public class PaceMaker {
                     if(lastBarHitId>newBarChecker){
                         newBarChecker=lastBarHitId;
                         newBar=true;
+                        canShake=true;
                     }else{
                         newBar=false;
                     }
@@ -199,5 +233,11 @@ public class PaceMaker {
     }
     public int getRenderCounter(){
         return renderCounter;
+    }
+    public boolean canShake(){
+        return canShake;
+    }
+    public void cantShake(){
+        canShake=false;
     }
 }

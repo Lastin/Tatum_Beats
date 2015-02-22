@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tatum.entities.Bat;
+import com.tatum.entities.Coin;
 import com.tatum.entities.Slime;
 
 import java.util.ArrayList;
@@ -95,5 +96,25 @@ public class GameBodiesCreator {
         body.setUserData(slime);
         circleShape.dispose();
         return slime;
+    }
+    public static Coin createCoin(int position, World world, ContentManager resources,String Colour){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        float x = (position) * 0.32f;
+        float y = 0.6f;
+        bodyDef.position.set(x, y);
+        Body body = world.createBody(bodyDef);
+        FixtureDef fixtureDef = new FixtureDef();
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(0.15f);
+        fixtureDef.shape = circleShape;
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = B2DVars.BIT_COIN;
+        fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
+        body.createFixture(fixtureDef).setUserData(Colour+" Coin");
+        Coin coin = new Coin(body, resources,Colour);
+        body.setUserData(coin);
+        circleShape.dispose();
+        return coin;
     }
 }
