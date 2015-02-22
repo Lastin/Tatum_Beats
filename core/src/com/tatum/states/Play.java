@@ -23,6 +23,7 @@ import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.echonest.api.v4.Song;
+import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
 import com.tatum.entities.HUD;
 import com.tatum.entities.Player;
@@ -62,8 +63,7 @@ public class Play extends GameState {
     private final int tileSide = 32;
     //rendered components
     private Player player;
-    private ArrayList<Bat> bats = new ArrayList<Bat>();
-    private ArrayList<Slime> slimes = new ArrayList<Slime>();
+    private ArrayList<B2DSprite> events = new ArrayList<B2DSprite>();
     private HUD hud;
     private Background[] backgrounds;
     private Music music;
@@ -129,7 +129,7 @@ public class Play extends GameState {
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
         backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
-        System.out.println(backButton.getWidth());
+
         setArtistSong();
         music.play();
     }
@@ -144,14 +144,14 @@ public class Play extends GameState {
         int size =70;
         sb.setColor(0,0,0,0);
         while(true)
-        if(newXArtist<10 || newXSong < 10 || widthA>310 || widthS>310){
-            size--;
-            widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
-            widthS = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
-            newXArtist = (320/2)-(widthA/2);
-            newXSong = (320/2)-(widthS/2);
-        }
-        else break;
+            if(newXArtist<10 || newXSong < 10 || widthA>310 || widthS>310){
+                size--;
+                widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
+                widthS = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+                newXArtist = (320/2)-(widthA/2);
+                newXSong = (320/2)-(widthS/2);
+            }
+            else break;
 
         //System.out.println("Width: "+width+" Artist Width: "+ widthA + " newX: " + newXArtist);
         //System.out.println("Width: "+width+" Song Width: "+ widthS + " newX: " + newXSong);
@@ -227,9 +227,17 @@ public class Play extends GameState {
     private void createObstacles(){
         int[] barsPositions = tatumMap.getBarsPositions();
         MonsterCoinLocation monsterCoinLocation = new MonsterCoinLocation(); // contains all event data for collision
+        Random random = new Random();
         for(int each : barsPositions){
-            slimes.add(GameBodiesCreator.createSlime(each, world, resources));
-            monsterCoinLocation.addEvent("Slime"); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            boolean temp =random.nextBoolean();
+            if(temp) {
+                events.add(GameBodiesCreator.createSlime(each, world, resources));
+                monsterCoinLocation.addEvent("Slime", each); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            }
+            else{
+                events.add(GameBodiesCreator.createBat(each, world, resources));
+                monsterCoinLocation.addEvent("Bat", each); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            }
             //bats.add(GameBodiesCreator.createBat(each, world, resources));
         }
         paceMaker.setMonsterCoinLocation(monsterCoinLocation);
@@ -257,8 +265,8 @@ public class Play extends GameState {
         sb.setProjectionMatrix(hudCam.combined);
         sb.setColor(1f, 1f, 1f, 1f);
         if(!paceMaker.getNewBeat()&&paceMaker.hitSecondSection())
-           sb.setColor(0.5F, 0.5F, 0.5F, 1F);
-       for (Background each : backgrounds) {
+            sb.setColor(0.5F, 0.5F, 0.5F, 1F);
+        for (Background each : backgrounds) {
             each.render(sb);
         }
 
@@ -272,10 +280,22 @@ public class Play extends GameState {
             // draw player
             sb.setProjectionMatrix(cam.combined);
             player.render(sb);
-            //draw slimes
-            for(Slime each : slimes){
-                each.render(sb);
+            //draw slimes and bats
+            for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
+                if(i<0)
+                    continue;
+                try {
+                    events.get(i).render(sb);
+                }catch (IndexOutOfBoundsException e){
+                    break; //end of song
+                }
             }
+            //for(Slime each : slimes){
+            //    each.render(sb);
+            // }
+            //for(Bat each:bats){
+            //    each.render(sb);
+            // }
             // draw hud
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);
@@ -295,7 +315,7 @@ public class Play extends GameState {
 
         backButton.render();
         if(music.getPosition()<5) {
-             //sb.setColor(255f,0f,0f,titleFade);
+            //sb.setColor(255f,0f,0f,titleFade);
             SongName.getFont().setColor(0,0,0,titleFade);
             SongName.render();
             ArtistName.getFont().setColor(0,0,0,titleFade);
@@ -309,7 +329,7 @@ public class Play extends GameState {
             }
         }
         else if(music.getPosition()>5 && titleFade>0){
-          //  sb.setColor(255f,0f,0f,titleFade);
+            //  sb.setColor(255f,0f,0f,titleFade);
             SongName.getFont().setColor(0,0,0,titleFade);
             SongName.render();
             ArtistName.getFont().setColor(0,0,0,titleFade);
@@ -333,7 +353,7 @@ public class Play extends GameState {
         previousPosition = currPosition;
         deltaDiff = deltaPos - deltaPosPrev;
         deltaPosPrev = deltaPos;
-       // System.out.println("Delta diff: " + deltaDiff);
+        // System.out.println("Delta diff: " + deltaDiff);
 
         //System.out.println(System.nanoTime());
         // update box2d world
@@ -368,7 +388,7 @@ public class Play extends GameState {
         }
         //if(player.getBody().getLinearVelocity().x < 0.001f) {
         //    player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
-            //player.getBody().setLinearVelocity(1,0);
+        //player.getBody().setLinearVelocity(1,0);
         //    player.scoreBreak();
         //    player.randomSprite();
         //}
@@ -398,11 +418,24 @@ public class Play extends GameState {
             movementTimer= music.getPosition();
         }
         //if(music.getPosition()>=movementTimer+0.2) {
-            checkMotion2ElectricBoogaloo();
+        checkMotion2ElectricBoogaloo();
         //    movementTimer= music.getPosition();
-       // }
-        for(Slime each : slimes){
-            each.update(deltaTime);
+        // }
+        //for(Slime each : slimes){
+        //    each.update(deltaTime);
+        // }
+        //for(Bat each : bats){
+        //   each.update(deltaTime);
+        // }
+        for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
+            if (i < 0)
+                continue;
+            try {
+                events.get(i).update(deltaTime);
+            }catch (IndexOutOfBoundsException e){
+                break;
+                //end of song
+            }
         }
     }
 
@@ -413,7 +446,7 @@ public class Play extends GameState {
         //System.out.println("Music: "+ music.getPosition());
         //if(time >= delay){
         paceMaker.updateVelocity(player, music.getPosition());
-         // paceMaker.updateVelocity(player, currTime/1000000000);
+        // paceMaker.updateVelocity(player, currTime/1000000000);
 
         //}
     }
@@ -421,23 +454,23 @@ public class Play extends GameState {
     @Override
     public void handleInput(){
         backButton.update(0);
-            if(backButton.isClickedPlay()){
+        if(backButton.isClickedPlay()){
             System.out.println("Clicked");
             sb.setColor(1f, 1f, 1f, 1f);
             music.stop();
             gsm.setState(new Menu(gsm));
             return;
         }
-        if(Input.isPressed(Input.BUTTON1))
-            playerJump();
-        if(Input.isPressed(Input.BUTTON2))
-            player.setCrouchSkin(paceMaker.getLastBeatHitId());
-        if(Input.isPressed()) {
-      if (Input.x < Gdx.graphics.getWidth() / 2)
-                switchBlocks();
+        // if(Input.isPressed(Input.BUTTON1))
+        //     playerJump();
+        // if(Input.isPressed(Input.BUTTON2))
+        //     player.setCrouchSkin(paceMaker.getLastBeatHitId());
+        if(Input.isPressed()&&!player.getIsJumping()&&!player.getIsDucking()) {
+            if (Input.x < Gdx.graphics.getWidth() / 2)
+                player.setCrouchSkin(paceMaker.getLastBeatHitId());
             else
                 playerJump();
-       }
+        }
     }
 
     private void playerJump(){
@@ -503,20 +536,21 @@ public class Play extends GameState {
 
                 float Zforce = Math.abs(z - lastZ);
                 if (now - lastShake >= interval ) {
-                    if (Float.compare(Zforce, Zthreshold) >0) {
+                    //if (Float.compare(Zforce, Zthreshold) >0) {
+//                    player.randomSprite();
 
-                        playerJump();
-                        lastX = x;
-                        lastY = y;
-                        lastZ = z;
-                        lastUpdate = now;
-                        lastShake = now;
-                        return;
-                    }
+                    //    playerJump();
+                    //    lastX = x;
+                    //    lastY = y;
+                    //    lastZ = z;
+                    //    lastUpdate = now;
+                    //    lastShake = now;
+                    //    return;
+                    //}
                     if(yResetLeft) {
-                         if ((y<0)&&(y < lastY)) {
+                        if ((y<0)&&(y < lastY)) {
                             if (!(y + Ythreshold > lastY)) {
-                                player.randomSprite();
+                                playerJump();
                                 yResetLeft=false;
                                 lastX = x;
                                 lastY = y;
@@ -597,9 +631,9 @@ public class Play extends GameState {
                 float Zforce = Math.abs(z - lastZ);
                 if (now - lastShake >= interval ) {
 
-                    if(yResetRight){
-                        if (y>5) {
-                            player.setCrouchSkin(paceMaker.getLastBeatHitId());
+               /*     if(yResetRight){
+                        if (y>4) {
+                            playerJump();
                             yResetRight = false;
                             lastX = x;
                             lastY = y;
@@ -618,9 +652,10 @@ public class Play extends GameState {
                             lastShake = now;
                             yResetRight = true;
                         }
+                        */
                     if (Float.compare(Zforce, Zthreshold) >0) {
+                        player.randomSprite();
 
-                        playerJump();
                         lastX = x;
                         lastY = y;
                         lastZ = z;
@@ -628,9 +663,9 @@ public class Play extends GameState {
                         lastShake = now;
                         return;
                     }
-                    if(yResetLeft) {
-                            if (y<-5) {
-                                player.randomSprite();
+                /*    if(yResetLeft) {
+                            if (y<-4) {
+                                player.setCrouchSkin(paceMaker.getLastBeatHitId());
                                 yResetLeft=false;
                                 lastX = x;
                                 lastY = y;
@@ -650,7 +685,7 @@ public class Play extends GameState {
                             lastShake = now;
                             return;
                         }
-
+                   */
                 }
 
 

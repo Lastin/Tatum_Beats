@@ -29,6 +29,7 @@ public class PaceMaker {
     private boolean hitSecondSection = false;
     private MonsterCoinLocation monsterCoinLocation;
     private boolean newBar = false;
+    private int renderCounter=0;
     private int newBarChecker = 0;
     public PaceMaker(TrackData trackData, TiledMap map){
         this.trackData = trackData;
@@ -57,45 +58,45 @@ public class PaceMaker {
         //Vector2 velocity = player.getBody().getLinearVelocity();
         //velocity.x = 1.0f;
         setTimeSig();
-        if(newBeat){
+        if(newBeat) {
+            System.out.println(renderCounter);
             setPixelPoints();
             //float xPos = 32*(lastBeatHitId-1)/PPM;
             //player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
-        }
-        if(newBar&&monsterCoinLocation!=null&&lastBeatHitId>2){
-            String event = monsterCoinLocation.getNextEvent();
-            System.out.println(event);
-            if(event.equals("Bat")){
-                if(player.getIsDucking()){
+
+            String event = monsterCoinLocation.checkForEvent(lastBeatHitId-1);
+           // System.out.println(event);
+            if (event.equals("Bat")) {
+                renderCounter++;
+                if (player.getIsDucking()) {
                     //they safe from dem bats doe
-                }
-                else player.scoreBreak();
-            }
-            else if (event.equals("Slime")){
-                if(player.getIsJumping()){
+                } else player.scoreBreak();
+            } else if (event.equals("Slime")) {
+                renderCounter++;
+                if (player.getIsJumping()) {
                     //they safe from dem slimes doe
-                }
-                else player.scoreBreak();
-            }
-            else if (event.equals("RedCoin")){
-                if(player.getPlayerNum()==3){
+                } else player.scoreBreak();
+            } else if (event.equals("RedCoin")) {
+                renderCounter++;
+                if (player.getPlayerNum() == 3) {
                     //they get dem coins doe
                     player.coinCollect();
                 }
-            }
-            else if (event.equals("BlueCoin")){
-                if(player.getPlayerNum()==2){
+            } else if (event.equals("BlueCoin")) {
+                renderCounter++;
+                if (player.getPlayerNum() == 2) {
                     //they get dem coins doe
                     player.coinCollect();
                 }
-            }
-            else if (event.equals("GreenCoin")){
-                if(player.getPlayerNum()==3){
+            } else if (event.equals("GreenCoin")) {
+                renderCounter++;
+                if (player.getPlayerNum() == 3) {
                     //they get dem coins doe
                     player.coinCollect();
                 }
             }
         }
+
         try {
               if (musicTime > pixelPoints.get(pixelPoint)) {
                     //System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
@@ -195,5 +196,8 @@ public class PaceMaker {
     public TrackData getTrackData(){return trackData;}
     public void setMonsterCoinLocation(MonsterCoinLocation monsterCoinLocation){
         this.monsterCoinLocation = monsterCoinLocation;
+    }
+    public int getRenderCounter(){
+        return renderCounter;
     }
 }

@@ -285,6 +285,7 @@ public class Menu extends GameState {
                         loading = false;
                         generating = false;
                         done = false;
+                        e.printStackTrace();
                     }
                 }
             };

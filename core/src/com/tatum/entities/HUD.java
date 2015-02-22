@@ -23,7 +23,7 @@ public class HUD {
     private int timePoint;
     private int timeSig;
     private int currbeat;
-    private boolean debug = true;
+    private boolean debug = false;
 
 
     public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker) {

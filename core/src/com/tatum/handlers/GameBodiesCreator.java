@@ -58,8 +58,8 @@ public class GameBodiesCreator {
     public static Bat createBat(int position, World world, ContentManager resources){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position * 0.5f) * 32 / 100;
-        float y = (3*0.5f) * 32 / 100;
+        float x = (position) * 0.32f;
+        float y = 0.8f;
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
@@ -71,7 +71,7 @@ public class GameBodiesCreator {
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("bat");
         Bat bat = new Bat(body, resources);
-        //body.setUserData(bat);
+        body.setUserData(bat);
         circleShape.dispose();
         return bat;
     }

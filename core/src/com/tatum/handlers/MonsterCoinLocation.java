@@ -7,33 +7,32 @@ import java.util.ArrayList;
  */
 public class MonsterCoinLocation {
 
-    ArrayList<String> contents;
+    ArrayList<GameEvent> contents;
     int position;
 
     public MonsterCoinLocation(){
-        contents = new ArrayList<String>();
-        position=1;
+        contents = new ArrayList<GameEvent>();
+        position=0;
     }
 
-    public void addEvent(String event){
-        contents.add(event);
+    public void addEvent(String event,int bar){
+        contents.add(new GameEvent(event,bar));
     }
 
-    public String getNextEvent(){
+    public String checkForEvent(int barToCheck){
+        //System.out.println(barToCheck+" "+contents.get(position).getBar());
         try {
-            position++;
-            return contents.get(position);
-        }catch(IndexOutOfBoundsException e){
-            position--;
-            return "No more events";
-        }
-    }
-    public String getExactEvent(int i){
-        try{
-            return contents.get(i);
+            if (contents.get(position).getBar() == barToCheck) {
+                position++;
+                return contents.get(position - 1).getEvent();
+            } else {
+                return "There be no events here boyo";
+            }
         }catch (IndexOutOfBoundsException e){
-            return "No such Event";
+            //end of song
+            return "End of song";
         }
     }
+
 
 }

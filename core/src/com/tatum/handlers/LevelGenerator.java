@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.tatum.entities.Bat;
+import com.tatum.music.Section;
 import com.tatum.music.TimedEvent;
 import com.tatum.music.TrackData;
 
@@ -66,14 +67,16 @@ public class LevelGenerator {
     private int[] getBarsPositions(TrackData trackData){
         ArrayList<TimedEvent> beats = trackData.getBeats();
         ArrayList<TimedEvent> bars = trackData.getBars();
-        int[] barsPositions = new int[bars.size()-1];
-        int last_bar = 0;
-        for(int i=0; i< beats.size()-1; i++){
-            int currentBar = beats.get(i).getContainedIn();
-            if(last_bar < currentBar){
-                barsPositions[last_bar] = i;
-                last_bar = currentBar;
-            }
+        ArrayList<Section> sections = trackData.getSections();
+        int secondSectionStart = sections.get(1).getContains().get(0).getPosition();
+        int[] barsPositions = new int[bars.size()-1-secondSectionStart];
+        System.out.println(barsPositions.length);
+        int last_bar = secondSectionStart;
+        int count =0;
+        for(int i=last_bar; i< bars.size()-1; i++){
+           System.out.println("pos "+bars.get(i).getContains().get(0).getPosition());
+           barsPositions[count] = bars.get(i).getContains().get(0).getPosition();
+            count++;
         }
         return barsPositions;
     }
