@@ -24,6 +24,7 @@ import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.LevelGenerator;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumMap;
@@ -248,8 +249,8 @@ public class Menu extends GameState {
                 }
             }
         }
+        Gdx.input.setInputProcessor(new InputProcessor());
     }
-
     public void handleInput() {
         if (playButton.isClicked() && playButton.isEnabled()) {
             playButton.setEnabled(false);
@@ -297,15 +298,12 @@ public class Menu extends GameState {
 
         }
     }
-
     public void updateProgress(double progress){
 
     }
-
     public void updateMusicSelection(String path){
 
     }
-
     @Override
     public void update(float dt) {
         if(!uploading&& !loading && !generating && !done)
@@ -329,7 +327,6 @@ public class Menu extends GameState {
         }
 
     }
-
     @Override
     public void render() {
         sb.setProjectionMatrix(cam.combined);
@@ -388,12 +385,10 @@ public class Menu extends GameState {
             //blocks.get(i).render(sb);
         }
     }
-
     @Override
     public void dispose(){
 
     }
-
     public void loadPlayers(){
         Texture texture = resources.getTexture("mini_walk_combined");
         TextureRegion[][] walking = TextureRegion.split(texture, 36, 50);

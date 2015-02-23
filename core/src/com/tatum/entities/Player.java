@@ -59,8 +59,6 @@ public class Player extends B2DSprite {
     private double jumpTime = 0;
     private int duckBeat = 0;
 
-
-
     public Player(Body body, ContentManager resources,String name,String path,PaceMaker paceMaker) {
         super(body, resources);
 
@@ -95,13 +93,10 @@ public class Player extends B2DSprite {
         height = sprites1[0].getRegionHeight();
 
     }
-
     public void collectCrystal() { numCrystals++; }
     public int getNumCrystals() { return numCrystals; }
-
     public void setTotalCrystals(int i) { totalCrystals = i; }
     public int getTotalCrystals() { return totalCrystals; }
-
     public void scoreStep(){
 
         score = score +2*multiplyer;
@@ -127,11 +122,9 @@ public class Player extends B2DSprite {
         step=0;
         setHurt();
     }
-
     public int getScore(){return score;}
     public int getStep(){return step;}
     public int getMultiplyer(){return  multiplyer;}
-
     public boolean manageScore(double time){
 
 
@@ -163,8 +156,25 @@ public class Player extends B2DSprite {
 
     }
     }
-    public int getPlayerNum(){return playerNum;}
+    public void randomSpriteReverse(){
+        if(!isJumping&&!isDucking) {
+            if (playerNum == 3) {
+                animation = new Animation(sprites2);
+                animation.setFrames(sprites2, 1 / 15f);
+                playerNum = 2;
+            } else if (playerNum == 2) {
+                animation = new Animation(sprites1);
+                animation.setFrames(sprites1, 1 / 15f);
+                playerNum = 1;
+            } else {
+                animation = new Animation(sprites3);
+                animation.setFrames(sprites3, 1 / 15f);
+                playerNum = 3;
+            }
 
+        }
+    }
+    public int getPlayerNum(){return playerNum;}
     public void loadPlayers(ContentManager resources){
 
         for(int i=1;i<12;i++) {
@@ -294,8 +304,6 @@ public class Player extends B2DSprite {
     public void setHighScore(){
         highScore=score;
     }
-
-
     public void setJumpSkin(){
         setIsHurt(false);
         if(playerNum ==3){
@@ -374,8 +382,6 @@ public class Player extends B2DSprite {
             multiplyer=100;
         }
     }
-
-
     public boolean getIsJumping(){
         return isJumping;
     }

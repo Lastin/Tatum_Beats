@@ -4,13 +4,19 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.tatum.Game;
+
 import com.facebook.AppEventsLogger;
+import com.tatum.handlers.DirectionListener;
+import com.tatum.handlers.InputProcessor;
+import com.tatum.handlers.SimpleDirectionGestureDetector;
 
 import org.sensingkit.sensingkitlib.SKException;
 import org.sensingkit.sensingkitlib.SKSensorDataListener;
@@ -80,6 +86,7 @@ public class AndroidLauncher extends AndroidApplication {
         } catch (SKException e) {
             e.printStackTrace();
         }
+
 
         initialize(new Game(data), config);
  //       fbUiLifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {

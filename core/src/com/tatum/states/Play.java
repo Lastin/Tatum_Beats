@@ -40,6 +40,7 @@ import com.tatum.Game;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.handlers.TatumDirectionListener;
 import com.tatum.handlers.TatumMap;
 import com.tatum.music.MusicItem;
 import com.tatum.music.TrackData;
@@ -105,6 +106,11 @@ public class Play extends GameState {
     private boolean yResetRight = true;
     private float movementTimer =0;
 
+    private int lastCoin =1;
+
+    float previousPosition  = 0;
+    float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
+    float total = 0;
 
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path) {
@@ -130,9 +136,10 @@ public class Play extends GameState {
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
         backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
-
+        game.setSwipeInput();
         setArtistSong();
         music.play();
+
     }
 
     private void setArtistSong(){
@@ -242,26 +249,56 @@ public class Play extends GameState {
                 events.add(bat);
                 monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
-            else if((temp>0.6)&&(temp<=0.7)){
-                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Blue");
-                events.add(coin);
-                monsterCoinLocation.addEvent("BlueCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            else if((temp>0.3)&&(temp<=0.6)){
+                Bat bat = GameBodiesCreator.createBat(each, world, resources);
+                events.add(bat);
+                monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
-            else if((temp>0.7)&&(temp<=0.8)){
-                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Pink");
-                events.add(coin);
-                monsterCoinLocation.addEvent("PinkCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+            else if((temp>0.6)&&(temp<=0.7)) {
+                if (lastCoin == 2) {
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Pink");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("PinkCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=3;
+                } else {
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Blue");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("BlueCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=2;
+                }
+            }
+            else if((temp>0.7)&&(temp<=0.8)) {
+                if (lastCoin == 3) {
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=1;
+                } else {
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Pink");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("PinkCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=3;
+                }
             }
             else{
-                Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
-                events.add(coin);
-                monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                if(lastCoin==1){
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Blue");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("BlueCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=2;
+                }
+                else{
+                    Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
+                    events.add(coin);
+                    monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    lastCoin=1;
+               }
             }
+
             //bats.add(GameBodiesCreator.createBat(each, world, resources));
         }
         paceMaker.setMonsterCoinLocation(monsterCoinLocation);
     }
-
     private Background[] createBackground() {
         Texture bgs = resources.getTexture("GrassColour");
         TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -363,9 +400,6 @@ public class Play extends GameState {
         }
     }
 
-    float previousPosition  = 0;
-    float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
-    float total = 0;
     @Override
     public void update(float deltaTime){
         handleInput();
@@ -435,16 +469,8 @@ public class Play extends GameState {
             walkCheck+=(32/PPM);
         }
 
-        //if(music.getPosition()>=movementTimer+0.2) {
-        checkMotion2ElectricBoogaloo();
-        //    movementTimer= music.getPosition();
-        // }
-        //for(Slime each : slimes){
-        //    each.update(deltaTime);
-        // }
-        //for(Bat each : bats){
-        //   each.update(deltaTime);
-        // }
+        //checkMotion2ElectricBoogaloo();
+
         for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
             if (i < 0)
                 continue;
@@ -479,15 +505,18 @@ public class Play extends GameState {
             gsm.setState(new Menu(gsm));
             return;
         }
-        // if(Input.isPressed(Input.BUTTON1))
-        //     playerJump();
-        // if(Input.isPressed(Input.BUTTON2))
-        //     player.setCrouchSkin(paceMaker.getLastBeatHitId());
-        if(Input.isPressed()&&!player.getIsJumping()&&!player.getIsDucking()) {
-            if (Input.x < Gdx.graphics.getWidth() / 2)
+        TatumDirectionListener tatumDirectionListener = game.getTatumDirectionListener();
+
+        if(!player.getIsJumping()&&!player.getIsDucking()) {
+            if (tatumDirectionListener.down())
                 player.setCrouchSkin(paceMaker.getLastBeatHitId());
-            else
+            else if(tatumDirectionListener.up())
                 playerJump();
+            else if(tatumDirectionListener.right())
+                player.randomSprite();
+            else if(tatumDirectionListener.left())
+                player.randomSpriteReverse();
+            tatumDirectionListener.resetBools();
         }
     }
 

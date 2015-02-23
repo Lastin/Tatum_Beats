@@ -19,12 +19,14 @@ public class Game extends ApplicationAdapter {
     private GameStateManager gsm;
     private static ContentManager resources;
     private String[] data;
+    private TatumDirectionListener tatumDirectionListener;
 
     public Game(String[] data){
         super();
         this.data=data;
         width=320;
         height=240;
+
     }
     public Game(){
         width = 320;//Gdx.graphics.getWidth();
@@ -34,6 +36,7 @@ public class Game extends ApplicationAdapter {
     @Override
     public void create () {
         Gdx.input.setInputProcessor(new InputProcessor());
+
         resources = new ContentManager();
         //Cameras
         cam = new BoundedCamera();
@@ -87,5 +90,17 @@ public class Game extends ApplicationAdapter {
 
     public void getParent(){
 
+    }
+    public void setSwipeInput(){
+        tatumDirectionListener = new TatumDirectionListener();
+        SimpleDirectionGestureDetector temp2 = new SimpleDirectionGestureDetector(tatumDirectionListener);
+        Gdx.input.setInputProcessor(temp2);
+    }
+    public void setTouchInput(){
+
+        Gdx.input.setInputProcessor(new InputProcessor());
+    }
+    public TatumDirectionListener getTatumDirectionListener(){
+        return tatumDirectionListener;
     }
 }

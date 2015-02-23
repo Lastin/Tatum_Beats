@@ -19,6 +19,9 @@ public class SongSelector extends Activity {
             
         }
     }
+    public SongSelector(){
+        
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

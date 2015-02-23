@@ -77,7 +77,7 @@ public class PaceMaker {
                 player.removeSkin();
             }
 
-           // System.out.println(event);
+            System.out.println(event);
             if (event.equals("Bat")) {
                 renderCounter++;
                 if (player.getIsDucking()) {
@@ -106,7 +106,7 @@ public class PaceMaker {
                     hitTime = musicTime;
                 }
             } else if (event.equals("BlueCoin")) {
-                renderCounter++;
+                    renderCounter++;
                 if (player.getPlayerNum() == 2) {
                     //they get dem coins doe
                     player.coinCollect();
