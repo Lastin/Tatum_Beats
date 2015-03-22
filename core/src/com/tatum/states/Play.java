@@ -27,6 +27,7 @@ import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
 import com.tatum.entities.Coin;
 import com.tatum.entities.HUD;
+import com.tatum.entities.Instructor;
 import com.tatum.entities.Player;
 import com.tatum.entities.Slime;
 import com.tatum.handlers.B2DVars;
@@ -69,6 +70,7 @@ public class Play extends GameState {
     private HUD hud;
     private Background[] backgrounds;
     private Music music;
+    private Instructor instructor;
     //other settings
     private String userName = "test";
     private String path;
@@ -128,18 +130,18 @@ public class Play extends GameState {
         height = (Integer) properties.get("height");
         player = createPlayer();
         createObstacles();
-        hud = new HUD(resources, game, player,paceMaker);
+        hud = new HUD(resources, game, player,paceMaker, this);
         hud.setPaceMaker(paceMaker);
         backgrounds = createBackground();
         GameBodiesCreator.createBlocks(tiledMap, world);
         initialiseCamerasAndRenderers();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
-        backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
+        //backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
         game.setSwipeInput();
         setArtistSong();
+        this.instructor = hud.getInstructor();
         music.play();
-
     }
 
     private void setArtistSong(){
@@ -238,7 +240,7 @@ public class Play extends GameState {
         Random random = new Random();
         for(int each : barsPositions){
             float temp =random.nextFloat();
-            System.out.println("FLoat = "+temp);
+            System.out.println("Float = "+temp);
             if(temp<=0.3) {
                 Slime slime = GameBodiesCreator.createSlime(each, world, resources);
                 events.add(slime);
@@ -371,7 +373,7 @@ public class Play extends GameState {
             b2dRenderer.render(world, b2dCam.combined);
         }
 
-        backButton.render();
+        //backButton.render();
         if(music.getPosition()<5) {
             //sb.setColor(255f,0f,0f,titleFade);
             SongName.getFont().setColor(0,0,0,titleFade);
@@ -497,30 +499,39 @@ public class Play extends GameState {
 
     @Override
     public void handleInput(){
-        backButton.update(0);
+        /*backButton.update(0);
         if(backButton.isClickedPlay()){
             System.out.println("Clicked");
             sb.setColor(1f, 1f, 1f, 1f);
             music.stop();
             gsm.setState(new Menu(gsm));
             return;
-        }
+        }*/
         TatumDirectionListener tatumDirectionListener = game.getTatumDirectionListener();
 
         if(!player.getIsJumping()&&!player.getIsDucking()) {
-            if (tatumDirectionListener.down())
-                player.setCrouchSkin(paceMaker.getLastBeatHitId());
-            else if(tatumDirectionListener.up())
-                playerJump();
-            else if(tatumDirectionListener.right())
-                player.randomSprite();
-            else if(tatumDirectionListener.left())
-                player.randomSpriteReverse();
+            if (tatumDirectionListener.down()) {
+                instructor.doBot();
+                instructor.rotateClockWise();
+            }
+            else if (tatumDirectionListener.up()){
+                instructor.doTop();
+                instructor.rotateClockWise();
+            }
+            else if(tatumDirectionListener.right()) {
+                instructor.doRight();
+                instructor.rotateClockWise();
+            }
+            else if(tatumDirectionListener.left()) {
+                instructor.doLeft();
+                instructor.rotateClockWise();
+            }
             tatumDirectionListener.resetBools();
+
         }
     }
 
-    private void playerJump(){
+    public void playerJump(){
         if(cl.playerCanJump()&&(!player.getIsJumping())&&(!player.getIsDucking())){
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
             player.getBody().applyForceToCenter(0, 200, true);

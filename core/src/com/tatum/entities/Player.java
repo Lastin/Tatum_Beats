@@ -178,8 +178,10 @@ public class Player extends B2DSprite {
     public void loadPlayers(ContentManager resources){
 
         for(int i=1;i<12;i++) {
-        if(i<10)
+        if(i<10) {
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
+            System.out.println("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
+        }
         else
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
             //System.out.println("Load " +i);
@@ -408,5 +410,6 @@ public class Player extends B2DSprite {
     }
     public void setIsHurt(boolean temp ){isHurt = temp;}
     public boolean getIsHurt(){return isHurt;}
+
 
 }

@@ -254,7 +254,7 @@ public class Menu extends GameState {
     public void handleInput() {
         if (playButton.isClicked() && playButton.isEnabled()) {
             playButton.setEnabled(false);
-            resources.getSound("crystal").play();
+            //resources.getSound("crystal").play();
             if(musicSelectionPath == null){
                 gsm.setState(new Select(gsm));
             }

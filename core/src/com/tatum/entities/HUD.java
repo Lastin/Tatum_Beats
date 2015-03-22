@@ -8,6 +8,7 @@ import com.tatum.Game;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.states.Play;
 
 public class HUD {
     private Player player;
@@ -23,10 +24,11 @@ public class HUD {
     private int timePoint;
     private int timeSig;
     private int currbeat;
+    private Instructor instructor;
     private boolean debug = false;
 
 
-    public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker) {
+    public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker, Play play) {
         this.game = game;
         this.cont = cont;
         this.player = player;
@@ -34,6 +36,7 @@ public class HUD {
         Texture tex = cont.getTexture("hud2");
         container = new TextureRegion(tex, 0, 0, 32, 32);
         cont.loadTexture("res/images/letters.png");
+        instructor = new Instructor(cont,game,player,paceMaker,play);
         Texture letter = cont.getTexture("letters");
         fullFont = new TextureRegion[26];
         TextureRegion[][] regi = TextureRegion.split(letter,9,9);
@@ -77,8 +80,9 @@ public class HUD {
 
     public void render(SpriteBatch sb) {
         sb.begin();
-        sb.draw(container, 32, game.getHeight()-50);
-        short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
+        instructor.render(sb);
+       // sb.draw(container, 32, game.getHeight()-50);
+       /* short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
         if ((bits & B2DVars.BIT_GRASS_BLOCK) != 0) {
             sb.draw(blocks[0], 40, game.getHeight()-42);
         }
@@ -87,7 +91,7 @@ public class HUD {
         }
         else if ((bits & B2DVars.BIT_SAND_BLOCK) != 0) {
             sb.draw(blocks[2], 40, game.getHeight()-42);
-        }
+        }*/
 
         //draw crystals
         //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
@@ -158,5 +162,8 @@ public class HUD {
     }
     public TextureRegion[] getBlocks() {
         return blocks;
+    }
+    public Instructor getInstructor(){
+        return instructor;
     }
 }
