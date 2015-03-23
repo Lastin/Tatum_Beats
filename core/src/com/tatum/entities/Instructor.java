@@ -30,6 +30,7 @@ public class Instructor {
     private String right;
     private PaceMaker paceMaker;
     private Play play;
+    private Rotation rotation;
     public Instructor(ContentManager cont, Game game, Player player, PaceMaker paceMaker, Play play){
 
         this.cont=cont;
@@ -45,8 +46,9 @@ public class Instructor {
         loadSkins();
         this.play = play;
         this.paceMaker = paceMaker;
+        rotation = Rotation.NONE;
     }
-    public void loadSkins(){
+    private void loadSkins(){
         Texture tex;
         for(int i =0; i <3; i++) {
             cont.loadTexture("res/images/PlatformerPack/Player/icons/p" + (i + 1) + "_icon.png");
@@ -79,7 +81,7 @@ public class Instructor {
         drawLeft(sb);
         drawRight(sb);
     }
-    public void drawTop(SpriteBatch sb){
+    private void drawTop(SpriteBatch sb){
         if(top.equals("P_RIGHT")){
             if(player.getPlayerNum() == 1){
                 sb.draw(walking[1],xPos+28,yPos+47);
@@ -125,7 +127,7 @@ public class Instructor {
             }
         }
     }
-    public void drawBot(SpriteBatch sb){
+    private void drawBot(SpriteBatch sb){
         if(bot.equals("P_RIGHT")){
             if(player.getPlayerNum() == 1){
                 sb.draw(walking[1],xPos+28,yPos+1);
@@ -171,7 +173,7 @@ public class Instructor {
             }
         }
     }
-    public void drawLeft(SpriteBatch sb){
+    private void drawLeft(SpriteBatch sb){
         if(left.equals("P_RIGHT")){
             if(player.getPlayerNum() == 1){
                 sb.draw(walking[1],xPos+1,yPos+24);
@@ -217,7 +219,7 @@ public class Instructor {
             }
         }
     }
-    public void drawRight(SpriteBatch sb){
+    private void drawRight(SpriteBatch sb){
         if(right.equals("P_RIGHT")){
             if(player.getPlayerNum() == 1){
                 sb.draw(walking[1],xPos+54,yPos+24);
@@ -277,6 +279,7 @@ public class Instructor {
         else{
             play.playerJump();
         }
+        checkRotation();
     }
     public void doBot(){
         if(bot.equals("P_RIGHT")){
@@ -291,6 +294,8 @@ public class Instructor {
         else{
             play.playerJump();
         }
+
+        checkRotation();
     }
     public void doLeft(){
         if(left.equals("P_RIGHT")){
@@ -305,6 +310,8 @@ public class Instructor {
         else{
             play.playerJump();
         }
+
+        checkRotation();
     }
     public void doRight(){
         if(right.equals("P_RIGHT")){
@@ -319,8 +326,10 @@ public class Instructor {
         else{
             play.playerJump();
         }
+
+        checkRotation();
     }
-    public void rotateClockWise(){
+    private void rotateClockWise(){
         String tempTop   = top;
         String tempBot   = bot;
         String tempLeft  = left;
@@ -330,7 +339,7 @@ public class Instructor {
         bot   = tempRight;
         left  =  tempBot;
     }
-    public void rotateCounterClockWise(){
+    private void rotateCounterClockWise(){
         String tempTop   = top;
         String tempBot   = bot;
         String tempLeft  = left;
@@ -340,24 +349,24 @@ public class Instructor {
         bot   = tempLeft;
         left  =  tempTop;
     }
-    public void swapHorizontal(){
+    private void swapHorizontal(){
 
         String tempLeft  = left;
         String tempRight = right;
         right = tempLeft;
         left  = tempRight;
     }
-    public void swapVertical(){
+    private void swapVertical(){
         String tempTop = top;
         String tempBot = bot;
         top = tempBot;
         bot = tempTop;
     }
-    public void swapBoth(){
+    private void swapBoth(){
         swapHorizontal();
         swapVertical();
     }
-    public void randomise(){
+    private void randomise(){
         Random random = new Random();
         int rotate = random.nextInt(3);
         int flip = random.nextInt(4);
@@ -371,5 +380,38 @@ public class Instructor {
             swapHorizontal();
         else if(flip==2)
             swapBoth();
+    }
+
+    private void checkRotation(){
+        switch (rotation){
+            case NONE:
+                //do nothing
+                break;
+            case COUNTER_CLOCKWISE:
+                rotateCounterClockWise();
+                break;
+            case CLOCKWISE:
+                rotateClockWise();
+                break;
+            case SWAP_HORIZONTAL:
+                swapHorizontal();
+                break;
+            case SWAP_VERTICAL:
+                swapVertical();
+                break;
+            case INVERT:
+                swapBoth();
+                break;
+            case RANDOMISE:
+                randomise();
+                break;
+        }
+    }
+    public enum Rotation {
+        NONE,COUNTER_CLOCKWISE,CLOCKWISE, SWAP_HORIZONTAL,
+        SWAP_VERTICAL,INVERT, RANDOMISE
+    }
+    public void setRotation(Rotation r){
+        rotation=r;
     }
 }

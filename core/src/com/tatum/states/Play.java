@@ -142,6 +142,7 @@ public class Play extends GameState {
         setArtistSong();
         this.instructor = hud.getInstructor();
         music.play();
+        instructor.setRotation(Instructor.Rotation.RANDOMISE);
     }
 
     private void setArtistSong(){
@@ -512,19 +513,15 @@ public class Play extends GameState {
         if(!player.getIsJumping()&&!player.getIsDucking()) {
             if (tatumDirectionListener.down()) {
                 instructor.doBot();
-                instructor.rotateClockWise();
             }
             else if (tatumDirectionListener.up()){
                 instructor.doTop();
-                instructor.rotateClockWise();
             }
             else if(tatumDirectionListener.right()) {
                 instructor.doRight();
-                instructor.rotateClockWise();
             }
             else if(tatumDirectionListener.left()) {
                 instructor.doLeft();
-                instructor.rotateClockWise();
             }
             tatumDirectionListener.resetBools();
 
