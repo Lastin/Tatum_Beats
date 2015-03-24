@@ -1,42 +1,40 @@
 package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-// stage
-// finish
-import com.tatum.Game;
 import com.tatum.handlers.Background;
-import com.tatum.handlers.FontGenerator;
-import com.tatum.handlers.SelectionHandler;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.LevelGenerator;
+import com.tatum.handlers.SelectionHandler;
 import com.tatum.music.MusicItem;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
-/**
- * Created by Ben on 24/01/2015.
- */
-public class Select extends GameState {
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
+public class HighScoreList extends GameState{
     private boolean debug = false;
     private Background bg;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
-
-    private LevelGenerator levelGenerator;
-    private String musicSelectionPath;
-    private SelectionHandler selectionHandler;
     private ContentManager cont;
-    private ArrayList<MusicItem> musicItems;
+    private ArrayList<MusicItem> trackNames;
+    private ArrayList<MusicItem> metaData;
     private MusicItem backButton;
-    private MusicItem backButtonMenu;
     private GameButton upButton;
     private GameButton downButton;
     private GameButton upButtonFast;
@@ -44,10 +42,11 @@ public class Select extends GameState {
     private int listPosition[];
     private FontGenerator fontGenerator;
     MusicItem toWriteItem;
-    public Select(GameStateManager gsm) {
+    private HashMap<String,Integer> highScores;
+
+    public HighScoreList(GameStateManager gsm) {
         super(gsm);
-        levelGenerator = new LevelGenerator(resources);
-        selectionHandler = new SelectionHandler(Gdx.files.external(""));
+        highScores = getHighScores();
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
@@ -77,10 +76,39 @@ public class Select extends GameState {
 
     }
 
+    private HashMap<String,Integer> getHighScores(){
+        HashMap<String,Integer> highScores = new HashMap<String, Integer>();
+
+        FileHandle musicData = Gdx.files.external("/musicdata/");
+        for(FileHandle file: musicData.list()){
+            if(file.isDirectory())
+                if (file.child("userData/test/score.json").exists())
+                    if(file.child("/meta.json").exists()){
+                        System.out.println(file);
+                        InputStream is = file.child("userData/test/score.json").read();
+                        JsonReader rdr = Json.createReader(is);
+                        JsonObject hi = rdr.readObject();
+                        int score = hi.getInt("Score");
+                        System.out.println(score);
+                        is = file.child("/meta.json").read();
+                        rdr = Json.createReader(is);
+                        JsonObject meta = rdr.readObject();
+                        String artistName = meta.getString("artist");
+                        String trackName = meta.getString("title");
+                        String albumName = meta.getString("album");
+                        highScores.put(artistName+"~"+albumName+"~"+trackName,score);
+                }
+        }
+        Set<String> keySet = highScores.keySet();
+
+        for(String key: keySet){
+            System.out.println(key+": "+highScores.get(key));
+        }
+        return highScores;
+    }
 
     @Override
     public void handleInput() {
-
         if(upButton.isClicked()){
 
             System.out.println("Up click");
@@ -89,7 +117,7 @@ public class Select extends GameState {
                 setListPosition("up");
                 setMusicItems();
             }
-            }
+        }
         if(upButtonFast.isClicked()){
 
             System.out.println("Up click");
@@ -103,16 +131,16 @@ public class Select extends GameState {
 
         if(downButton.isClicked()){
             System.out.println("Down click");
-            if(listPosition[4]<selectionHandler.getScreenCount()-1){
-                    System.out.println("in");
-                    setListPosition("down");
-                    setMusicItems();
+            if(listPosition[4]<highScores.size()-1){
+                System.out.println("in");
+                setListPosition("down");
+                setMusicItems();
             }
-         }
+        }
 
         if(downButtonFast.isClicked()){
             System.out.println("Down click");
-            if(listPosition[4]<selectionHandler.getScreenCount()-1){
+            if(listPosition[4]<highScores.size()-1){
                 System.out.println("in");
                 setListPosition("quickdown");
                 setMusicItems();
@@ -120,28 +148,15 @@ public class Select extends GameState {
         }
 
         if(backButton.isClicked()){
-            if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
-                selectionHandler = new SelectionHandler(selectionHandler.getCurrent().parent());
-
-                setMusicItems();
-                return;
-            }
+           gsm.setState(new Menu(gsm));
         }
-        for(int i =0;i<musicItems.size();i++){
-            if(musicItems.get(i).isClicked()){
-                String text = musicItems.get(i).getText();
-                if(selectionHandler.isDir(text)){
-                    System.out.println(musicItems.get(i).getText());
-                    selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
-                    setListPosition("start");
-                    setMusicItems();
-                    return;
-                }
-                else{
-                    musicItems.get(i).getText();
-                    gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
-                    return;
-                }
+        for(int i =0;i< trackNames.size();i++){
+            if(trackNames.get(i).isClicked()||metaData.get(i).isClicked()){
+                String track = trackNames.get(i).getText();
+                String meta = metaData.get(i).getText();
+                String[] split = meta.split("~");
+                int score = highScores.get(meta+"~"+track);
+                gsm.setState(new HighScoreView(gsm,track,split[0],split[1],score));
             }
         }
 
@@ -157,8 +172,11 @@ public class Select extends GameState {
         downButtonFast.update(dt);
         upButtonFast.update(dt);
         toWriteItem.update(dt);
-        for (int i =0;i<musicItems.size();i++){
-            musicItems.get(i).update(dt);
+        for (int i =0;i< trackNames.size();i++){
+            trackNames.get(i).update(dt);
+        }
+        for (int i =0;i< metaData.size();i++){
+            metaData .get(i).update(dt);
         }
         backButton.update(dt);
     }
@@ -175,34 +193,48 @@ public class Select extends GameState {
         downButtonFast.render(sb);
         toWriteItem.renderFull();
         toWriteItem.render();
-        sb.begin();
-        sb.end();
 
-        for (int i =0;i<musicItems.size();i++){
-            musicItems.get(i).render();
+
+        for (int i =0;i< trackNames.size();i++){
+            trackNames.get(i).render();
+        }
+        for (int i =0;i< metaData.size();i++){
+            metaData .get(i).renderFull();
         }
         backButton.render();
     }
 
     private void setMusicItems(){
-
-        ArrayList<String> names = selectionHandler.getPrunedNames();
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-30);
+        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> meta = new ArrayList<String>();
+        Set<String> keysSet = highScores.keySet();
+        ArrayList<String> keys = new ArrayList<String>();
+        for(String key:keysSet){
+            keys.add(key);
+        }
+        Collections.sort(keys);
+        for(String key : keys){
+            String[] split = key.split("~");
+            names.add(split[2]);
+            meta.add(split[0]+"~"+split[1]);
+        }
+        backButton = new MusicItem(sb,FontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-10);
         System.out.println(names.size());
-            try{
-                musicItems= new ArrayList<MusicItem>();
-                int bufferFromCeil =60;
-                for(int i =0;i<5;i++){
-                    System.out.println(listPosition[i]);
-                    String name = names.get(listPosition[i]);
-                    musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
-                    bufferFromCeil+=30;
-                }
-            }catch (IndexOutOfBoundsException e){
-
+        try{
+            trackNames = new ArrayList<MusicItem>();
+            metaData = new ArrayList<MusicItem>();
+            int bufferFromCeil =40;
+            for(int i =0;i<5;i++){
+                System.out.println(listPosition[i]);
+                String name = names.get(listPosition[i]);
+                trackNames.add(new MusicItem(sb, FontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
+                String metaD = meta.get(listPosition[i]);
+                metaData.add(new MusicItem(sb,FontGenerator.underListFont,metaD,cam,10,game.getHeight()- bufferFromCeil - 15));
+                bufferFromCeil+=35;
             }
+        }catch (IndexOutOfBoundsException e){
 
-        fileCounter();
+        }
     }
     public void setListPosition(String position){
 
@@ -223,15 +255,15 @@ public class Select extends GameState {
 
         }
         else if(position.equals("quickdown")){
-            if(listPosition[4]+5>=selectionHandler.getScreenCount())
+            if(listPosition[4]+5>=highScores.size()-1)
                 setListPosition("quickdown2ElectricBoogaloo");
             else
                 for(int i =0;i<5;i++){
                     listPosition[i]+=5;
-            }
+                }
         }
         else if (position.equals("quickdown2ElectricBoogaloo")){
-            int value = selectionHandler.getScreenCount()-1;
+            int value = highScores.size()-1;
             for(int i =4;i>=0;i--){
                 listPosition[i]=value;
                 value--;
@@ -244,44 +276,12 @@ public class Select extends GameState {
             else
                 for(int i =0;i<5;i++){
                     listPosition[i]-=5;
-            }
+                }
         }
     }
 
-    public void fileCounter(){
-
-        String toWrite = "";
-        int size = selectionHandler.getScreenCount();
-        String start = selectionHandler.getCurrent().path();
-        if(start==""){
-            start = "root";
-        }
-        if(size==0){
-            toWrite = start+": " + (listPosition[0]) + "-"+(listPosition[0]) +" / " +size;
-        }
-        else if(listPosition[1]>=size){
-            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[0]+1) +" / " +size;
-        }
-
-        else if(listPosition[2]>=size){
-            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
-        }
-
-        else if(listPosition[3]>=size){
-            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[2]+1) +" / " +size;
-        }
-
-        else if(listPosition[4]>=size){
-            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[3]+1) +" / " +size;
-        }
-        else {
-            toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
-        }
-        toWriteItem = new MusicItem(sb,FontGenerator.titleFont,toWrite,cam,10,game.getHeight()-5);
-    }
     @Override
     public void dispose() {
 
     }
-
 }

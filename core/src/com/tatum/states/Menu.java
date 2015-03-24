@@ -41,6 +41,7 @@ public class Menu extends GameState {
     private Background bg;
     private GameButton playButton;
     private GameButton selectTrackButton;
+    private GameButton highScoreButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
     private Array<B2DSprite> blocks;
@@ -83,6 +84,7 @@ public class Menu extends GameState {
         Texture myStyle = resources.getTexture("sprites");
         playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
         selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
+        highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -111,6 +113,7 @@ public class Menu extends GameState {
         Texture myStyle = resources.getTexture("sprites");
         playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
         selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
+        highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -297,6 +300,9 @@ public class Menu extends GameState {
             gsm.setState(new Select(gsm));
 
         }
+        else if(highScoreButton.isClicked()){
+            gsm.setState(new HighScoreList(gsm));
+        }
     }
     public void updateProgress(double progress){
 
@@ -315,7 +321,7 @@ public class Menu extends GameState {
         p3Animation.update(dt);
         playButton.update(dt);
         selectTrackButton.update(dt);
-
+        highScoreButton.update(dt);
         long tempTime = System.nanoTime();
         float tempTimeF = tempTime/1000000000;
         if(tempTimeF >= time+0.3){
@@ -334,6 +340,7 @@ public class Menu extends GameState {
         if(!uploading&& !loading && !generating && !done) {
             playButton.render(sb);
             selectTrackButton.render(sb);
+            highScoreButton.render(sb);
         }
         sb.begin();
         sb.draw(p1Animation.getFrame(), 100, 31);

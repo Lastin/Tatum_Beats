@@ -24,7 +24,7 @@ public class TrackLoader {
         if(music == null){
             throw new NullPointerException("Music was not found on given path");
         }
-       }
+    }
 
     private Music loadMusic(){
         Music music = resources.getMusic(key);
