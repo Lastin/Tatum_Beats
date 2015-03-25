@@ -2,6 +2,7 @@ package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +40,7 @@ public class HighScoreList extends GameState{
     private GameButton downButton;
     private GameButton upButtonFast;
     private GameButton downButtonFast;
+    private MusicItem notracks;
     private int listPosition[];
     private FontGenerator fontGenerator;
     MusicItem toWriteItem;
@@ -69,10 +71,28 @@ public class HighScoreList extends GameState{
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
-
+        setNoTracks();
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
+
+    }
+    private void setNoTracks(){
+        float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
+
+
+        float newXArtist = (320/2)-(widthA/2);
+
+        int size =70;
+        while(true)
+            if(newXArtist<10 ||widthA>310  ){
+                size = size-10;
+                widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
+                newXArtist = (320/2)-(widthA/2);
+            }
+            else break;
+
+        notracks = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,(int)newXArtist,game.getHeight()-100);
 
     }
 
@@ -150,6 +170,7 @@ public class HighScoreList extends GameState{
         if(backButton.isClicked()){
            gsm.setState(new Menu(gsm));
         }
+        if(Gdx.input.isTouched())
         for(int i =0;i< trackNames.size();i++){
             if(trackNames.get(i).isClicked()||metaData.get(i).isClicked()){
                 String track = trackNames.get(i).getText();
@@ -186,14 +207,16 @@ public class HighScoreList extends GameState{
 
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
-
-        upButton.render(sb);
-        downButton.render(sb);
-        upButtonFast.render(sb);
-        downButtonFast.render(sb);
-        toWriteItem.renderFull();
-        toWriteItem.render();
-
+        if(highScores.size()==0){
+            notracks.render();
+        }else {
+            upButton.render(sb);
+            downButton.render(sb);
+            upButtonFast.render(sb);
+            downButtonFast.render(sb);
+            toWriteItem.renderFull();
+            toWriteItem.render();
+        }
 
         for (int i =0;i< trackNames.size();i++){
             trackNames.get(i).render();
@@ -205,36 +228,46 @@ public class HighScoreList extends GameState{
     }
 
     private void setMusicItems(){
-        ArrayList<String> names = new ArrayList<String>();
-        ArrayList<String> meta = new ArrayList<String>();
-        Set<String> keysSet = highScores.keySet();
-        ArrayList<String> keys = new ArrayList<String>();
-        for(String key:keysSet){
-            keys.add(key);
-        }
-        Collections.sort(keys);
-        for(String key : keys){
-            String[] split = key.split("~");
-            names.add(split[2]);
-            meta.add(split[0]+"~"+split[1]);
-        }
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-10);
-        System.out.println(names.size());
-        try{
-            trackNames = new ArrayList<MusicItem>();
-            metaData = new ArrayList<MusicItem>();
-            int bufferFromCeil =40;
-            for(int i =0;i<5;i++){
-                System.out.println(listPosition[i]);
-                String name = names.get(listPosition[i]);
-                trackNames.add(new MusicItem(sb, FontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
-                String metaD = meta.get(listPosition[i]);
-                metaData.add(new MusicItem(sb,FontGenerator.underListFont,metaD,cam,10,game.getHeight()- bufferFromCeil - 15));
-                bufferFromCeil+=35;
+        ArrayList<String> names;
+        ArrayList<String> meta;
+        Set<String> keysSet;
+        try {
+            names = new ArrayList<String>();
+            meta = new ArrayList<String>();
+            keysSet = highScores.keySet();
+            ArrayList<String> keys = new ArrayList<String>();
+            for (String key : keysSet) {
+                keys.add(key);
             }
-        }catch (IndexOutOfBoundsException e){
-
+            Collections.sort(keys);
+            for (String key : keys) {
+                System.out.println(key);
+                String[] split = key.split("~");
+                names.add(split[2]);
+                meta.add(split[0] + "~" + split[1]);
+            }
+        }catch (Exception e){
+            // some times crashes with bad track data
+            return;
         }
+            backButton = new MusicItem(sb, FontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);
+            System.out.println(names.size());
+            try {
+                trackNames = new ArrayList<MusicItem>();
+                metaData = new ArrayList<MusicItem>();
+                int bufferFromCeil = 40;
+                for (int i = 0; i < 5; i++) {
+                    System.out.println(listPosition[i]);
+                    String name = names.get(listPosition[i]);
+                    trackNames.add(new MusicItem(sb, FontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
+                    String metaD = meta.get(listPosition[i]);
+                    metaData.add(new MusicItem(sb, FontGenerator.underListFont, metaD, cam, 10, game.getHeight() - bufferFromCeil - 15));
+                    bufferFromCeil += 35;
+                }
+            } catch (IndexOutOfBoundsException e) {
+
+            }
+
     }
     public void setListPosition(String position){
 

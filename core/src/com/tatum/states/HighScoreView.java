@@ -71,7 +71,7 @@ public class HighScoreView extends GameState{
                 newXAlbum = (320/2)-(widthL/2);
                 newXScore = (320/2)-(widthG/2);
             }
-            else break;
+           else break;
 
         ArtistName = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),artistName,cam,(int)newXArtist,game.getHeight()-100);
         TrackName =  new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),trackName,cam,(int)newXSong,game.getHeight()-70);
@@ -101,7 +101,7 @@ public class HighScoreView extends GameState{
     public void render() {
         sb.setColor(1,1,1,1);
         sb.setProjectionMatrix(cam.combined);
-        bg.render(sb);
+       bg.render(sb);
         backButton.render();
         backButtonMenu.render();
         ArtistName.render();
