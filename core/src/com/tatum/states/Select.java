@@ -127,6 +127,9 @@ public class Select extends GameState {
                 return;
             }
         }
+        if(backButtonMenu.isClicked()){
+            gsm.setState(new Menu(gsm));
+        }
         for(int i =0;i<musicItems.size();i++){
             if(musicItems.get(i).isClicked()){
                 String text = musicItems.get(i).getText();
@@ -161,6 +164,7 @@ public class Select extends GameState {
             musicItems.get(i).update(dt);
         }
         backButton.update(dt);
+        backButtonMenu.update(dt);
     }
 
     @Override
@@ -168,7 +172,7 @@ public class Select extends GameState {
 
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
-
+        backButtonMenu.render();
         upButton.render(sb);
         downButton.render(sb);
         upButtonFast.render(sb);
@@ -187,16 +191,17 @@ public class Select extends GameState {
     private void setMusicItems(){
 
         ArrayList<String> names = selectionHandler.getPrunedNames();
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-30);
+        backButtonMenu = new MusicItem(sb,FontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-20);
+        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-50);
         System.out.println(names.size());
             try{
                 musicItems= new ArrayList<MusicItem>();
-                int bufferFromCeil =60;
+                int bufferFromCeil = 75;
                 for(int i =0;i<5;i++){
                     System.out.println(listPosition[i]);
                     String name = names.get(listPosition[i]);
                     musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
-                    bufferFromCeil+=30;
+                    bufferFromCeil+=25;
                 }
             }catch (IndexOutOfBoundsException e){
 

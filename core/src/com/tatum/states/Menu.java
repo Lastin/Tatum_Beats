@@ -260,6 +260,7 @@ public class Menu extends GameState {
             //resources.getSound("crystal").play();
             if(musicSelectionPath == null){
                 gsm.setState(new Select(gsm));
+                return;
             }
             Thread thread = new Thread() {
                 public void run(){
