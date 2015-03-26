@@ -1,15 +1,22 @@
 //TODO: modify the code to make it compatible with android
 package com.tatum.music;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.swing.JOptionPane;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.echonest.api.v4.EchoNestException;
 import com.tatum.handlers.FileUploaderGDX;
 
@@ -21,6 +28,7 @@ public class TrackData {
     private String trackName;//done
     private String albumName; //done
     private String genre; //done
+    private String theme;
 
     private int length;
     private double dancebility; //done
@@ -110,7 +118,7 @@ public class TrackData {
                 this.trackName = meta.getString("title");
                 this.albumName = meta.getString("album");
                 this.genre = meta.getString("genre");
-
+                setGenreBucket();
                 this.bitrate = meta.getInt("bitrate");
                 this.sampleRate = meta.getInt("sample_rate");
                 this.dancebility = audio.getJsonNumber("danceability").doubleValue();
@@ -447,6 +455,31 @@ public class TrackData {
             e.printStackTrace();
         }
 
+    }
+
+    private void setGenreBucket(){
+
+        InputStream is = Gdx.files.internal("res/GenreBuckets.json").read();
+        JsonReader rdr = Json.createReader(is);
+        JsonObject genreBucketJson = rdr.readObject();
+        JsonArray genres = genreBucketJson.getJsonArray("genres");
+        HashMap<String, String> map = new HashMap<String, String>();
+        for(int i =0; i < genres.size(); i++){
+
+            JsonObject temp = genres.getJsonObject(i);
+            String name = temp.getString("name");
+            String nearest = temp.getString("nearest");
+            System.out.println(name +": "+ nearest);
+            map.put(name.toLowerCase(),nearest);
+        }
+        if(map.containsKey(genre.toLowerCase())){
+            theme = map.get(genre.toLowerCase());
+        }
+        else{
+            theme = "cake";
+        }
+        System.out.println(genre+" HERE WE ARE " +theme);
+        //this.genreBucket = genreBucket.getString("bucket");
     }
 
     public List<JsonObject> getAsList(Object array) {
@@ -874,6 +907,8 @@ public class TrackData {
     public FileUploaderGDX getUploader() {
         return fileUploader;
     }
+
+    public String getTheme(){ return theme;}
 }
 
 

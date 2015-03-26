@@ -71,6 +71,13 @@ public class HighScoreList extends GameState{
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
+        Thread loader = new Thread(){
+            @Override
+            public void run() {
+
+            //    setNoTracks();
+            }
+        }; loader.start();
         setNoTracks();
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -207,7 +214,7 @@ public class HighScoreList extends GameState{
 
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
-        if(highScores.size()==0){
+        if(highScores.size()==0 && notracks !=null){
             notracks.render();
         }else {
             upButton.render(sb);

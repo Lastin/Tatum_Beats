@@ -31,6 +31,7 @@ public class Instructor {
     private PaceMaker paceMaker;
     private Play play;
     private Rotation rotation;
+    private boolean swapper;
     public Instructor(ContentManager cont, Game game, Player player, PaceMaker paceMaker, Play play){
 
         this.cont=cont;
@@ -47,6 +48,7 @@ public class Instructor {
         this.play = play;
         this.paceMaker = paceMaker;
         rotation = Rotation.NONE;
+        swapper = false;
     }
     private void loadSkins(){
         Texture tex;
@@ -366,10 +368,57 @@ public class Instructor {
         swapHorizontal();
         swapVertical();
     }
+    private void botRight(){
+        String tempRight = right;
+        String tempBot = bot;
+        bot = tempRight;
+        right = tempBot;
+    }
+    private void botLeft(){
+        String tempLeft = left;
+        String tempBot = bot;
+        left = tempBot;
+        bot = tempLeft;
+    }
+    private void topRight(){
+        String tempTop = top;
+        String tempRight = right;
+        top = tempRight;
+        right = tempTop;
+    }
+    private void topLeft(){
+        String tempTop = top;
+        String tempLeft = left;
+        top = tempLeft;
+        left = tempTop;
+    }
+    private void top(){
+        if(swapper){
+            topLeft();
+            swapper=!swapper;
+        }
+        else {
+            topRight();
+            swapper=!swapper;
+        }
+    }
+    private void bot(){
+        if(swapper){
+            botLeft();
+            swapper=!swapper;
+        }
+        else {
+            botRight();
+            swapper=!swapper;
+        }
+    }
+
+
     private void randomise(){
         Random random = new Random();
         int rotate = random.nextInt(3);
         int flip = random.nextInt(4);
+        int corner = random.nextInt(4);
         if(rotate==0)
             rotateClockWise();
         else if (rotate==1)
@@ -380,6 +429,15 @@ public class Instructor {
             swapHorizontal();
         else if(flip==2)
             swapBoth();
+        if(corner==0)
+            botRight();
+        else if (corner==1)
+            botLeft();
+        else if (corner==2)
+            topRight();
+        else
+            topLeft();
+
     }
 
     private void checkRotation(){
@@ -405,11 +463,18 @@ public class Instructor {
             case RANDOMISE:
                 randomise();
                 break;
+            case BOTTOM:
+                bot();
+                break;
+            case TOP:
+                top();
+                break;
         }
     }
     public enum Rotation {
         NONE,COUNTER_CLOCKWISE,CLOCKWISE, SWAP_HORIZONTAL,
-        SWAP_VERTICAL,INVERT, RANDOMISE
+        SWAP_VERTICAL,INVERT, RANDOMISE, BOTTOM,
+        TOP
     }
     public void setRotation(Rotation r){
         rotation=r;

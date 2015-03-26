@@ -84,6 +84,7 @@ public class Play extends GameState {
     private MusicItem ArtistName;
     float titleFade = 0.1f;
     float titleTimer =0;
+    private boolean rotate;
     //paceMaker
     private final PaceMaker paceMaker;
     private float delay = 0.2f;
@@ -107,6 +108,7 @@ public class Play extends GameState {
     private boolean yResetLeft = true;
     private boolean yResetRight = true;
     private float movementTimer =0;
+
 
     private int lastCoin =1;
 
@@ -142,7 +144,7 @@ public class Play extends GameState {
         setArtistSong();
         this.instructor = hud.getInstructor();
         music.play();
-        instructor.setRotation(Instructor.Rotation.RANDOMISE);
+        setSongCharactaristics();
     }
 
     private void setArtistSong(){
@@ -178,6 +180,53 @@ public class Play extends GameState {
         b2dRenderer = new Box2DDebugRenderer();
         cam.setBounds(0, width * PPM, 0, height * tileSide);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+    }
+
+    private void setSongCharactaristics(){
+
+        String key = paceMaker.getTrackData().getKeyString();
+        switch (key){
+            case "c":
+                instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                break;
+            case "c#":
+                instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                break;
+            case "d":
+                instructor.setRotation(Instructor.Rotation.INVERT);
+                break;
+            case "d#":
+                instructor.setRotation(Instructor.Rotation.INVERT);
+                break;
+            case "e":
+                instructor.setRotation(Instructor.Rotation.RANDOMISE);
+                break;
+            case "f":
+                instructor.setRotation(Instructor.Rotation.BOTTOM);
+                break;
+            case "f#":
+                instructor.setRotation(Instructor.Rotation.BOTTOM);
+                break;
+            case "g":
+                instructor.setRotation(Instructor.Rotation.TOP);
+                break;
+            case "g#":
+                instructor.setRotation(Instructor.Rotation.BOTTOM);
+                break;
+            case "a":
+                instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                break;
+            case "a#":
+                instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                break;
+            case "b":
+                instructor.setRotation(Instructor.Rotation.SWAP_VERTICAL);
+        }
+        String mode = paceMaker.getTrackData().getModeString();
+        if(mode.equals("minor"))
+            rotate = false;
+        else rotate = true;
+
     }
 
     private Player createPlayer() {
@@ -319,7 +368,11 @@ public class Play extends GameState {
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
+        if(rotate){
+           // cam.rotate(-0.2f);
 
+            //needs to be done better
+        }
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
         sb.setColor(1f, 1f, 1f, 1f);
