@@ -468,9 +468,9 @@ public class TrackData {
 
             JsonObject temp = genres.getJsonObject(i);
             String name = temp.getString("name");
-            String nearest = temp.getString("nearest");
-            System.out.println(name +": "+ nearest);
-            map.put(name.toLowerCase(),nearest);
+            String theme = temp.getString("theme");
+            System.out.println(name +": "+ theme);
+            map.put(name.toLowerCase(),theme);
         }
         if(map.containsKey(genre.toLowerCase())){
             theme = map.get(genre.toLowerCase());

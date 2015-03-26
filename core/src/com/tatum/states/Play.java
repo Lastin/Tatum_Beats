@@ -369,7 +369,7 @@ public class Play extends GameState {
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
         if(rotate){
-           // cam.rotate(-0.2f);
+            cam.rotate(-0.4f);
 
             //needs to be done better
         }

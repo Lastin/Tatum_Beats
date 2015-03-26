@@ -1,4 +1,4 @@
-"genres":[
+{"genres":[
     {"name":"spazzcore", "theme":"snow"},
     {"name":"Girl Rock", "theme":"purple"},
     {"name":"finnish metal", "theme":"snow"},
@@ -835,4 +835,4 @@
     {"name":"Swedish Metal", "theme":"snow"},
     {"name":"melodic", "theme":"snow"},
     {"name":"melodic death", "theme":"snow"}
-]
+]}
