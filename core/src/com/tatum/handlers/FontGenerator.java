@@ -40,4 +40,8 @@ public class FontGenerator {
         font.setScale(0.5f);
         return font;
     }
+
+    public static BitmapFont makeCustomFont(){
+        return null;
+    }
 }

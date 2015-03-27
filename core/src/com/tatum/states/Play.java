@@ -115,15 +115,17 @@ public class Play extends GameState {
     float previousPosition  = 0;
     float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
     float total = 0;
+    private final TrackData trackData;
 
 
-    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path) {
+    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
         super(gsm);
         this.tatumMap = tatumMap;
         this.tiledMap = tatumMap.getTiledMap();
         this.music = music;
         this.path = path;
         this.paceMaker = paceMaker;
+        this.trackData = trackData;
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
@@ -481,7 +483,11 @@ public class Play extends GameState {
         //check if level is finished
         if(player.getBody().getPosition().x>=width){
             player.saveHighScore();
-            gsm.setState(new Menu(gsm));
+            //gsm.setState(new Menu(gsm));
+            String trackName = trackData.getSongName();
+            String artistName = trackData.getArtist();
+            String album = trackData.getAlbumName();
+            gsm.setState(new HighScoreView(gsm, trackName, artistName, album, player.getHighScore()));
         }
 
         //check scores / set new high score
