@@ -13,6 +13,7 @@ public class Game extends ApplicationAdapter {
     public static final float STEP = 1/60f;
     public final int width;
     public final int height;
+    private final TwitterInterface twitterInterface;
     private SpriteBatch sb;
     private BoundedCamera cam;
     private OrthographicCamera hudCam;
@@ -21,14 +22,16 @@ public class Game extends ApplicationAdapter {
     private String[] data;
     private TatumDirectionListener tatumDirectionListener;
 
-    public Game(String[] data){
+    public Game(String[] data, TwitterInterface twitterInterface){
         super();
+        this.twitterInterface = twitterInterface;
         this.data=data;
         width=320;
         height=240;
 
     }
-    public Game(){
+    public Game(TwitterInterface twitterInterface){
+        this.twitterInterface = twitterInterface;
         width = 320;//Gdx.graphics.getWidth();
         height = 240; //Gdx.graphics.getHeight();
     }

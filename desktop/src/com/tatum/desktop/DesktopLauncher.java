@@ -8,6 +8,6 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         String[] temp ={"2","2","2","2"};
-		new LwjglApplication(new Game(temp), config);
+		new LwjglApplication(new Game(temp, new DesktopTwitter()), config);
 	}
 }

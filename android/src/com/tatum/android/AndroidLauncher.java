@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.facebook.Session;
-import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.tatum.Game;
-
-import com.facebook.AppEventsLogger;
-import com.tatum.handlers.DirectionListener;
-import com.tatum.handlers.InputProcessor;
-import com.tatum.handlers.SimpleDirectionGestureDetector;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import org.sensingkit.sensingkitlib.SKException;
 import org.sensingkit.sensingkitlib.SKSensorDataListener;
@@ -25,7 +20,13 @@ import org.sensingkit.sensingkitlib.SensingKitLibInterface;
 import org.sensingkit.sensingkitlib.model.data.DataInterface;
 import org.sensingkit.sensingkitlib.modules.SensorModuleType;
 
+import io.fabric.sdk.android.Fabric;
+
 public class AndroidLauncher extends AndroidApplication {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "ri1uHFmjtrgna9WC5wfbkdspQ";
+    private static final String TWITTER_SECRET = "vCitep3IVDY8NNM9zQ3eouKSRnzNkOCqfJY0ZwVX4kI5tMScp1";
     private final String[] data = new String[4];
     // Tag used when logging messages
     private static final String TAG = AndroidLauncher.class.getSimpleName();
@@ -68,6 +69,8 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+		Fabric.with(this, new Twitter(authConfig), new TweetComposer());
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
         try {
@@ -88,7 +91,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
 
-        initialize(new Game(data), config);
+        initialize(new Game(data, new AndroidTwitter(this)), config);
  //       fbUiLifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
   //          @Override
    //         public void call(Session session, SessionState state, Exception exception) {
