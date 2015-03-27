@@ -33,7 +33,11 @@ public class PaceMaker {
     private int renderCounter=0;
     private int newBarChecker = 0;
     private boolean canShake =false;
+    private int pixelPointCount =0;
+    private boolean jumping = false;
+    private int PixelPointJumpCount =0;
     private double hitTime =0;
+
     public PaceMaker(TrackData trackData, TiledMap map){
         this.trackData = trackData;
         this.map = map;
@@ -132,9 +136,27 @@ public class PaceMaker {
 
         try {
               if (musicTime > pixelPoints.get(pixelPoint)) {
+                  float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM;
+
+                  if(jumping){
+                      if(PixelPointJumpCount<16) {
+                          player.getBody().setTransform(new Vector2(xPos, player.getPosition().y + (2 / PPM)), 0);
+                          PixelPointJumpCount++;
+                      }
+                      else if(PixelPointJumpCount == 32){
+                          jumping=false;
+                          PixelPointJumpCount=0;
+                          player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
+                      }
+                      else if((PixelPointJumpCount>=16)&& (PixelPointJumpCount<32)){
+                          player.getBody().setTransform(new Vector2(xPos, player.getPosition().y - (2 / PPM)), 0);
+                          PixelPointJumpCount++;
+                      }// THIS DEALS WITH EEPING THE JUMPING IN TIME, CONFLICTS WITH WALKING
+                  }else{
+                      player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
+                  }
                     //System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
-                    float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM;
-                    player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
+
                     //player.getBody().setTransform(new Vector2(player.getPosition().x + (1/PPM), player.getPosition().y), 0);
                     //pixelPoints.remove(i);
                     //System.out.println("Pixel point: " +pixelPoint);
@@ -148,6 +170,7 @@ public class PaceMaker {
         }
         //player.getBody().setLinearVelocity(velocity);
     }
+
 
     public int findMatchingBeat(double musicTime){
         int attempts = 0;
@@ -190,9 +213,6 @@ public class PaceMaker {
         return -1;
     }
 
-    private float calculateDistance(){
-        return 0f;
-    }
     public int getLastBeatHitId(){return lastBeatHitId;}
     public int getLastBarHitId() {return lastBarHitId;}
     public int getLastSectionHitId() { return lastSectionHitId;}
@@ -240,4 +260,7 @@ public class PaceMaker {
     public void cantShake(){
         canShake=false;
     }
+    public void setJumping(boolean jumping){ this.jumping = jumping;}
+
+    public boolean getJumping(){return jumping;}
 }

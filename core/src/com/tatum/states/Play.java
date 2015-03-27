@@ -369,7 +369,7 @@ public class Play extends GameState {
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
         if(rotate){
-            cam.rotate(-0.4f);
+            //cam.rotate(-0.4f);
 
             //needs to be done better
         }
@@ -505,7 +505,7 @@ public class Play extends GameState {
         //}
 
         //check if need to reskin
-        if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > player.getJumpTime()+0.1)){
+        if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > player.getJumpTime()+0.1) && !paceMaker.getJumping()){
             player.removeSkin();
             player.setIsJumping(false);
         }
@@ -583,8 +583,9 @@ public class Play extends GameState {
 
     public void playerJump(){
         if(cl.playerCanJump()&&(!player.getIsJumping())&&(!player.getIsDucking())){
-            player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x, 0);
-            player.getBody().applyForceToCenter(0, 200, true);
+
+            //paceMaker.setJumping(true); // use for in time
+            player.getBody().applyForceToCenter(0, 200, true); // use for working jump, time independent
             player.setJumpSkin();
             player.setJumpTime(music.getPosition());
             //resources.getSound("jump").play();
