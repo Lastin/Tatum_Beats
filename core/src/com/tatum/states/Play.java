@@ -148,6 +148,7 @@ public class Play extends GameState {
         this.instructor = hud.getInstructor();
         music.play();
         setSongCharactaristics();
+        System.out.println(trackData.getTwitterHandle());
     }
 
     private void setArtistSong(){

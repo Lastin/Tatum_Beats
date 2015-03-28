@@ -30,7 +30,7 @@ public class LevelGenerator {
     }
 
     public TatumMap makeMap(TrackData trackData){
-        cells = loadCells(trackData);
+        cells = loadCells();
         float width = ((trackData.getBeats().size()/B2DVars.PPM)*32)-(32/B2DVars.PPM);
         int height = 20;
         //set properties
@@ -119,7 +119,7 @@ public class LevelGenerator {
         return barsPositions;
     }
 
-    private Cell[] loadCells(TrackData trackData) {
+    private Cell[] loadCells() {
         Cell[] cells;
         Texture blocks_texture = resources.getTexture("blocks3");
         if(blocks_texture == null) {

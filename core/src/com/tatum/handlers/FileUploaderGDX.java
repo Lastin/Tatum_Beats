@@ -143,7 +143,7 @@ public class FileUploaderGDX {
             realUpload(file);
 
         }
-        //artistTwitterHandle(trackName);
+        artistTwitterHandle(trackName);
 
     }
     private void realUpload(File file) throws EchoNestException, IOException {
@@ -354,7 +354,10 @@ public class FileUploaderGDX {
         File twitter = Gdx.files.external("musicdata/"+trackName+"/twitterhandle.json").file();
 
         if(twitter.exists()) {
-
+            InputStream is = Gdx.files.external("musicdata/"+trackName+"/twitterhandle.json").read();
+            JsonReader rdr = Json.createReader(is);
+            JsonObject artist = rdr.readObject();
+            trackInformation.put("twitter",artist);
         }
         else {
             boolean outOfApiCalls = true;
@@ -383,10 +386,11 @@ public class FileUploaderGDX {
                     }
                     JsonObject artist = struct.getJsonObject("artist");
                     trackInformation.put("twitter", artist);
-                    PrintWriter  out = new PrintWriter("musicdata/"+trackName+"/twitterhandle.json");
-                    System.out.println(trackInformation.get("twitter").toString());
-                    out.println(trackInformation.get("twitter").toString());
-                    out.close(); // track data to file
+
+                    FileHandle ff = Gdx.files.external("musicdata/" + trackName + "/twitterhandle.json");
+                    OutputStream OS = ff.write(false);
+                    OS.write(trackInformation.get("twitter").toString().getBytes());
+                    OS.close();
 
                 } catch (Exception e) {
                     e.printStackTrace(); //catching any error, not a good habit, but there are like 500 errors thrown

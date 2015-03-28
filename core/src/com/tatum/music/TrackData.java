@@ -68,6 +68,7 @@ public class TrackData {
     private ArrayList<Section> sections;
     private ArrayList<Segment> segments;
 
+    private String twitterHandle;
 
     //to be worked out
     private String locationName;
@@ -105,6 +106,7 @@ public class TrackData {
             JsonObject meta = (JsonObject) trackInformation.get("Meta");
             JsonObject track = (JsonObject) trackInformation.get("Track");
             JsonObject audio = (JsonObject) trackInformation.get("audio_summary");
+            JsonObject twitter = (JsonObject) trackInformation.get("twitter");
             List<JsonObject> Jbars = getAsList(trackInformation.get("Bars"));
             List<JsonObject> Jbeats = getAsList(trackInformation.get("Beats"));
             List<JsonObject> Jtatums = getAsList(trackInformation.get("Tatums"));
@@ -171,6 +173,7 @@ public class TrackData {
                 this.timeSigConf = track.getJsonNumber("time_signature_confidence").doubleValue();
                 this.keyConf = track.getJsonNumber("key_confidence").doubleValue();
                 this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
+                twitterhandle(twitter);
             } catch (NullPointerException e) {
                // JOptionPane.showMessageDialog(null, "not possible to use this file");
                 e.printStackTrace();
@@ -456,7 +459,16 @@ public class TrackData {
         }
 
     }
+    private void twitterhandle(JsonObject twitter){
 
+        if(twitter.containsKey("twitter")){
+            twitterHandle = twitter.getString("twitter");
+        }
+        else{
+            twitterHandle = "no handle";
+        }
+
+    }
     private void setGenreBucket(){
 
         InputStream is = Gdx.files.internal("res/GenreBuckets.json").read();
@@ -909,6 +921,10 @@ public class TrackData {
     }
 
     public String getTheme(){ return theme;}
+
+    public String getTwitterHandle(){
+        return twitterHandle;
+    }
 }
 
 
