@@ -214,7 +214,7 @@ public class HighScoreList extends GameState{
 
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
-        if(highScores.size()==0 && notracks !=null){
+        if(metaData.size()==0 && notracks !=null){
             notracks.render();
         }else {
             upButton.render(sb);
@@ -223,12 +223,12 @@ public class HighScoreList extends GameState{
             downButtonFast.render(sb);
             toWriteItem.renderFull();
             toWriteItem.render();
-            for (int i =0;i< trackNames.size();i++){
-                trackNames.get(i).render();
-            }
-            for (int i =0;i< metaData.size();i++){
-                metaData .get(i).renderFull();
-            }
+                for (int i = 0; i < trackNames.size(); i++) {
+                    trackNames.get(i).render();
+                }
+                for (int i = 0; i < metaData.size(); i++) {
+                    metaData.get(i).renderFull();
+                }
         }
 
 
@@ -249,13 +249,18 @@ public class HighScoreList extends GameState{
             }
             Collections.sort(keys);
             for (String key : keys) {
-                System.out.println(key);
-                String[] split = key.split("~");
-                names.add(split[2]);
-                meta.add(split[0] + "~" + split[1]);
+                try {
+                    System.out.println(key);
+                    String[] split = key.split("~");
+                    names.add(split[2]);
+                    meta.add(split[0] + "~" + split[1]);
+                }catch(ArrayIndexOutOfBoundsException e){
+                    //dis a broken one
+                }
             }
         }catch (Exception e){
             // some times crashes with bad track data
+            e.printStackTrace();
             return;
         }
             backButton = new MusicItem(sb, FontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);

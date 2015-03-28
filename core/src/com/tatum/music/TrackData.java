@@ -106,7 +106,6 @@ public class TrackData {
             JsonObject meta = (JsonObject) trackInformation.get("Meta");
             JsonObject track = (JsonObject) trackInformation.get("Track");
             JsonObject audio = (JsonObject) trackInformation.get("audio_summary");
-            JsonObject twitter = (JsonObject) trackInformation.get("twitter");
             List<JsonObject> Jbars = getAsList(trackInformation.get("Bars"));
             List<JsonObject> Jbeats = getAsList(trackInformation.get("Beats"));
             List<JsonObject> Jtatums = getAsList(trackInformation.get("Tatums"));
@@ -173,7 +172,7 @@ public class TrackData {
                 this.timeSigConf = track.getJsonNumber("time_signature_confidence").doubleValue();
                 this.keyConf = track.getJsonNumber("key_confidence").doubleValue();
                 this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
-                twitterhandle(twitter);
+                twitterhandle();
             } catch (NullPointerException e) {
                // JOptionPane.showMessageDialog(null, "not possible to use this file");
                 e.printStackTrace();
@@ -459,15 +458,16 @@ public class TrackData {
         }
 
     }
-    private void twitterhandle(JsonObject twitter){
-
-        if(twitter.containsKey("twitter")){
-            twitterHandle = twitter.getString("twitter");
+    private void twitterhandle(){
+        if(trackInformation.containsKey("twitter")){
+            JsonObject twitter = (JsonObject) trackInformation.get("twitter");
+            if(twitter.containsKey("twitter")){
+                twitterHandle = twitter.getString("twitter");
+            }
+            else{
+                twitterHandle = "no handle";
+            }
         }
-        else{
-            twitterHandle = "no handle";
-        }
-
     }
     private void setGenreBucket(){
 
@@ -488,7 +488,7 @@ public class TrackData {
             theme = map.get(genre.toLowerCase());
         }
         else{
-            theme = "jazz";
+            theme = "rock";
         }
         System.out.println(genre+" HERE WE ARE " +theme);
         //this.genreBucket = genreBucket.getString("bucket");

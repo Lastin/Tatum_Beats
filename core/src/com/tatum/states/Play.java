@@ -376,7 +376,7 @@ public class Play extends GameState {
         temp = resources.getTexture("classical");
         bgTheme.put("classical",new TextureRegion(temp,0,0,427,240));
         temp = resources.getTexture("death-metal");
-        bgTheme.put("death-metal",new TextureRegion(temp,0,0,427,240));
+        bgTheme.put("death-metal",new TextureRegion(temp,0,0,320,240));
         temp = resources.getTexture("electronic");
         bgTheme.put("electronic",new TextureRegion(temp,0,0,340,240));
         temp = resources.getTexture("hip-hop");
@@ -388,7 +388,7 @@ public class Play extends GameState {
         temp = resources.getTexture("metal");
         bgTheme.put("metal",new TextureRegion(temp,0,0,427,240));
         temp = resources.getTexture("rock");
-        bgTheme.put("rock",new TextureRegion(temp,0,0,427,240));
+        bgTheme.put("rock",new TextureRegion(temp,0,0,320,240));
         temp = resources.getTexture("punk");
         bgTheme.put("punk",new TextureRegion(temp,0,0,427,240));
 

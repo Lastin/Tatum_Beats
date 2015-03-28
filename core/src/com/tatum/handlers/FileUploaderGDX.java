@@ -364,8 +364,11 @@ public class FileUploaderGDX {
             while(outOfApiCalls) {
                 URL url = null;
                 try {
-                            JsonObject meta = (JsonObject) trackInformation.get("Meta");
-                            String artist = meta.getString("artist").replaceAll(" ","+");
+                    JsonObject meta = (JsonObject) trackInformation.get("Meta");
+                    String artist = meta.getString("artist").replaceAll(" ","+");
+                    if(artist.equals("")){
+                        break;
+                    }
                     url = new URL("http://developer.echonest.com/api/v4/artist/twitter?api_key=B0EHJCUJPBJOZ5MOP&name="+artist+"&format=json");
                     //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
                 } catch (MalformedURLException e) {

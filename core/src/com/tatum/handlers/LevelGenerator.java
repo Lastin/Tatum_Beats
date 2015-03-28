@@ -63,7 +63,7 @@ public class LevelGenerator {
                 block=22;
                 break;
             case "electronic":
-                block=15;
+                block=16;
                 break;
             case "hip-hop":
                 block=23;
@@ -72,16 +72,16 @@ public class LevelGenerator {
                 block=21;
                 break;
             case "jazz":
-                block=17;
+                block=18;
                 break;
             case "metal":
-                block=14;
+                block=15;
                 break;
             case "rock":
-                block=6;
+                block=23;
                 break;
             case "punk":
-                block=16;
+                block=17;
                 break;
             case "pop":
                 block=0;
