@@ -223,14 +223,15 @@ public class HighScoreList extends GameState{
             downButtonFast.render(sb);
             toWriteItem.renderFull();
             toWriteItem.render();
+            for (int i =0;i< trackNames.size();i++){
+                trackNames.get(i).render();
+            }
+            for (int i =0;i< metaData.size();i++){
+                metaData .get(i).renderFull();
+            }
         }
 
-        for (int i =0;i< trackNames.size();i++){
-            trackNames.get(i).render();
-        }
-        for (int i =0;i< metaData.size();i++){
-            metaData .get(i).renderFull();
-        }
+
         backButton.render();
     }
 

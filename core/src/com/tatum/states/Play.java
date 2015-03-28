@@ -48,6 +48,7 @@ import com.tatum.music.TrackData;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Play extends GameState {
@@ -353,16 +354,65 @@ public class Play extends GameState {
         }
         paceMaker.setMonsterCoinLocation(monsterCoinLocation);
     }
+
+
     private Background[] createBackground() {
-        Texture bgs = resources.getTexture("GrassColour");
-        TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
-        TextureRegion clouds = new TextureRegion(bgs, 0, 240, 320, 240);
-        TextureRegion mountains = new TextureRegion(bgs, 0, 480, 320, 240);
-        Background[] backgrounds = new Background[3];
-        backgrounds[0] = new Background(game, sky, cam, 0.1f);
-        backgrounds[1] = new Background(game, clouds, cam, 0.15f);
-        backgrounds[2] = new Background(game, mountains, cam, 0.25f);
-        return backgrounds;
+        String theme = paceMaker.getTrackData().getTheme();
+
+        HashMap<String, TextureRegion> bgTheme = new HashMap<>();
+        resources.loadTexture("res/images/backgrounds/asian.png");
+        resources.loadTexture("res/images/backgrounds/classical.png");
+        resources.loadTexture("res/images/backgrounds/death-metal.png");
+        resources.loadTexture("res/images/backgrounds/electronic.png");
+        resources.loadTexture("res/images/backgrounds/hip-hop.png");
+        resources.loadTexture("res/images/backgrounds/indie.png");
+        resources.loadTexture("res/images/backgrounds/jazz.png");
+        resources.loadTexture("res/images/backgrounds/metal.png");
+        resources.loadTexture("res/images/backgrounds/rock.png");
+        resources.loadTexture("res/images/backgrounds/punk.png");
+        Texture temp = resources.getTexture("asian");
+        bgTheme.put("asian",new TextureRegion(temp,0,0,949,240));
+        temp = resources.getTexture("classical");
+        bgTheme.put("classical",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("death-metal");
+        bgTheme.put("death-metal",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("electronic");
+        bgTheme.put("electronic",new TextureRegion(temp,0,0,340,240));
+        temp = resources.getTexture("hip-hop");
+        bgTheme.put("hip-hop",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("indie");
+        bgTheme.put("indie",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("jazz");
+        bgTheme.put("jazz",new TextureRegion(temp,0,0,960,240));
+        temp = resources.getTexture("metal");
+        bgTheme.put("metal",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("rock");
+        bgTheme.put("rock",new TextureRegion(temp,0,0,427,240));
+        temp = resources.getTexture("punk");
+        bgTheme.put("punk",new TextureRegion(temp,0,0,427,240));
+
+        if((theme.equals("jazz"))||(theme.equals("asian"))){
+            Background[] backgrounds = new Background[1];
+            backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0.3f);
+            return backgrounds;
+        }
+        else if (theme.equals("pop")) {
+            Texture bgs = resources.getTexture("GrassColour");
+            TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
+            TextureRegion clouds = new TextureRegion(bgs, 0, 240, 320, 240);
+            TextureRegion mountains = new TextureRegion(bgs, 0, 480, 320, 240);
+            Background[] backgrounds = new Background[3];
+            backgrounds[0] = new Background(game, sky, cam, 0.1f);
+            backgrounds[1] = new Background(game, clouds, cam, 0.15f);
+            backgrounds[2] = new Background(game, mountains, cam, 0.25f);
+            return backgrounds;
+        }
+        else{
+            System.out.println(theme);
+            Background[] backgrounds = new Background[1];
+            backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0f);
+            return backgrounds;
+        }
     }
 
     @Override

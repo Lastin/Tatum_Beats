@@ -50,15 +50,10 @@ public class FileUploaderGDX {
         //System.setOut(supresser);
         FileHandle fH = Gdx.files.external(trackPath);
         File file = fH.file();
-        //System.out.println(file+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        //System.out.println(file+"£££££££££££££££££££££££££££££££££££££££");
-        //System.out.println(trackPath+"£££££££££££££££££££££££££££££££££££££££");
-        //System.out.println(Gdx.files.internal(""));
+
         String extRoot = Gdx.files.getExternalStoragePath();
-        //System.out.println(extRoot);
         String locRoot = Gdx.files.getLocalStoragePath();
-        //System.out.println(locRoot);
-        //Long fileSize = file.getTotalSpace();
+
         String trackName = trackPath.replaceAll("/","");
 
         //trackName = trackName.replaceAll(".","");
@@ -148,6 +143,7 @@ public class FileUploaderGDX {
             realUpload(file);
 
         }
+        //artistTwitterHandle(trackName);
 
     }
     private void realUpload(File file) throws EchoNestException, IOException {
@@ -168,117 +164,86 @@ public class FileUploaderGDX {
         //System.out.println(track.getAudioUrl()); // NULL
         //System.out.println(track.getForeignID()); // NULL
         //System.out.println(track.getID()); // THIS ONE!! Track ID, TRAESKT145E82A824C for test
-
         URL url = null;
         trackInformation = new HashMap<String, Object>();
-        try {
-            url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id="
-                    + track.getID() + "&bucket=audio_summary");
-            //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
-            InputStream is = url.openStream();
-            JsonReader rdr = Json.createReader(is);
-            JsonObject struct = rdr.readObject();
-            for (String x : struct.keySet()) {
-                System.out.println(x);
+
+            try {
+                url = new URL(track.getAnalysisURL());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
+            try { //changed, because it seems that android does not support try with resources
+                InputStream is = url.openStream();
 
-            struct = struct.getJsonObject("response");
-            for (String x : struct.keySet()) {
-                System.out.println(x);
-            }
+                JsonReader rdr = Json.createReader(is);
+                JsonObject struct = rdr.readObject();
 
-            JsonObject track1 = struct.getJsonObject("track");
-            for (String x : track1.keySet()) {
-                System.out.println(x);
-            }
+                trackInformation.put("Meta", struct.getJsonObject("meta"));
+                trackInformation.put("Track", struct.getJsonObject("track"));
+                trackInformation.put("Bars", struct.getJsonArray("bars"));
+                trackInformation.put("Beats", struct.getJsonArray("beats"));
+                trackInformation.put("Tatums", struct.getJsonArray("tatums"));
+                trackInformation.put("Sections", struct.getJsonArray("sections"));
+                trackInformation.put("Segments", struct.getJsonArray("segments"));
+                // above returns a java List type containing all JsonObjects in our JsonArray!
 
-            trackInformation.put("audio_summary", track1.getJsonObject("audio_summary"));
-        } catch (Exception e) {
-            System.out.println("Error line 90");
-            e.printStackTrace(); //catching any error, not a good habit, but whatever
-        }
+                audioSummary();
+                String trackname = trackPath.replaceAll("/", "");
+                //trackname = trackname.replaceAll(".","");
+                FileHandle ff = Gdx.files.internal("");
+                boolean exists = Gdx.files.external("doitexist.txt").exists();
+                boolean isDirectory = Gdx.files.external("test/").isDirectory();
+                File fff = Gdx.files.external("musicData").file();
+                if (!fff.exists()) {
+                    fff.mkdir();
+                    System.out.println("BEEP BEEP BEPP");
+                } /// if music directory does not exist create
 
-        try {
-            url = new URL(track.getAnalysisURL());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+                boolean test = (Gdx.files.external("musicdata/" + trackname).file()).mkdir();
+                if (test) System.out.println("good shit fam"); //make directory for song
 
+                ff = Gdx.files.external("musicdata/" + trackname + "/meta.json");
+                OutputStream OS = ff.write(false);
+                OS.write(trackInformation.get("Meta").toString().getBytes());
+                OS.close();
 
-        try { //changed, because it seems that android does not support try with resources
-            InputStream is = url.openStream();
+                ff = Gdx.files.external("musicdata/" + trackname + "/track.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Track").toString().getBytes());
+                OS.close();
 
-            JsonReader rdr = Json.createReader(is);
-            JsonObject struct = rdr.readObject();
-            trackInformation.put("Meta", struct.getJsonObject("meta"));
-            trackInformation.put("Track", struct.getJsonObject("track"));
-            trackInformation.put("Bars", struct.getJsonArray("bars"));
-            trackInformation.put("Beats", struct.getJsonArray("beats"));
-            trackInformation.put("Tatums", struct.getJsonArray("tatums"));
-            trackInformation.put("Sections", struct.getJsonArray("sections"));
-            trackInformation.put("Segments", struct.getJsonArray("segments"));
-            // above returns a java List type containing all JsonObjects in our JsonArray!
+                ff = Gdx.files.external("musicdata/" + trackname + "/bars.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Bars").toString().getBytes());
+                OS.close();
 
-            String trackname = trackPath.replaceAll("/","");
-            //trackname = trackname.replaceAll(".","");
-            FileHandle ff = Gdx.files.internal("");
-            boolean exists = Gdx.files.external("doitexist.txt").exists();
-            boolean isDirectory = Gdx.files.external("test/").isDirectory();
-            File fff = Gdx.files.external("musicData").file();
-            if(!fff.exists()){
-                fff.mkdir();
-              System.out.println("BEEP BEEP BEPP");
-            } /// if music directory does not exist create
+                ff = Gdx.files.external("musicdata/" + trackname + "/beats.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Beats").toString().getBytes());
+                OS.close();
 
-            boolean test = (Gdx.files.external("musicdata/"+trackname).file()).mkdir();
-            if(test) System.out.println("good shit fam"); //make directory for song
+                ff = Gdx.files.external("musicdata/" + trackname + "/tatums.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Tatums").toString().getBytes());
+                OS.close();
 
-            ff = Gdx.files.external("musicdata/"+trackname+"/meta.json");
-            OutputStream OS = ff.write(false);
-            OS.write(trackInformation.get("Meta").toString().getBytes());
-            OS.close();
+                ff = Gdx.files.external("musicdata/" + trackname + "/sections.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Sections").toString().getBytes());
+                OS.close();
 
-            ff = Gdx.files.external("musicdata/"+trackname+"/track.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Track").toString().getBytes());
-            OS.close();
+                ff = Gdx.files.external("musicdata/" + trackname + "/segments.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("Segments").toString().getBytes());
+                OS.close();
 
-            ff = Gdx.files.external("musicdata/"+trackname+"/bars.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Bars").toString().getBytes());
-            OS.close();
-
-            ff = Gdx.files.external("musicdata/"+trackname+"/beats.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Beats").toString().getBytes());
-            OS.close();
-
-            ff = Gdx.files.external("musicdata/"+trackname+"/tatums.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Tatums").toString().getBytes());
-            OS.close();
-
-            ff = Gdx.files.external("musicdata/"+trackname+"/sections.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Sections").toString().getBytes());
-            OS.close();
-
-            ff = Gdx.files.external("musicdata/"+trackname+"/segments.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("Segments").toString().getBytes());
-            OS.close();
-
-            ff = Gdx.files.external("musicdata/"+trackname+"/audioSum.json");
-            OS = ff.write(false);
-            OS.write(trackInformation.get("audio_summary").toString().getBytes());
-            OS.close();
-            //out = new PrintWriter(ff.file());
-            //out.println(trackInformation.get("Meta").toString());
-           // out.close(); // save metaData to file
+                ff = Gdx.files.external("musicdata/" + trackname + "/audioSum.json");
+                OS = ff.write(false);
+                OS.write(trackInformation.get("audio_summary").toString().getBytes());
+                OS.close();
+                //out = new PrintWriter(ff.file());
+                //out.println(trackInformation.get("Meta").toString());
+                // out.close(); // save metaData to file
             /*
             PrintWriter  out = new PrintWriter("musicdata/"+trackname+"/track.json");
             out.println(trackInformation.get("Track").toString());
@@ -309,10 +274,10 @@ public class FileUploaderGDX {
             out.close();  //segments to file
             */
 
-        } catch (Exception e) {
-            System.out.println("Error line 116");
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                System.out.println("Error line 116");
+                e.printStackTrace();
+            }
 
 		/*
         Map<String, String> parameters = new HashMap<String, String>();
@@ -385,5 +350,81 @@ public class FileUploaderGDX {
 
 
     }
+    public void artistTwitterHandle(String trackName){
+        File twitter = Gdx.files.external("musicdata/"+trackName+"/twitterhandle.json").file();
 
+        if(twitter.exists()) {
+
+        }
+        else {
+            boolean outOfApiCalls = true;
+            while(outOfApiCalls) {
+                URL url = null;
+                try {
+                            JsonObject meta = (JsonObject) trackInformation.get("Meta");
+                            String artist = meta.getString("artist").replaceAll(" ","+");
+                    url = new URL("http://developer.echonest.com/api/v4/artist/twitter?api_key=B0EHJCUJPBJOZ5MOP&name="+artist+"&format=json");
+                    //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    InputStream is = url.openStream();
+
+                    JsonReader rdr = Json.createReader(is);
+                    JsonObject struct = rdr.readObject();
+                    struct = struct.getJsonObject("response");
+                    if(!struct.getJsonObject("status").getString("message").equals("Success")){
+                        //the api is our of calls
+                        System.out.println("out of Api Calls");
+                        continue;
+                    }else{
+                        System.out.println("Got the calls");
+                    }
+                    JsonObject artist = struct.getJsonObject("artist");
+                    trackInformation.put("twitter", artist);
+                    PrintWriter  out = new PrintWriter("musicdata/"+trackName+"/twitterhandle.json");
+                    System.out.println(trackInformation.get("twitter").toString());
+                    out.println(trackInformation.get("twitter").toString());
+                    out.close(); // track data to file
+
+                } catch (Exception e) {
+                    e.printStackTrace(); //catching any error, not a good habit, but there are like 500 errors thrown
+                }
+                break;
+            }
+        }
+    }
+    public void audioSummary(){
+        boolean outOfApiCalls = true;
+        while(outOfApiCalls) {
+            URL url = null;
+            try {
+                url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id="
+                        + track.getID() + "&bucket=audio_summary");
+                //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            try {
+                InputStream is = url.openStream();
+
+                JsonReader rdr = Json.createReader(is);
+                JsonObject struct = rdr.readObject();
+                struct = struct.getJsonObject("response");
+                if(!struct.getJsonObject("status").getString("message").equals("Success")){
+                    //the api is our of calls
+                    System.out.println("out of Api Calls");
+                    continue;
+                }else{
+                    System.out.println("Got the calls");
+                }
+                JsonObject track1 = struct.getJsonObject("track");
+                trackInformation.put("audio_summary", track1.getJsonObject("audio_summary"));
+            } catch (Exception e) {
+                e.printStackTrace(); //catching any error, not a good habit, but there are like 500 errors thrown
+            }
+            break;
+        }
+    }
 }

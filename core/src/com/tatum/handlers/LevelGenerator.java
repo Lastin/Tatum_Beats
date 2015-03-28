@@ -26,10 +26,11 @@ public class LevelGenerator {
 
     public LevelGenerator(ContentManager resources){
         this.resources = resources;
-        cells = loadCells();
+        resources.loadTexture("res/images/blocks3.png");
     }
 
     public TatumMap makeMap(TrackData trackData){
+        cells = loadCells(trackData);
         float width = ((trackData.getBeats().size()/B2DVars.PPM)*32)-(32/B2DVars.PPM);
         int height = 20;
         //set properties
@@ -50,8 +51,45 @@ public class LevelGenerator {
         TiledMapTileLayer beats_layer = new TiledMapTileLayer(beats.size(), 20, cellSide, cellSide);
         beats_layer.setName("blocks");
         System.out.println("number of beats:" + beats.size());
+        int block = 0;
+        switch (trackData.getTheme()){
+            case "asian":
+                block=2;
+                break;
+            case "classical":
+                block=5;
+                break;
+            case "death-metal":
+                block=22;
+                break;
+            case "electronic":
+                block=15;
+                break;
+            case "hip-hop":
+                block=23;
+                break;
+            case "indie":
+                block=21;
+                break;
+            case "jazz":
+                block=17;
+                break;
+            case "metal":
+                block=14;
+                break;
+            case "rock":
+                block=6;
+                break;
+            case "punk":
+                block=16;
+                break;
+            case "pop":
+                block=0;
+                break;
+
+        }
         for(int i=0; i<beats.size(); i++) {
-            beats_layer.setCell(i, 0, cells[0]);
+            beats_layer.setCell(i, 0, cells[block]);
         }
         return beats_layer;
     }
@@ -81,13 +119,14 @@ public class LevelGenerator {
         return barsPositions;
     }
 
-    private Cell[] loadCells() {
+    private Cell[] loadCells(TrackData trackData) {
         Cell[] cells;
-        Texture blocks_texture = resources.getTexture("blocks2");
+        Texture blocks_texture = resources.getTexture("blocks3");
         if(blocks_texture == null) {
-            resources.loadTexture("res/images/blocks2.png");
-            blocks_texture = resources.getTexture("blocks2");
+            resources.loadTexture("res/images/blocks3.png");
+            blocks_texture = resources.getTexture("blocks3");
         }
+
         TextureRegion[] blocks_textures = TextureRegion.split(blocks_texture, 32, 32)[0];
         cells = new Cell[blocks_textures.length];
         for(int i=0; i<cells.length; i++){
