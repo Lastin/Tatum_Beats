@@ -42,6 +42,11 @@ public class ContentManager {
         loadTexture("res/images/mm/sprites.png");
         loadTexture("res/images/mm/signs.png");
         loadTexture("res/images/mm/tatumLogoMini.png");
+        //arrows up and down
+        loadTexture("res/images/arrowDown.png");
+        loadTexture("res/images/arrowUp.png");
+        loadTexture("res/images/arrowUpFast.png");
+        loadTexture("res/images/arrowDownFast.png");
 
         loadSound("res/sfx/jump.wav");
         loadSound("res/sfx/crystal.wav");

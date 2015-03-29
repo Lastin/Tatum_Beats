@@ -32,6 +32,7 @@ public class Game extends ApplicationAdapter {
         height=240;
 
     }
+
     public Game(TwitterInterface twitterInterface){
         this.twitterInterface = twitterInterface;
         width = 320;//Gdx.graphics.getWidth();
@@ -87,6 +88,7 @@ public class Game extends ApplicationAdapter {
     public ContentManager getResources(){
         return resources;
     }
+
     public String[] getData(){
         return data;
     }
@@ -99,10 +101,11 @@ public class Game extends ApplicationAdapter {
         SimpleDirectionGestureDetector temp2 = new SimpleDirectionGestureDetector(tatumDirectionListener);
         Gdx.input.setInputProcessor(temp2);
     }
-    public void setTouchInput(){
 
+    public void setTouchInput(){
         Gdx.input.setInputProcessor(new InputProcessor());
     }
+
     public TatumDirectionListener getTatumDirectionListener(){
         return tatumDirectionListener;
     }

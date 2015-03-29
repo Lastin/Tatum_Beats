@@ -121,13 +121,14 @@ public class MusicItem {
     public String getText() {
         return originalText;
     }
+
     public void checkText(){
         if(text.length()>25){
             text = text.substring(0,22) + "...";
         }
     }
-    public float getWidth(){return width;}
 
+    public float getWidth(){return width;}
     public float getHeight() {return height;}
 
     public TextBounds getTb(){ return tb;}

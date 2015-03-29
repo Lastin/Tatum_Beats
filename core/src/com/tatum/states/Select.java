@@ -53,12 +53,7 @@ public class Select extends GameState {
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-
         cont = gsm.getGame().getResources();
-        cont.loadTexture("res/images/arrowDown.png");
-        cont.loadTexture("res/images/arrowUp.png");
-        cont.loadTexture("res/images/arrowUpFast.png");
-        cont.loadTexture("res/images/arrowDownFast.png");
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");
         Texture downArrowFast = cont.getTexture("arrowDownFast");

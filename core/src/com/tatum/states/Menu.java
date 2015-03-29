@@ -33,12 +33,8 @@ import static com.tatum.handlers.B2DVars.PPM;
 public class Menu extends GameState {
     private boolean debug = false;
     private Background bg;
-    //private GameButton playButton;
-    //private GameButton selectTrackButton;
-    //private GameButton highScoreButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
-    //private Array<B2DSprite> blocks;
     private TextureRegion[] sprites1 = new TextureRegion[11];
     private TextureRegion[] sprites2 = new TextureRegion[11];
     private TextureRegion[] sprites3 = new TextureRegion[11];
@@ -51,8 +47,6 @@ public class Menu extends GameState {
     private boolean generating = false;
     private boolean uploading = false;
     private boolean done = false;
-    private TextureRegion[] signs;
-    private Texture miniLogo;
     private MusicItem uploadingText;
     private MusicItem loadingText;
     private MusicItem generatingText;
@@ -60,12 +54,12 @@ public class Menu extends GameState {
     private MenuButton playButton;
     private MenuButton selectSong;
     private MenuButton scoresButton;
+    private Stage stage;
 
     private float time;
     private boolean timeChange = false;
     private int dotCount = 0;
 
-    private Stage stage;
     private FontGenerator fontGenerator;
 
     public Menu(GameStateManager gsm) {
@@ -73,8 +67,6 @@ public class Menu extends GameState {
         levelGenerator = new LevelGenerator(resources);
         fontGenerator = new FontGenerator();
         loadPlayers();
-        signs = loadSigns();
-        miniLogo = resources.getTexture("tatumLogoMini");
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
@@ -88,10 +80,8 @@ public class Menu extends GameState {
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
-        //world = new World(new Vector2(10, 10), true);
         b2dRenderer = new Box2DDebugRenderer();
         createLoadings();
-        createTitleBodies();
         time = System.nanoTime()/1000000000;
 
     }
@@ -102,9 +92,6 @@ public class Menu extends GameState {
 
     private void initialiseButtons(){
         Texture myStyle = resources.getTexture("sprites");
-        //playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
-        //selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
-        //highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
         playButton = new MenuButton(fontGenerator, "PLAY", 160, 160);
         selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
         scoresButton = new MenuButton(fontGenerator, "HIGHSCORES", 160, 100);
@@ -186,182 +173,18 @@ public class Menu extends GameState {
 
     }
 
-    private TextureRegion[] loadSigns() {
-        Texture texture = resources.getTexture("signs");
-        TextureRegion[][] signs_temp = TextureRegion.split(texture, 85, 70);
-        TextureRegion[] signs = new TextureRegion[3];
-        for(int i=0; i<3; i++){
-            signs[i] = signs_temp[i][0];
-        }
-        return signs;
-    }
-
-    private void createTitleBodies() {
-        /*int[][] spellBlock = {
-                {1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1},
-                {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1},
-                {0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
-                {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
-                {0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1}
-        };
-        int[][] spellBunny = {
-                {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
-                {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0},
-                {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0},
-                {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
-                {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0},
-        };*/
-        // top platform
-        BodyDef tpbdef = new BodyDef();
-        tpbdef.type = BodyType.StaticBody;
-        tpbdef.position.set(160 / PPM, 180 / PPM);
-        Body tpbody = world.createBody(tpbdef);
-        PolygonShape tpshape = new PolygonShape();
-        tpshape.setAsBox(120 / PPM, 1 / PPM);
-        FixtureDef tpfdef = new FixtureDef();
-        tpfdef.shape = tpshape;
-        tpfdef.filter.categoryBits = B2DVars.BIT_TOP_PLATFORM;
-        tpfdef.filter.maskBits = B2DVars.BIT_TOP_BLOCK;
-        tpbody.createFixture(tpfdef);
-        tpshape.dispose();
-
-        // bottom platform
-        BodyDef bpbdef = new BodyDef();
-        bpbdef.type = BodyType.StaticBody;
-        bpbdef.position.set(160 / PPM, 130 / PPM);
-        Body bpbody = world.createBody(bpbdef);
-        PolygonShape bpshape = new PolygonShape();
-        bpshape.setAsBox(120 / PPM, 1 / PPM);
-        FixtureDef bpfdef = new FixtureDef();
-        bpfdef.shape = bpshape;
-        bpfdef.filter.categoryBits = B2DVars.BIT_BOTTOM_PLATFORM;
-        bpfdef.filter.maskBits = B2DVars.BIT_BOTTOM_BLOCK;
-        bpbody.createFixture(bpfdef);
-        bpshape.dispose();
-
-        Texture tex = resources.getTexture("hud2");
-        TextureRegion[] blockSprites = new TextureRegion[3];
-        for(int i = 0; i < blockSprites.length; i++) {
-            blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
-        }
-        //blocks = new Array<B2DSprite>();
-
-        for(int row = 0; row < 5; row++) {
-            for(int col = 0; col < 29; col++) {
-                BodyDef tbbdef = new BodyDef();
-                tbbdef.type = BodyType.DynamicBody;
-                tbbdef.fixedRotation = true;
-                tbbdef.position.set((62 + col * 6 + col) / PPM, (270 - row * 6  + row) / PPM);
-                Body tbbody = world.createBody(tbbdef);
-                PolygonShape tbshape = new PolygonShape();
-                tbshape.setAsBox(2f / PPM, 2f / PPM);
-                FixtureDef tbfdef = new FixtureDef();
-                tbfdef.shape = tbshape;
-                tbfdef.filter.categoryBits = B2DVars.BIT_TOP_BLOCK;
-                tbfdef.filter.maskBits = B2DVars.BIT_TOP_PLATFORM | B2DVars.BIT_TOP_BLOCK;
-                tbbody.createFixture(tbfdef);
-                tbshape.dispose();
-                /*if(spellBlock[row][col] == 1) {
-                    B2DSprite sprite = new B2DSprite(tbbody, resources);
-                    sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
-                    blocks.add(sprite);
-                }*/
-            }
-        }
-
-        // bottom blocks
-        for(int row = 0; row < 5; row++) {
-            for(int col = 0; col < 29; col++) {
-                BodyDef bbbdef = new BodyDef();
-                bbbdef.type = BodyType.DynamicBody;
-                bbbdef.fixedRotation = true;
-                bbbdef.position.set((62 + col * 6 + col) / PPM, (270 - row * 6 + row) / PPM);
-                Body bbbody = world.createBody(bbbdef);
-                PolygonShape bbshape = new PolygonShape();
-                bbshape.setAsBox(2f / PPM, 2f / PPM);
-                FixtureDef bbfdef = new FixtureDef();
-                bbfdef.shape = bbshape;
-                bbfdef.filter.categoryBits = B2DVars.BIT_BOTTOM_BLOCK;
-                bbfdef.filter.maskBits = B2DVars.BIT_BOTTOM_PLATFORM | B2DVars.BIT_BOTTOM_BLOCK;
-                bbbody.createFixture(bbfdef);
-                bbshape.dispose();
-                /*if(spellBunny[row][col] == 1) {
-                    B2DSprite sprite = new B2DSprite(bbbody, resources);
-                    sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
-                    blocks.add(sprite);
-                }*/
-            }
-        }
-        //Gdx.input.setInputProcessor(new InputProcessor());
-    }
+    @Override
     public void handleInput() {
-        /*if (playButton.isClicked() && playButton.isEnabled()) {
-            playButton.setEnabled(false);
-            //resources.getSound("crystal").play();
-            if(musicSelectionPath == null){
-                gsm.setState(new Select(gsm));
-                return;
-            }
-            Thread thread = new Thread() {
-                public void run(){
-                    uploading = true;
-                    try{
-                        final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
-                        trackLoader.loadTrackData();
-                        trackLoader.getTrackData().upload();
-                        uploading=false;
-                        loading=true;
-                        trackLoader.getTrackData().initilize();
-                        loading=false;
-                        generating=true;
-                        final TatumMap map = levelGenerator.makeMap(trackLoader.getTrackData());
-                        final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map.getTiledMap());
-                        sleep(1000);
-                        generating = false;
-                        done = true;
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker, musicSelectionPath, trackLoader.getTrackData()));
-                            }
-                        });
-                    } catch (Exception e) {
-                        loading = false;
-                        generating = false;
-                        done = false;
-                        e.printStackTrace();
-                    }
-                }
-            };
-            thread.start();
-        }
-        else if(selectTrackButton.isClicked()){
-            //deal with track selection
-            gsm.setState(new Select(gsm));
-
-        }
-        else if(highScoreButton.isClicked()){
-            gsm.setState(new HighScoreList(gsm));
-        }*/
-    }
-    public void updateProgress(double progress){
-
-    }
-    public void updateMusicSelection(String path){
 
     }
     @Override
     public void update(float dt) {
         if(!uploading&& !loading && !generating && !done)
-        //handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
         p1Animation.update(dt);
         p2Animation.update(dt);
         p3Animation.update(dt);
-        //playButton.update(dt);
-        //selectTrackButton.update(dt);
-        //highScoreButton.update(dt);
         long tempTime = System.nanoTime();
         float tempTimeF = tempTime/1000000000;
         if(tempTimeF >= time+0.3){
@@ -378,9 +201,6 @@ public class Menu extends GameState {
         bg.render(sb);
         if(!uploading&& !loading && !generating && !done) {
             sb.begin();
-            //playButton.render(sb);
-            //selectTrackButton.render(sb);
-            //highScoreButton.render(sb);
             playButton.render(sb);
             selectSong.render(sb);
             scoresButton.render(sb);
