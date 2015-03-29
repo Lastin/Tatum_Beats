@@ -94,13 +94,12 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void deathMetal(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/death_ghost.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/death_ghost.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/death_ghost.png");
         Texture tex = cont.getTexture("death_ghost");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 17, 35)[0][0];
+        sprites[0] = TextureRegion.split(tex, 22, 45)[0][0];
         tex = cont.getTexture("death_ghost");
-        sprites[1] = TextureRegion.split(tex, 17, 35)[0][0];
+        sprites[1] = TextureRegion.split(tex, 22, 45)[0][0];
         animation.setFrames(sprites, 1 / 6f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
