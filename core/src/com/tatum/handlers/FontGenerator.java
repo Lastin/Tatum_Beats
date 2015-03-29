@@ -13,6 +13,7 @@ public class FontGenerator {
     public final BitmapFont titleFont = makeFont(20, Color.BLACK);
     public final BitmapFont listFont = makeFont(36, Color.BLACK);
     public final BitmapFont underListFont = makeFont(20, Color.BLACK);
+    public final BitmapFont loadingFont = makeFont(70, Color.WHITE);
     //colours
     public final Color royalBlue = new Color(0, 0.714f, 1, 1);
     public final Color red = Color.valueOf("FF7878");
