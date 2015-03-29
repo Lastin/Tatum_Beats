@@ -64,7 +64,14 @@ public class Slime extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void rock(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/rock_rock.png");
+        Texture tex = cont.getTexture("rock_rock");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 23)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 23)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void indie(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/ground/fence.png");
@@ -90,7 +97,14 @@ public class Slime extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void asian(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/rock_snowy.png");
+        Texture tex = cont.getTexture("rock_snowy");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 26)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 26)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void metal(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/ground/spinnerHalf.png");

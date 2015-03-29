@@ -88,7 +88,7 @@ public class GameBodiesCreator {
             case ("jazz"):
                 return 0.8f;
             case ("asian"):
-                return 0.8f;
+                return 1f;
             case ("metal"):
                 return 0.8f;
             case ("death-metal"):
