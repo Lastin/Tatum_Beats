@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.tatum.Game;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
+import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.states.Play;
 
@@ -26,13 +27,14 @@ public class HUD {
     private int currbeat;
     private Instructor instructor;
     private boolean debug = false;
+    private FontGenerator fontGenerator;
 
 
-    public HUD(ContentManager cont, Game game, Player player, PaceMaker paceMaker, Play play) {
+    public HUD(ContentManager cont, FontGenerator fontGenerator, Game game, Player player, PaceMaker paceMaker, Play play) {
+        this.fontGenerator = fontGenerator;
         this.game = game;
         this.cont = cont;
         this.player = player;
-        cont.loadTexture("res/images/hud2.png");
         Texture tex = cont.getTexture("hud2");
         container = new TextureRegion(tex, 0, 0, 32, 32);
         cont.loadTexture("res/images/letters.png");
@@ -96,15 +98,19 @@ public class HUD {
         //draw crystals
         //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
         //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
-        drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-160,game.getHeight()-10);
-        drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-160,game.getHeight()-30);
-        drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-160,game.getHeight()-50);
+        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-140,game.getHeight()-10);
+        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore(), game.getWidth()-140,game.getHeight()-30);
+        fontGenerator.getScoreFont().draw(sb, "MULTIPLIER: " + player.getMultiplyer(), game.getWidth()-140,game.getHeight()-50);
+        //drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-160,game.getHeight()-10);
+        //drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-160,game.getHeight()-30);
+        //drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-160,game.getHeight()-50);
+
         int space = 0;
         //System.out.println("here");
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 60);
+            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 70);
             space+=15;
         }
         if(debug) {

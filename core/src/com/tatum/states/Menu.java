@@ -68,6 +68,7 @@ public class Menu extends GameState {
         fontGenerator = new FontGenerator();
         loadPlayers();
         Texture menu = resources.getTexture("menu2");
+        if(bg==null)
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
         p1Animation = new Animation(sprites1, 1/15f);
@@ -89,6 +90,15 @@ public class Menu extends GameState {
         this(gsm);
         musicSelectionPath = Path;
     }
+    public Menu(GameStateManager gsm, String Path,Background bg){
+        this(gsm);
+        this.bg =bg;
+        musicSelectionPath = Path;
+    }
+    public Menu(GameStateManager gsm,Background bg){
+        this(gsm);
+        this.bg =bg;
+    }
 
     private void initialiseButtons(){
         Texture myStyle = resources.getTexture("sprites");
@@ -99,7 +109,7 @@ public class Menu extends GameState {
         playButton.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 if(musicSelectionPath == null){
-                    gsm.setState(new Select(gsm));
+                    gsm.setState(new Select(gsm,bg));
                     return;
                 }
                 selectSong.getButton().setDisabled(true);
@@ -139,13 +149,13 @@ public class Menu extends GameState {
         });
         selectSong.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                gsm.setState(new Select(gsm));
+                gsm.setState(new Select(gsm,bg));
                 selectSong.getButton().setDisabled(true);
             }
         });
         scoresButton.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                gsm.setState(new HighScoreList(gsm));
+                gsm.setState(new HighScoreList(gsm,bg));
             }
         });
         stage = new Stage(new ExtendViewport(320, 240, cam));

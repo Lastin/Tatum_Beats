@@ -47,14 +47,15 @@ public class HighScoreList extends GameState{
     private HashMap<String,Integer> highScores;
     private FontGenerator fontGenerator;
 
-    public HighScoreList(GameStateManager gsm) {
+    public HighScoreList(GameStateManager gsm,Background bg) {
         super(gsm);
         fontGenerator = new FontGenerator();
         highScores = getHighScores();
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
-        bg = new Background(game, new TextureRegion(menu), cam, 1f);
-        bg.setVector(-20, 0);
+        //bg = new Background(game, new TextureRegion(menu), cam, 1f);
+        //bg.setVector(-20, 0);
+        this.bg = bg;
         cont = gsm.getGame().getResources();
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");
@@ -172,7 +173,7 @@ public class HighScoreList extends GameState{
         }
 
         if(backButton.isClicked()){
-           gsm.setState(new Menu(gsm));
+           gsm.setState(new Menu(gsm,bg));
         }
         if(Gdx.input.isTouched())
         for(int i =0;i< trackNames.size();i++){
@@ -181,7 +182,7 @@ public class HighScoreList extends GameState{
                 String meta = metaData.get(i).getText();
                 String[] split = meta.split("~");
                 int score = highScores.get(meta+"~"+track);
-                gsm.setState(new HighScoreView(gsm,track,split[0],split[1],score));
+                gsm.setState(new HighScoreView(gsm,track,split[0],split[1],score,bg));
             }
         }
 
