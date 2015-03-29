@@ -514,8 +514,8 @@ public class Play extends GameState {
         handleInput();
         //flash
         if(paceMaker.hitSecondSection()){
-            if(!paceMaker.getNewBeat() && sbColor > 0.5f) {
-                sbColor -= 0.02f;
+            if(!paceMaker.getNewBeat() && sbColor > 0.7f) {
+                sbColor -= 0.01f;
             } else {
                 System.out.println("pulse");
                 sbColor = 1;
