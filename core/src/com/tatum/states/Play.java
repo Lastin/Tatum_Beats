@@ -139,7 +139,7 @@ public class Play extends GameState {
         height = (Integer) properties.get("height");
         player = createPlayer();
         createObstacles();
-        hud = new HUD(resources, game, player,paceMaker, this);
+        hud = new HUD(resources, fontGenerator, game, player,paceMaker, this);
         hud.setPaceMaker(paceMaker);
         backgrounds = createBackground();
         GameBodiesCreator.createBlocks(tiledMap, world);

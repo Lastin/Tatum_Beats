@@ -79,7 +79,17 @@ public class Slime extends B2DSprite {
 
     }
     public void metal(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/spinnerHalf.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/spinnerHalf_spin.png");
 
+        Texture tex = cont.getTexture("spinnerHalf");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 32, 16)[0][0];
+        tex = cont.getTexture("spinnerHalf_spin");
+        sprites[1] = TextureRegion.split(tex, 31, 15)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void deathMetal(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/death_ground.png");

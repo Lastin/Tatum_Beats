@@ -82,7 +82,16 @@ public class Bat extends B2DSprite {
 
     }
     public void metal(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/spinner.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/spinner_spin.png");
+        Texture tex = cont.getTexture("spinner");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 32, 31)[0][0];
+        tex = cont.getTexture("spinner_spin");
+        sprites[1] = TextureRegion.split(tex, 31, 31)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void deathMetal(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/death_ghost.png");
