@@ -70,7 +70,14 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void rock(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/rock_rubble.png");
+        Texture tex = cont.getTexture("rock_rubble");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 32, 28)[0][0];
+        sprites[1] = TextureRegion.split(tex, 32, 28)[0][0];
+        animation.setFrames(sprites, 1 / 6f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void indie(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly.png");
@@ -95,7 +102,15 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void asian(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/icicle.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/icicle.png");
+        Texture tex = cont.getTexture("icicle");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 84)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 84)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void metal(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/flying/spinner.png");
