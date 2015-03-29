@@ -39,6 +39,7 @@ import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.Game;
 import com.tatum.handlers.Input;
+import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumDirectionListener;

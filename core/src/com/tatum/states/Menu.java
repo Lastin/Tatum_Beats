@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,37 +12,33 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.tatum.entities.B2DSprite;
-import com.tatum.errors.MusicNotFoundException;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.Background;
-import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
-import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.LevelGenerator;
+import com.tatum.handlers.MenuButton;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.TrackLoader;
 import com.tatum.music.MusicItem;
-import com.tatum.music.TrackData;
-
-import java.util.Timer;
 
 import static com.tatum.handlers.B2DVars.PPM;
 
 public class Menu extends GameState {
     private boolean debug = false;
     private Background bg;
-    private GameButton playButton;
-    private GameButton selectTrackButton;
-    private GameButton highScoreButton;
+    //private GameButton playButton;
+    //private GameButton selectTrackButton;
+    //private GameButton highScoreButton;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
-    private Array<B2DSprite> blocks;
+    //private Array<B2DSprite> blocks;
     private TextureRegion[] sprites1 = new TextureRegion[11];
     private TextureRegion[] sprites2 = new TextureRegion[11];
     private TextureRegion[] sprites3 = new TextureRegion[11];
@@ -62,10 +56,16 @@ public class Menu extends GameState {
     private MusicItem uploadingText;
     private MusicItem loadingText;
     private MusicItem generatingText;
+    //buttons
+    private MenuButton playButton;
+    private MenuButton selectSong;
+    private MenuButton scoresButton;
 
     private float time;
     private boolean timeChange = false;
     private int dotCount = 0;
+
+    private Stage stage;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
@@ -81,10 +81,8 @@ public class Menu extends GameState {
         p3Animation = new Animation(sprites3, 1/15f);
 
         Texture hud = resources.getTexture("hud2");
-        Texture myStyle = resources.getTexture("sprites");
-        playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
-        selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
-        highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
+        initialiseButtons();
+
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
 
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -96,32 +94,76 @@ public class Menu extends GameState {
 
     }
     public Menu(GameStateManager gsm, String Path){
-        super(gsm);
+        this(gsm);
         musicSelectionPath = Path;
-        levelGenerator = new LevelGenerator(resources);
-        loadPlayers();
-        signs = loadSigns();
-        miniLogo = resources.getTexture("tatumLogoMini");
-        Texture menu = resources.getTexture("menu2");
-        bg = new Background(game, new TextureRegion(menu), cam, 1f);
-        bg.setVector(-20, 0);
-        p1Animation = new Animation(sprites1, 1/15f);
-        p2Animation = new Animation(sprites2, 1/15f);
-        p3Animation = new Animation(sprites3, 1/15f);
-
-        Texture hud = resources.getTexture("hud2");
-        Texture myStyle = resources.getTexture("sprites");
-        playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
-        selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
-        highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
-        cam.setToOrtho(false, game.getWidth(), game.getHeight());
-
-        world = new World(new Vector2(0, -9.8f * 5), true);
-        //world = new World(new Vector2(10, 10), true);
-        b2dRenderer = new Box2DDebugRenderer();
-        createLoadings();
-        createTitleBodies();
     }
+
+    private void initialiseButtons(){
+        Texture myStyle = resources.getTexture("sprites");
+        //playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
+        //selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
+        //highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
+        playButton = new MenuButton("PLAY", 160, 160);
+        selectSong = new MenuButton("SELECT SONG", 160, 130);
+        scoresButton = new MenuButton("HIGHSCORES", 160, 100);
+        //set action on playButton, running in a separate thread
+        playButton.getButton().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if(musicSelectionPath == null){
+                    gsm.setState(new Select(gsm));
+                    return;
+                }
+                Thread thread = new Thread() {
+                    public void run(){
+                        uploading = true;
+                        try{
+                            final TrackLoader trackLoader = new TrackLoader(resources, musicSelectionPath);
+                            trackLoader.loadTrackData();
+                            trackLoader.getTrackData().upload();
+                            uploading=false;
+                            loading=true;
+                            trackLoader.getTrackData().initilize();
+                            loading=false;
+                            generating=true;
+                            final TatumMap map = levelGenerator.makeMap(trackLoader.getTrackData());
+                            final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map.getTiledMap());
+                            sleep(1000);
+                            generating = false;
+                            done = true;
+                            Gdx.app.postRunnable(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker, musicSelectionPath, trackLoader.getTrackData()));
+                                }
+                            });
+                        } catch (Exception e) {
+                            loading = false;
+                            generating = false;
+                            done = false;
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                thread.start();
+            }
+        });
+        selectSong.getButton().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println(event.getButton());
+            }
+        });
+        scoresButton.getButton().addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                gsm.setState(new HighScoreList(gsm));
+            }
+        });
+        stage = new Stage(new ExtendViewport(320, 240, cam));
+        stage.addActor(playButton.getButton());
+        stage.addActor(selectSong.getButton());
+        stage.addActor(scoresButton.getButton());
+        Gdx.input.setInputProcessor(stage);
+    }
+
     public void createLoadings(){
         MusicItem temp = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Loading",cam,0,game.getHeight()-100);
         float widthL = temp.getWidth();
@@ -157,7 +199,7 @@ public class Menu extends GameState {
     }
 
     private void createTitleBodies() {
-        int[][] spellBlock = {
+        /*int[][] spellBlock = {
                 {1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1},
                 {0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1},
                 {0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
@@ -170,7 +212,7 @@ public class Menu extends GameState {
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0},
                 {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1},
                 {1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0},
-        };
+        };*/
         // top platform
         BodyDef tpbdef = new BodyDef();
         tpbdef.type = BodyType.StaticBody;
@@ -204,7 +246,7 @@ public class Menu extends GameState {
         for(int i = 0; i < blockSprites.length; i++) {
             blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
         }
-        blocks = new Array<B2DSprite>();
+        //blocks = new Array<B2DSprite>();
 
         for(int row = 0; row < 5; row++) {
             for(int col = 0; col < 29; col++) {
@@ -221,11 +263,11 @@ public class Menu extends GameState {
                 tbfdef.filter.maskBits = B2DVars.BIT_TOP_PLATFORM | B2DVars.BIT_TOP_BLOCK;
                 tbbody.createFixture(tbfdef);
                 tbshape.dispose();
-                if(spellBlock[row][col] == 1) {
+                /*if(spellBlock[row][col] == 1) {
                     B2DSprite sprite = new B2DSprite(tbbody, resources);
                     sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
                     blocks.add(sprite);
-                }
+                }*/
             }
         }
 
@@ -245,17 +287,17 @@ public class Menu extends GameState {
                 bbfdef.filter.maskBits = B2DVars.BIT_BOTTOM_PLATFORM | B2DVars.BIT_BOTTOM_BLOCK;
                 bbbody.createFixture(bbfdef);
                 bbshape.dispose();
-                if(spellBunny[row][col] == 1) {
+                /*if(spellBunny[row][col] == 1) {
                     B2DSprite sprite = new B2DSprite(bbbody, resources);
                     sprite.setAnimation(blockSprites[MathUtils.random(2)], 0);
                     blocks.add(sprite);
-                }
+                }*/
             }
         }
-        Gdx.input.setInputProcessor(new InputProcessor());
+        //Gdx.input.setInputProcessor(new InputProcessor());
     }
     public void handleInput() {
-        if (playButton.isClicked() && playButton.isEnabled()) {
+        /*if (playButton.isClicked() && playButton.isEnabled()) {
             playButton.setEnabled(false);
             //resources.getSound("crystal").play();
             if(musicSelectionPath == null){
@@ -302,7 +344,7 @@ public class Menu extends GameState {
         }
         else if(highScoreButton.isClicked()){
             gsm.setState(new HighScoreList(gsm));
-        }
+        }*/
     }
     public void updateProgress(double progress){
 
@@ -313,15 +355,15 @@ public class Menu extends GameState {
     @Override
     public void update(float dt) {
         if(!uploading&& !loading && !generating && !done)
-        handleInput();
+        //handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
         p1Animation.update(dt);
         p2Animation.update(dt);
         p3Animation.update(dt);
-        playButton.update(dt);
-        selectTrackButton.update(dt);
-        highScoreButton.update(dt);
+        //playButton.update(dt);
+        //selectTrackButton.update(dt);
+        //highScoreButton.update(dt);
         long tempTime = System.nanoTime();
         float tempTimeF = tempTime/1000000000;
         if(tempTimeF >= time+0.3){
@@ -331,16 +373,20 @@ public class Menu extends GameState {
         else{
             timeChange=false;
         }
-
     }
     @Override
     public void render() {
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
         if(!uploading&& !loading && !generating && !done) {
+            sb.begin();
+            //playButton.render(sb);
+            //selectTrackButton.render(sb);
+            //highScoreButton.render(sb);
             playButton.render(sb);
-            selectTrackButton.render(sb);
-            highScoreButton.render(sb);
+            selectSong.render(sb);
+            scoresButton.render(sb);
+            sb.end();
         }
         sb.begin();
         sb.draw(p1Animation.getFrame(), 100, 31);
@@ -387,9 +433,6 @@ public class Menu extends GameState {
             cam.setToOrtho(false, game.getWidth() / PPM, game.getHeight() / PPM);
             b2dRenderer.render(world, cam.combined);
             cam.setToOrtho(false, game.getWidth(), game.getHeight());
-        }
-        for (int i = 0; i < blocks.size; i++) {
-            //blocks.get(i).render(sb);
         }
     }
     @Override

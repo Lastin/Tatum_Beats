@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.tatum.Game;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.FontGenerator;
+import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.SelectionHandler;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
@@ -74,7 +75,7 @@ public class Select extends GameState {
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-
+        Gdx.input.setInputProcessor(new InputProcessor());
     }
 
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class FontGenerator {
     private static FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
+    private static BitmapFont customFont = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
     //colours
     public static final Color royalBlue = new Color(0, 0.714f, 1, 1);
 
@@ -21,7 +22,6 @@ public class FontGenerator {
     public static BitmapFont underListFont = makeFont(20, Color.BLACK);
 
     public static BitmapFont artistSongFont = makeFont(60, Color.BLACK);
-
 
     public static BitmapFont makeFont(int size, float r, float g, float b, float o){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
@@ -41,7 +41,8 @@ public class FontGenerator {
         return font;
     }
 
-    public static BitmapFont makeCustomFont(){
-        return null;
+    public static BitmapFont getMenuFont(){
+        customFont.setScale(0.5f);
+        return customFont;
     }
 }

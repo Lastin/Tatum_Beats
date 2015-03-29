@@ -13,6 +13,7 @@ import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.SelectionHandler;
 import com.tatum.music.MusicItem;
 
@@ -82,7 +83,7 @@ public class HighScoreList extends GameState{
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-
+        Gdx.input.setInputProcessor(new InputProcessor());
     }
     private void setNoTracks(){
         float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
