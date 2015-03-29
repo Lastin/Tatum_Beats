@@ -47,7 +47,12 @@ public class HighScoreView extends GameState{
         this.artistName = artistName;
         this.album = album;
         this.score = score;
-        setArtistSong();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setArtistSong();
+            }
+        });
 
         Gdx.input.setInputProcessor(new InputProcessor());
     }
@@ -108,10 +113,12 @@ public class HighScoreView extends GameState{
        bg.render(sb);
         backButton.render();
         backButtonMenu.render();
-        ArtistName.render();
-        Album.render();
-        TrackName.render();
-        Score.render();
+        if(Album!=null&&ArtistName!=null&&TrackName!=null&&Score!=null) {
+            ArtistName.render();
+            Album.render();
+            TrackName.render();
+            Score.render();
+        }
     }
     @Override
     public void dispose() {

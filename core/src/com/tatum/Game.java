@@ -5,8 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.sun.prism.image.ViewPort;
 import com.tatum.handlers.*;
 
 public class Game extends ApplicationAdapter {

@@ -375,7 +375,6 @@ public class Play extends GameState {
         bgTheme.put("asian",new TextureRegion(temp,0,0,949,240));
         temp = resources.getTexture("classical");
         bgTheme.put("classical",new TextureRegion(temp,0,0,427,240));
-        //temp = resources.getTexture("death-metal");
         temp = resources.getTexture("death-metal");
         bgTheme.put("death-metal",new TextureRegion(temp,0,0,320,240));
         temp = resources.getTexture("electronic");
