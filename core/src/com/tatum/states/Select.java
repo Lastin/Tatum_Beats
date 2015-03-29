@@ -45,14 +45,15 @@ public class Select extends GameState {
     private int listPosition[];
     private FontGenerator fontGenerator;
     MusicItem toWriteItem;
-    public Select(GameStateManager gsm) {
+    public Select(GameStateManager gsm,Background bg) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
         selectionHandler = new SelectionHandler(Gdx.files.external(""));
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
-        bg = new Background(game, new TextureRegion(menu), cam, 1f);
-        bg.setVector(-20, 0);
+        //bg = new Background(game, new TextureRegion(menu), cam, 1f);
+        //bg.setVector(-20, 0);
+        this.bg = bg;
         cont = gsm.getGame().getResources();
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");

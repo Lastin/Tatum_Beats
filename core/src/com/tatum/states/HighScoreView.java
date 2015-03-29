@@ -56,8 +56,13 @@ public class HighScoreView extends GameState{
 
         Gdx.input.setInputProcessor(new InputProcessor());
     }
+    public HighScoreView(GameStateManager gsm,String trackName, String artistName, String album, int score, Background bg){
+        this( gsm,trackName,artistName,album,score);
+        this.bg = bg;
+    }
     private void setArtistSong(){
-
+        update(Gdx.graphics.getDeltaTime());
+        render();
         float widthA = new MusicItem(sb,fontGenerator.loadingFont,artistName,cam,0,game.getHeight()-100).getWidth();
         float widthS = new MusicItem(sb,fontGenerator.loadingFont,trackName,cam,0,game.getHeight()-130).getWidth();
         float widthL = new MusicItem(sb,fontGenerator.loadingFont,album,cam,0,game.getHeight()-130).getWidth();
@@ -70,6 +75,7 @@ public class HighScoreView extends GameState{
         int size =70;
         while(true)
             if(newXArtist<10 || newXSong < 10 || newXAlbum<10 || newXScore < 10 ||widthA>310 || widthS>310  ||widthL>310 || widthG>310 ){
+                render();
                 size = size-10;
                 widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),artistName,cam,0,game.getHeight()-100).getWidth();
                 widthS = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),trackName,cam,0,game.getHeight()-130).getWidth();
@@ -81,7 +87,6 @@ public class HighScoreView extends GameState{
                 newXScore = (320/2)-(widthG/2);
             }
            else break;
-
         ArtistName = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),artistName,cam,(int)newXArtist,game.getHeight()-100);
         TrackName =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),trackName,cam,(int)newXSong,game.getHeight()-70);
         Album =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),album,cam,(int)newXAlbum,game.getHeight()-130);
@@ -95,7 +100,7 @@ public class HighScoreView extends GameState{
             gsm.setState(new Menu(gsm));
         }
         if(backButton.isClicked()){
-            gsm.setState(new HighScoreList(gsm));
+            gsm.setState(new HighScoreList(gsm,bg));
         }
     }
     @Override
