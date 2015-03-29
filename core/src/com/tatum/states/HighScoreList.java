@@ -55,7 +55,6 @@ public class HighScoreList extends GameState{
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-
         cont = gsm.getGame().getResources();
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");

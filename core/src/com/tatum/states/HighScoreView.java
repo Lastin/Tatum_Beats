@@ -53,10 +53,10 @@ public class HighScoreView extends GameState{
     }
     private void setArtistSong(){
 
-        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),artistName,cam,0,game.getHeight()-100).getWidth();
-        float widthS = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),trackName,cam,0,game.getHeight()-130).getWidth();
-        float widthL = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),album,cam,0,game.getHeight()-130).getWidth();
-        float widthG = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),"Score: "+score,cam,0,game.getHeight()-130).getWidth();
+        float widthA = new MusicItem(sb,fontGenerator.loadingFont,artistName,cam,0,game.getHeight()-100).getWidth();
+        float widthS = new MusicItem(sb,fontGenerator.loadingFont,trackName,cam,0,game.getHeight()-130).getWidth();
+        float widthL = new MusicItem(sb,fontGenerator.loadingFont,album,cam,0,game.getHeight()-130).getWidth();
+        float widthG = new MusicItem(sb,fontGenerator.loadingFont,"Score: "+score,cam,0,game.getHeight()-130).getWidth();
 
         float newXArtist = (320/2)-(widthA/2);
         float newXSong = (320/2)-(widthS/2);
