@@ -115,6 +115,7 @@ public class Menu extends GameState {
                     gsm.setState(new Select(gsm));
                     return;
                 }
+                selectSong.getButton().setDisabled(true);
                 Thread thread = new Thread() {
                     public void run(){
                         uploading = true;
@@ -151,7 +152,8 @@ public class Menu extends GameState {
         });
         selectSong.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println(event.getButton());
+                gsm.setState(new Select(gsm));
+                selectSong.getButton().setDisabled(true);
             }
         });
         scoresButton.getButton().addListener(new ClickListener() {
