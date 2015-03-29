@@ -56,11 +56,11 @@ public class GameBodiesCreator {
         }
     }
 
-    public static Bat createBat(int position, World world, ContentManager resources){
+    public static Bat createBat(int position, World world, ContentManager resources,String theme){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         float x = (position) * 0.32f;
-        float y = 0.8f;
+        float y = batY(theme);
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
@@ -71,17 +71,45 @@ public class GameBodiesCreator {
         fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("bat");
-        Bat bat = new Bat(body, resources);
+        Bat bat = new Bat(body, resources, theme);
         body.setUserData(bat);
         circleShape.dispose();
         return bat;
     }
 
-    public static Slime createSlime(int position, World world, ContentManager resources){
+    public static float batY(String theme){
+        switch(theme){
+            case ("pop"):
+                return 0.8f;
+            case ("rock"):
+                return 0.8f;
+            case ("indie"):
+                return 0.8f;
+            case ("jazz"):
+                return 0.8f;
+            case ("asian"):
+                return 0.8f;
+            case ("metal"):
+                return 0.8f;
+            case ("death-metal"):
+                return 0.8f;
+            case ("hip-hop"):
+                return 0.8f;
+            case ("punk"):
+                return 0.8f;
+            case ("classical"):
+                return 0.8f;
+            case ("electronic"):
+                return 0.8f;
+            default:
+                return 0.8f;
+        }
+    }
+    public static Slime createSlime(int position, World world, ContentManager resources,String theme){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         float x = (position) * 0.32f;
-        float y = 0.4f;
+        float y = slimeY(theme);
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
         FixtureDef fixtureDef = new FixtureDef();
@@ -92,10 +120,40 @@ public class GameBodiesCreator {
         fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("slime");
-        Slime slime = new Slime(body, resources);
+        Slime slime = new Slime(body, resources,theme);
         body.setUserData(slime);
         circleShape.dispose();
         return slime;
+    }
+    public static float slimeY(String theme){
+
+        switch(theme){
+            case ("pop"):
+                return 0.4f;
+            case ("rock"):
+                return 0.4f;
+            case ("indie"):
+                return 0.4f;
+            case ("jazz"):
+                return 0.4f;
+            case ("asian"):
+                return 0.4f;
+            case ("metal"):
+                return 0.4f;
+            case ("death-metal"):
+                return 0.4f;
+            case ("hip-hop"):
+                return 0.4f;
+            case ("punk"):
+                return 0.4f;
+            case ("classical"):
+                return 0.4f;
+            case ("electronic"):
+                return 0.4f;
+            default:
+                return 0.8f;
+        }
+
     }
     public static Coin createCoin(int position, World world, ContentManager resources,String Colour){
         BodyDef bodyDef = new BodyDef();

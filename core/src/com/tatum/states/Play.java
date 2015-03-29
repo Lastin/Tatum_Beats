@@ -300,20 +300,16 @@ public class Play extends GameState {
             float temp =random.nextFloat();
             System.out.println("Float = "+temp);
             if(temp<=0.3) {
-                Slime slime = GameBodiesCreator.createSlime(each, world, resources);
+                Slime slime = GameBodiesCreator.createSlime(each, world, resources,trackData.getTheme());
                 events.add(slime);
                 monsterCoinLocation.addEvent("Slime", each,slime); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
             else if((temp>0.3)&&(temp<=0.6)){
-                Bat bat = GameBodiesCreator.createBat(each, world, resources);
+                Bat bat = GameBodiesCreator.createBat(each, world, resources,trackData.getTheme());
                 events.add(bat);
                 monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
             }
-            else if((temp>0.3)&&(temp<=0.6)){
-                Bat bat = GameBodiesCreator.createBat(each, world, resources);
-                events.add(bat);
-                monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
-            }
+
             else if((temp>0.6)&&(temp<=0.7)) {
                 if (lastCoin == 2) {
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Pink");
@@ -379,6 +375,7 @@ public class Play extends GameState {
         bgTheme.put("asian",new TextureRegion(temp,0,0,949,240));
         temp = resources.getTexture("classical");
         bgTheme.put("classical",new TextureRegion(temp,0,0,427,240));
+        //temp = resources.getTexture("death-metal");
         temp = resources.getTexture("death-metal");
         bgTheme.put("death-metal",new TextureRegion(temp,0,0,320,240));
         temp = resources.getTexture("electronic");
