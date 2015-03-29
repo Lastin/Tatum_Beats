@@ -3,10 +3,13 @@ package com.tatum.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.tatum.TwitterInterface;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
@@ -21,6 +24,7 @@ public class HighScoreView extends GameState{
     private ContentManager cont;
     private MusicItem backButton;
     private MusicItem backButtonMenu;
+    private MusicItem shareButton;
     private FontGenerator fontGenerator;
     private String trackName;
     private String artistName;
@@ -39,6 +43,10 @@ public class HighScoreView extends GameState{
         bg.setVector(-20, 0);
         backButtonMenu = new MusicItem(sb,fontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-10);
         backButton = new MusicItem(sb,fontGenerator.listFont,"Back to TrackList",cam,10,game.getHeight()-35);
+        BitmapFont smallFont = fontGenerator.customFontSmall;
+        smallFont.setScale(0.4f);
+        float shareWidth = smallFont.getBounds("Share on Twitter").width;
+        shareButton = new MusicItem(sb, smallFont, "Share on Twitter", cam, (int)(game.getWidth()/2 - shareWidth/2), 40);
         cont = gsm.getGame().getResources();
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -62,7 +70,28 @@ public class HighScoreView extends GameState{
     }
     private void setArtistSong(){
         update(Gdx.graphics.getDeltaTime());
+        int size = 70;
+        BitmapFont font = fontGenerator.makeFont(size, Color.BLACK);
+        float widthA = 0;
+        float widthS = 0;
+        float widthL = 0;
+        float widthG = 0;
+        {
+            size -= 5;
+            font = fontGenerator.makeFont(size, Color.BLACK);
+            widthA = font.getBounds(artistName).width;
+            widthS = font.getBounds(trackName).width;
+            widthL = font.getBounds(album).width;
+            widthG = font.getBounds("Score: "+score).width;
+        } while(widthA > 300 || widthS > 300 || widthL > 300 || widthG > 300);
+        float middle = game.getWidth()/2;
+        ArtistName = new MusicItem(sb, font,artistName,cam, (int)(middle - widthA/2),game.getHeight()-100);
+        TrackName =  new MusicItem(sb, font,trackName,cam, (int)(middle - widthS/2),game.getHeight()-70);
+        Album =  new MusicItem(sb, font,album,cam, (int)(middle - widthL/2),game.getHeight()-130);
+        Score =  new MusicItem(sb, font,"Score: "+ score,cam, (int)(middle - widthG/2),game.getHeight()-160);
         render();
+
+        /*render();
         float widthA = new MusicItem(sb,fontGenerator.loadingFont,artistName,cam,0,game.getHeight()-100).getWidth();
         float widthS = new MusicItem(sb,fontGenerator.loadingFont,trackName,cam,0,game.getHeight()-130).getWidth();
         float widthL = new MusicItem(sb,fontGenerator.loadingFont,album,cam,0,game.getHeight()-130).getWidth();
@@ -91,7 +120,7 @@ public class HighScoreView extends GameState{
         TrackName =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),trackName,cam,(int)newXSong,game.getHeight()-70);
         Album =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),album,cam,(int)newXAlbum,game.getHeight()-130);
         Score =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Score: "+ score,cam,(int)newXScore,game.getHeight()-160);
-
+        */
     }
 
     @Override
@@ -102,6 +131,9 @@ public class HighScoreView extends GameState{
         if(backButton.isClicked()){
             gsm.setState(new HighScoreList(gsm,bg));
         }
+        if(shareButton.isClicked()){
+            //here goes twitter interface
+        }
     }
     @Override
     public void update(float dt) {
@@ -110,6 +142,7 @@ public class HighScoreView extends GameState{
         bg.update(dt);
         backButton.update(dt);
         backButtonMenu.update(dt);
+        shareButton.update(dt);
     }
     @Override
     public void render() {
@@ -118,6 +151,7 @@ public class HighScoreView extends GameState{
        bg.render(sb);
         backButton.render();
         backButtonMenu.render();
+        shareButton.render();
         if(Album!=null&&ArtistName!=null&&TrackName!=null&&Score!=null) {
             ArtistName.render();
             Album.render();
