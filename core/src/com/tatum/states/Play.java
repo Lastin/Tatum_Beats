@@ -120,6 +120,8 @@ public class Play extends GameState {
     float total = 0;
     private final TrackData trackData;
     private FontGenerator fontGenerator;
+    private float sbColor = 1;
+    private float lastFlashUpdate = 0;
 
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
@@ -428,9 +430,7 @@ public class Play extends GameState {
         }
         // draw bgs
         sb.setProjectionMatrix(hudCam.combined);
-        sb.setColor(1f, 1f, 1f, 1f);
-        if(!paceMaker.getNewBeat()&&paceMaker.hitSecondSection())
-            sb.setColor(0.5F, 0.5F, 0.5F, 1F);
+
         for (Background each : backgrounds) {
             each.render(sb);
         }
@@ -439,7 +439,7 @@ public class Play extends GameState {
         mapRenderer.setView(cam);
         mapRenderer.render();
 
-        sb.setColor(1f, 1f, 1f, shaderVal);
+        sb.setColor(sbColor, sbColor, sbColor, shaderVal);
 
         if(paceMaker.gotFirstBeat()) {
             // draw player
@@ -512,6 +512,17 @@ public class Play extends GameState {
     @Override
     public void update(float deltaTime){
         handleInput();
+        //flash
+        if(paceMaker.hitSecondSection()){
+            if(!paceMaker.getNewBeat() && sbColor > 0.5f) {
+                sbColor -= 0.02f;
+            } else {
+                System.out.println("pulse");
+                sbColor = 1;
+            }
+        }
+
+        //end
         float currPosition = music.getPosition();
         deltaPos = currPosition - previousPosition;
         previousPosition = currPosition;
