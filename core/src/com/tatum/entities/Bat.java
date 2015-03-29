@@ -58,14 +58,14 @@ public class Bat extends B2DSprite {
     }
 
     public void pop(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/bat.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/bat_fly.png");
-        Texture tex = cont.getTexture("bat");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly_fly.png");
+        Texture tex = cont.getTexture("fly");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 35, 24)[0][0];
-        tex = cont.getTexture("bat_fly");
-        sprites[1] = TextureRegion.split(tex, 44, 19)[0][0];
-        animation.setFrames(sprites, 1 / 6f);
+        sprites[0] = TextureRegion.split(tex, 36, 18)[0][0];
+        tex = cont.getTexture("fly_fly");
+        sprites[1] = TextureRegion.split(tex, 38, 16)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
@@ -73,10 +73,26 @@ public class Bat extends B2DSprite {
 
     }
     public void indie(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly_fly.png");
+        Texture tex = cont.getTexture("fly");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 36, 18)[0][0];
+        tex = cont.getTexture("fly_fly");
+        sprites[1] = TextureRegion.split(tex, 38, 16)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void jazz(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/boxExplosivePurple.png");
+        Texture tex = cont.getTexture("boxExplosivePurple");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 30, 30)[0][0];
+        sprites[1] = TextureRegion.split(tex, 30, 30)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void asian(){
 
@@ -108,12 +124,34 @@ public class Bat extends B2DSprite {
 
     }
     public void punk(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/boxExplosive.png");
+        Texture tex = cont.getTexture("boxExplosive");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 30, 30)[0][0];
+        sprites[1] = TextureRegion.split(tex, 30, 30)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void classical(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/duckSign.png");
+        Texture tex = cont.getTexture("duckSign");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
+        tex = cont.getTexture("duckSign");
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void electronic(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/boxExplosiveBlue.png");
+        Texture tex = cont.getTexture("boxExplosiveBlue");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 30, 30)[0][0];
+        sprites[1] = TextureRegion.split(tex, 30, 30)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
 }

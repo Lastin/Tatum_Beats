@@ -54,6 +54,29 @@ public class Slime extends B2DSprite {
 
     }
     public void pop(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/fence.png");
+        Texture tex = cont.getTexture("fence");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
+    }
+    public void rock(){
+
+    }
+    public void indie(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/fence.png");
+        Texture tex = cont.getTexture("fence");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
+    }
+    public void jazz(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/slime.png");
         cont.loadTexture("res/images/PlatformerPack/Enemies/slime_walk.png");
 
@@ -65,15 +88,6 @@ public class Slime extends B2DSprite {
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
-    }
-    public void rock(){
-
-    }
-    public void indie(){
-
-    }
-    public void jazz(){
-
     }
     public void asian(){
 
@@ -92,8 +106,8 @@ public class Slime extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void deathMetal(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/death_ground.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/death_spikes.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/death_ground.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/death_spikes.png");
 
         Texture tex = cont.getTexture("death_spikes");
         TextureRegion[] sprites = new TextureRegion[2];
@@ -108,12 +122,41 @@ public class Slime extends B2DSprite {
 
     }
     public void punk(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/slimeRed.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/slimeRed_walk.png");
 
+        Texture tex = cont.getTexture("slimeRed");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 25, 17)[0][0];
+        tex = cont.getTexture("slimeRed_walk");
+        sprites[1] = TextureRegion.split(tex, 29, 15)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void classical(){
-
+        //cont.loadTexture("res/images/PlatformerPack/Enemies/ground/fence.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/signGround.png");
+        //Texture tex = cont.getTexture("fence");
+        Texture tex = cont.getTexture("signGround");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void electronic(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/slimeBlue.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/slimeBlue_walk.png");
 
+        Texture tex = cont.getTexture("slimeBlue");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 25, 17)[0][0];
+        tex = cont.getTexture("slimeBlue_walk");
+        sprites[1] = TextureRegion.split(tex, 29, 15)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
 }
