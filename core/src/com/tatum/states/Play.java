@@ -121,7 +121,6 @@ public class Play extends GameState {
     private final TrackData trackData;
     private FontGenerator fontGenerator;
     private float sbColor = 1;
-    private float lastFlashUpdate = 0;
 
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
@@ -154,7 +153,8 @@ public class Play extends GameState {
         this.instructor = hud.getInstructor();
         music.play();
         setSongCharactaristics();
-        System.out.println(trackData.getTwitterHandle());
+        shaderVal = 1;
+        //System.out.println(trackData.getTwitterHandle());
     }
 
     private void setArtistSong(){
@@ -420,6 +420,7 @@ public class Play extends GameState {
 
     @Override
     public void render() {
+        sb.setColor(sbColor, sbColor, sbColor, shaderVal);
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
@@ -429,6 +430,7 @@ public class Play extends GameState {
             //needs to be done better
         }
         // draw bgs
+
         sb.setProjectionMatrix(hudCam.combined);
 
         for (Background each : backgrounds) {
@@ -438,13 +440,9 @@ public class Play extends GameState {
         // draw tiledmap
         mapRenderer.setView(cam);
         mapRenderer.render();
-
-        sb.setColor(sbColor, sbColor, sbColor, shaderVal);
-
         if(paceMaker.gotFirstBeat()) {
             // draw player
             sb.setProjectionMatrix(cam.combined);
-
             //draw slimes and bats
             for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
                 if(i<0)
@@ -466,11 +464,11 @@ public class Play extends GameState {
             // draw hud
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);
-            if(shaderVal<1f){
+            /*if(shaderVal<1f){
                 shaderVal+=0.05f;
                 if(shaderVal>1f)
                     shaderVal=1f;
-            }
+            }*/
         }
 
         // debug draw box2d
