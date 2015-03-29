@@ -67,7 +67,7 @@ public class Select extends GameState {
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
         downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
-        toWriteItem = new MusicItem(sb,FontGenerator.listFont,"",cam,10,game.getHeight()-5);
+        toWriteItem = new MusicItem(sb,fontGenerator.listFont,"",cam,10,game.getHeight()-5);
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
@@ -192,8 +192,8 @@ public class Select extends GameState {
     private void setMusicItems(){
 
         ArrayList<String> names = selectionHandler.getPrunedNames();
-        backButtonMenu = new MusicItem(sb,FontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-20);
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-50);
+        backButtonMenu = new MusicItem(sb,fontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-20);
+        backButton = new MusicItem(sb,fontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-50);
         System.out.println(names.size());
             try{
                 musicItems= new ArrayList<MusicItem>();
@@ -201,7 +201,7 @@ public class Select extends GameState {
                 for(int i =0;i<5;i++){
                     System.out.println(listPosition[i]);
                     String name = names.get(listPosition[i]);
-                    musicItems.add(new MusicItem(sb,FontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
+                    musicItems.add(new MusicItem(sb,fontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=25;
                 }
             }catch (IndexOutOfBoundsException e){
@@ -283,7 +283,7 @@ public class Select extends GameState {
         else {
             toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
         }
-        toWriteItem = new MusicItem(sb,FontGenerator.titleFont,toWrite,cam,10,game.getHeight()-5);
+        toWriteItem = new MusicItem(sb,fontGenerator.titleFont,toWrite,cam,10,game.getHeight()-5);
     }
     @Override
     public void dispose() {

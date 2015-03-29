@@ -47,6 +47,7 @@ import com.tatum.handlers.TatumMap;
 import com.tatum.music.MusicItem;
 import com.tatum.music.TrackData;
 
+import java.awt.Font;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,6 +119,7 @@ public class Play extends GameState {
     float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
     float total = 0;
     private final TrackData trackData;
+    private FontGenerator fontGenerator;
 
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
@@ -128,6 +130,7 @@ public class Play extends GameState {
         this.path = path;
         this.paceMaker = paceMaker;
         this.trackData = trackData;
+        fontGenerator = new FontGenerator();
         world = new World(GRAVITY, true);
         cl = new CollisionListener();
         world.setContactListener(cl);
@@ -154,8 +157,8 @@ public class Play extends GameState {
 
     private void setArtistSong(){
 
-        float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
-        float widthS = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
+        float widthS = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
 
         float newXArtist = (320/2)-(widthA/2);
         float newXSong = (320/2)-(widthS/2);
@@ -164,8 +167,8 @@ public class Play extends GameState {
         while(true)
             if(newXArtist<10 || newXSong < 10 || widthA>310 || widthS>310){
                 size--;
-                widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
-                widthS = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+                widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
+                widthS = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
                 newXArtist = (320/2)-(widthA/2);
                 newXSong = (320/2)-(widthS/2);
             }
@@ -173,8 +176,8 @@ public class Play extends GameState {
 
         //System.out.println("Width: "+width+" Artist Width: "+ widthA + " newX: " + newXArtist);
         //System.out.println("Width: "+width+" Song Width: "+ widthS + " newX: " + newXSong);
-        ArtistName = new MusicItem(sb,FontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,(int)newXArtist,game.getHeight()-130);
-        SongName =  new MusicItem(sb,FontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,(int)newXSong,game.getHeight()-100);
+        ArtistName = new MusicItem(sb,fontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,(int)newXArtist,game.getHeight()-130);
+        SongName =  new MusicItem(sb,fontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,(int)newXSong,game.getHeight()-100);
         System.out.println(ArtistName.getWidth());
     }
 

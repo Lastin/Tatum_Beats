@@ -43,12 +43,13 @@ public class HighScoreList extends GameState{
     private GameButton downButtonFast;
     private MusicItem notracks;
     private int listPosition[];
-    private FontGenerator fontGenerator;
     MusicItem toWriteItem;
     private HashMap<String,Integer> highScores;
+    private FontGenerator fontGenerator;
 
     public HighScoreList(GameStateManager gsm) {
         super(gsm);
+        fontGenerator = new FontGenerator();
         highScores = getHighScores();
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
@@ -68,7 +69,7 @@ public class HighScoreList extends GameState{
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
         downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
-        toWriteItem = new MusicItem(sb,FontGenerator.listFont,"",cam,10,game.getHeight()-5);
+        toWriteItem = new MusicItem(sb, fontGenerator.listFont,"",cam,10,game.getHeight()-5);
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
@@ -86,7 +87,7 @@ public class HighScoreList extends GameState{
         Gdx.input.setInputProcessor(new InputProcessor());
     }
     private void setNoTracks(){
-        float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
+        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
 
 
         float newXArtist = (320/2)-(widthA/2);
@@ -95,12 +96,12 @@ public class HighScoreList extends GameState{
         while(true)
             if(newXArtist<10 ||widthA>310  ){
                 size = size-10;
-                widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
+                widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
                 newXArtist = (320/2)-(widthA/2);
             }
             else break;
 
-        notracks = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,(int)newXArtist,game.getHeight()-100);
+        notracks = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,(int)newXArtist,game.getHeight()-100);
 
     }
 
@@ -264,7 +265,7 @@ public class HighScoreList extends GameState{
             e.printStackTrace();
             return;
         }
-            backButton = new MusicItem(sb, FontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);
+            backButton = new MusicItem(sb, fontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);
             System.out.println(names.size());
             try {
                 trackNames = new ArrayList<MusicItem>();
@@ -273,9 +274,9 @@ public class HighScoreList extends GameState{
                 for (int i = 0; i < 5; i++) {
                     System.out.println(listPosition[i]);
                     String name = names.get(listPosition[i]);
-                    trackNames.add(new MusicItem(sb, FontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
+                    trackNames.add(new MusicItem(sb, fontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
                     String metaD = meta.get(listPosition[i]);
-                    metaData.add(new MusicItem(sb, FontGenerator.underListFont, metaD, cam, 10, game.getHeight() - bufferFromCeil - 15));
+                    metaData.add(new MusicItem(sb, fontGenerator.underListFont, metaD, cam, 10, game.getHeight() - bufferFromCeil - 15));
                     bufferFromCeil += 35;
                 }
             } catch (IndexOutOfBoundsException e) {

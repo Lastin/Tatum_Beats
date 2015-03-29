@@ -37,8 +37,8 @@ public class HighScoreView extends GameState{
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
-        backButtonMenu = new MusicItem(sb,FontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-10);
-        backButton = new MusicItem(sb,FontGenerator.listFont,"Back to TrackList",cam,10,game.getHeight()-35);
+        backButtonMenu = new MusicItem(sb,fontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-10);
+        backButton = new MusicItem(sb,fontGenerator.listFont,"Back to TrackList",cam,10,game.getHeight()-35);
         cont = gsm.getGame().getResources();
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
@@ -53,10 +53,10 @@ public class HighScoreView extends GameState{
     }
     private void setArtistSong(){
 
-        float widthA = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),artistName,cam,0,game.getHeight()-100).getWidth();
-        float widthS = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),trackName,cam,0,game.getHeight()-130).getWidth();
-        float widthL = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),album,cam,0,game.getHeight()-130).getWidth();
-        float widthG = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Score: "+score,cam,0,game.getHeight()-130).getWidth();
+        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),artistName,cam,0,game.getHeight()-100).getWidth();
+        float widthS = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),trackName,cam,0,game.getHeight()-130).getWidth();
+        float widthL = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),album,cam,0,game.getHeight()-130).getWidth();
+        float widthG = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),"Score: "+score,cam,0,game.getHeight()-130).getWidth();
 
         float newXArtist = (320/2)-(widthA/2);
         float newXSong = (320/2)-(widthS/2);
@@ -66,10 +66,10 @@ public class HighScoreView extends GameState{
         while(true)
             if(newXArtist<10 || newXSong < 10 || newXAlbum<10 || newXScore < 10 ||widthA>310 || widthS>310  ||widthL>310 || widthG>310 ){
                 size = size-10;
-                widthA = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),artistName,cam,0,game.getHeight()-100).getWidth();
-                widthS = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),trackName,cam,0,game.getHeight()-130).getWidth();
-                widthL = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),album,cam,0,game.getHeight()-160).getWidth();
-                widthG = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Score: "+score,cam,0,game.getHeight()-190).getWidth();
+                widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),artistName,cam,0,game.getHeight()-100).getWidth();
+                widthS = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),trackName,cam,0,game.getHeight()-130).getWidth();
+                widthL = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),album,cam,0,game.getHeight()-160).getWidth();
+                widthG = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Score: "+score,cam,0,game.getHeight()-190).getWidth();
                 newXArtist = (320/2)-(widthA/2);
                 newXSong = (320/2)-(widthS/2);
                 newXAlbum = (320/2)-(widthL/2);
@@ -77,10 +77,10 @@ public class HighScoreView extends GameState{
             }
            else break;
 
-        ArtistName = new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),artistName,cam,(int)newXArtist,game.getHeight()-100);
-        TrackName =  new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),trackName,cam,(int)newXSong,game.getHeight()-70);
-        Album =  new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),album,cam,(int)newXAlbum,game.getHeight()-130);
-        Score =  new MusicItem(sb,FontGenerator.makeFont(size, Color.BLACK),"Score: "+ score,cam,(int)newXScore,game.getHeight()-160);
+        ArtistName = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),artistName,cam,(int)newXArtist,game.getHeight()-100);
+        TrackName =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),trackName,cam,(int)newXSong,game.getHeight()-70);
+        Album =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),album,cam,(int)newXAlbum,game.getHeight()-130);
+        Score =  new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Score: "+ score,cam,(int)newXScore,game.getHeight()-160);
 
     }
 

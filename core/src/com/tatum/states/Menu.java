@@ -66,10 +66,12 @@ public class Menu extends GameState {
     private int dotCount = 0;
 
     private Stage stage;
+    private FontGenerator fontGenerator;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
         levelGenerator = new LevelGenerator(resources);
+        fontGenerator = new FontGenerator();
         loadPlayers();
         signs = loadSigns();
         miniLogo = resources.getTexture("tatumLogoMini");
@@ -103,9 +105,9 @@ public class Menu extends GameState {
         //playButton = new GameButton(resources, new TextureRegion(myStyle, 190, 156, 169, 51), 160, 100, cam);
         //selectTrackButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 130, cam);
         //highScoreButton = new GameButton(resources, new TextureRegion(myStyle, 79, 0, 472, 51), 160, 160, cam);
-        playButton = new MenuButton("PLAY", 160, 160);
-        selectSong = new MenuButton("SELECT SONG", 160, 130);
-        scoresButton = new MenuButton("HIGHSCORES", 160, 100);
+        playButton = new MenuButton(fontGenerator, "PLAY", 160, 160);
+        selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
+        scoresButton = new MenuButton(fontGenerator, "HIGHSCORES", 160, 100);
         //set action on playButton, running in a separate thread
         playButton.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -165,26 +167,20 @@ public class Menu extends GameState {
     }
 
     public void createLoadings(){
-        MusicItem temp = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Loading",cam,0,game.getHeight()-100);
+        MusicItem temp = new MusicItem(sb, fontGenerator.makeFont(70, Color.WHITE),"Loading",cam,0,game.getHeight()-100);
         float widthL = temp.getWidth();
         float height = temp.getHeight();
-        float widthG = new MusicItem(sb,FontGenerator.makeFont(70, Color.WHITE),"Generating",cam,0,game.getHeight()-130).getWidth();
-        float widthU = new MusicItem(sb,FontGenerator.makeFont(70, new Color(255,120,120,1)),"Uploading",cam,0,game.getHeight()-130).getWidth();
+        float widthG = new MusicItem(sb, fontGenerator.makeFont(70, Color.WHITE),"Generating",cam,0,game.getHeight()-130).getWidth();
+        float widthU = new MusicItem(sb, fontGenerator.makeFont(70, new Color(255,120,120,1)),"Uploading",cam,0,game.getHeight()-130).getWidth();
 
         float newXLoading = (320/2)-(widthL/2);
         float newXGenerating = (320/2)-(widthG/2);
         float newXUploading = (320/2)-(widthU/2);
         float newY = (320/2)-(height/2);
-//        java.awt.Color red = new java.awt.Color(255,120,120);
-//        java.awt.Color yellow = new java.awt.Color(241,217,116);
-//        java.awt.Color green = new java.awt.Color(90,250,183);
-        Color yellow = Color.valueOf("F1D974");
-        yellow.a=1f;
-        Color green = Color.valueOf("68F367");
-        green.a=1f;
-        uploadingText =  new MusicItem(sb,FontGenerator.makeFont(70, new Color((255/255),(120/255),(120/255),1f)),"Uploading",cam,(int)newXUploading,(int)newY);
-        loadingText =  new MusicItem(sb,FontGenerator.makeFont(70, yellow),"Loading",cam,(int)newXLoading,(int)newY);
-        generatingText = new MusicItem(sb,FontGenerator.makeFont(70, green),"Generating",cam,(int)newXGenerating,(int)newY);
+
+        uploadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.red),"Uploading",cam,(int)newXUploading,(int)newY);
+        loadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.yellow),"Loading",cam,(int)newXLoading,(int)newY);
+        generatingText = new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.green),"Generating",cam,(int)newXGenerating,(int)newY);
 
     }
 

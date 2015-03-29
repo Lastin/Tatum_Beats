@@ -8,22 +8,22 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class FontGenerator {
-    private static FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
-    private static BitmapFont customFont = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
+    public final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
+    public final BitmapFont customFont = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
+    public final BitmapFont titleFont = makeFont(20, Color.BLACK);
+    public final BitmapFont listFont = makeFont(36, Color.BLACK);
+    public final BitmapFont underListFont = makeFont(20, Color.BLACK);
     //colours
-    public static final Color royalBlue = new Color(0, 0.714f, 1, 1);
+    public final Color royalBlue = new Color(0, 0.714f, 1, 1);
+    public final Color red = Color.valueOf("FF7878");
+    public final Color yellow = Color.valueOf("F1D974");
+    public final Color green = Color.valueOf("68F367");
 
-    public static BitmapFont royalMenu = makeFont(35, 0, 0.714f, 1, 1);
+    public FontGenerator(){
 
-    public static BitmapFont titleFont = makeFont(20, Color.BLACK);
+    }
 
-    public static BitmapFont listFont = makeFont(36, Color.BLACK);
-
-    public static BitmapFont underListFont = makeFont(20, Color.BLACK);
-
-    public static BitmapFont artistSongFont = makeFont(60, Color.BLACK);
-
-    public static BitmapFont makeFont(int size, float r, float g, float b, float o){
+    public BitmapFont makeFont(int size, float r, float g, float b, float o){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
         parameters.size = size;
         BitmapFont font = fontGenerator.generateFont(parameters);
@@ -32,7 +32,7 @@ public class FontGenerator {
         return font;
     }
 
-    public static BitmapFont makeFont(int size, Color color){
+    public BitmapFont makeFont(int size, Color color){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
         parameters.size = size;
         BitmapFont font = fontGenerator.generateFont(parameters);
@@ -41,7 +41,7 @@ public class FontGenerator {
         return font;
     }
 
-    public static BitmapFont getMenuFont(){
+    public BitmapFont getMenuFont(){
         customFont.setScale(0.5f);
         return customFont;
     }

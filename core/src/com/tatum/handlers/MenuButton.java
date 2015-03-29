@@ -8,9 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 public class MenuButton {
     private TextButton button;
 
-    public MenuButton(String text, float x, float y){
+    public MenuButton(FontGenerator fontGenerator, String text, float x, float y){
         TextButtonStyle style = new TextButtonStyle();
-        style.font = FontGenerator.getMenuFont();
+        style.font = fontGenerator.getMenuFont();
         button = new TextButton(text, style);
         button.setPosition(x, y, 5);
     }
