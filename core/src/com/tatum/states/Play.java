@@ -445,7 +445,7 @@ public class Play extends GameState {
         if(paceMaker.gotFirstBeat()) {
             // draw player
             sb.setProjectionMatrix(cam.combined);
-            player.render(sb);
+
             //draw slimes and bats
             for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
                 if(i<0)
@@ -463,7 +463,7 @@ public class Play extends GameState {
                     break; //end of song
                 }
             }
-
+            player.render(sb);
             // draw hud
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);

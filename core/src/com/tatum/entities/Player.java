@@ -3,6 +3,7 @@ package com.tatum.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -411,5 +412,11 @@ public class Player extends B2DSprite {
     public void setIsHurt(boolean temp ){isHurt = temp;}
     public boolean getIsHurt(){return isHurt;}
 
-
+//    @Override
+//    public void render(SpriteBatch sb) {
+//        sb.begin();
+//        //sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),(animation.getFrame().getRegionWidth()/100)*60,(animation.getFrame().getRegionHeight()/100)*60);
+//        sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  7f, 9f, 36, 48, 0.8f, 0.8f, 0f);
+//        sb.end();
+//    }
 }

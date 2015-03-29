@@ -13,13 +13,25 @@ public class Slime extends B2DSprite {
 
     public Slime(Body body, ContentManager cont) {
         super(body, cont);
-        cont.loadTexture("res/images/PlatformerPack/Enemies/slime.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/slime_walk.png");
-        Texture tex = cont.getTexture("slime");
+//        cont.loadTexture("res/images/PlatformerPack/Enemies/slime.png");
+//        cont.loadTexture("res/images/PlatformerPack/Enemies/slime_walk.png");
+//
+//        Texture tex = cont.getTexture("slime");
+//        TextureRegion[] sprites = new TextureRegion[2];
+//        sprites[0] = TextureRegion.split(tex, 25, 17)[0][0];
+//        tex = cont.getTexture("slime_walk");
+//        sprites[1] = TextureRegion.split(tex, 29, 15)[0][0];
+//        animation.setFrames(sprites, 1 / 12f);
+//        width = sprites[0].getRegionWidth();
+//        height = sprites[0].getRegionHeight();
+        cont.loadTexture("res/images/PlatformerPack/Enemies/death_ground.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/death_spikes.png");
+
+        Texture tex = cont.getTexture("death_spikes");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 25, 17)[0][0];
-        tex = cont.getTexture("slime_walk");
-        sprites[1] = TextureRegion.split(tex, 29, 15)[0][0];
+        sprites[0] = TextureRegion.split(tex, 35, 20)[0][0];
+        tex = cont.getTexture("death_spikes");
+        sprites[1] = TextureRegion.split(tex, 35, 20)[0][0];
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();

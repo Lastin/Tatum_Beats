@@ -1,5 +1,6 @@
 
 package com.tatum.states;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.InputProcessor;
 import com.tatum.music.MusicItem;
 public class HighScoreView extends GameState{
 
@@ -46,6 +48,8 @@ public class HighScoreView extends GameState{
         this.album = album;
         this.score = score;
         setArtistSong();
+
+        Gdx.input.setInputProcessor(new InputProcessor());
     }
     private void setArtistSong(){
 
