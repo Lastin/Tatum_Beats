@@ -396,7 +396,7 @@ public class Play extends GameState {
 
         if((theme.equals("jazz"))||(theme.equals("asian"))){
             Background[] backgrounds = new Background[1];
-            backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0.3f);
+            backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0.0f);
             return backgrounds;
         }
         else if (theme.equals("pop")) {

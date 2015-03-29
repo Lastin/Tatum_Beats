@@ -92,13 +92,13 @@ public class GameBodiesCreator {
             case ("metal"):
                 return 0.8f;
             case ("death-metal"):
-                return 0.8f;
+                return 0.85f;
             case ("hip-hop"):
                 return 0.8f;
             case ("punk"):
                 return 0.8f;
             case ("classical"):
-                return 0.8f;
+                return 0.85f;
             case ("electronic"):
                 return 0.8f;
             default:
@@ -129,7 +129,7 @@ public class GameBodiesCreator {
 
         switch(theme){
             case ("pop"):
-                return 0.4f;
+                return 0.5f;
             case ("rock"):
                 return 0.4f;
             case ("indie"):
@@ -141,13 +141,13 @@ public class GameBodiesCreator {
             case ("metal"):
                 return 0.4f;
             case ("death-metal"):
-                return 0.4f;
+                return 0.41f;
             case ("hip-hop"):
                 return 0.4f;
             case ("punk"):
                 return 0.4f;
             case ("classical"):
-                return 0.4f;
+                return 0.5f;
             case ("electronic"):
                 return 0.4f;
             default:
