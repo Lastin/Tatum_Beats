@@ -55,13 +55,13 @@ public class HighScoreView extends GameState{
         this.artistName = artistName;
         this.album = album;
         this.score = score;
+        setArtistSong();
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                setArtistSong();
+
             }
         });
-
         Gdx.input.setInputProcessor(new InputProcessor());
     }
     public HighScoreView(GameStateManager gsm,String trackName, String artistName, String album, int score, Background bg){
@@ -76,20 +76,20 @@ public class HighScoreView extends GameState{
         float widthS = 0;
         float widthL = 0;
         float widthG = 0;
-        {
+        do {
             size -= 5;
             font = fontGenerator.makeFont(size, Color.BLACK);
             widthA = font.getBounds(artistName).width;
             widthS = font.getBounds(trackName).width;
             widthL = font.getBounds(album).width;
-            widthG = font.getBounds("Score: "+score).width;
-        } while(widthA > 300 || widthS > 300 || widthL > 300 || widthG > 300);
+            widthG = font.getBounds("Score: " + score).width;
+        } while(widthA > 300f || widthS > 300f || widthL > 300 || widthG > 300);
         float middle = game.getWidth()/2;
         ArtistName = new MusicItem(sb, font,artistName,cam, (int)(middle - widthA/2),game.getHeight()-100);
         TrackName =  new MusicItem(sb, font,trackName,cam, (int)(middle - widthS/2),game.getHeight()-70);
         Album =  new MusicItem(sb, font,album,cam, (int)(middle - widthL/2),game.getHeight()-130);
         Score =  new MusicItem(sb, font,"Score: "+ score,cam, (int)(middle - widthG/2),game.getHeight()-160);
-        render();
+        //render();
 
         /*render();
         float widthA = new MusicItem(sb,fontGenerator.loadingFont,artistName,cam,0,game.getHeight()-100).getWidth();

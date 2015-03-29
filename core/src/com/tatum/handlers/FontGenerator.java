@@ -26,15 +26,6 @@ public class FontGenerator {
 
     }
 
-    public BitmapFont makeFont(int size, float r, float g, float b, float o){
-        FreeTypeFontParameter parameters = new FreeTypeFontParameter();
-        parameters.size = size;
-        BitmapFont font = fontGenerator.generateFont(parameters);
-        font.setColor(r, g, b, o);
-        font.setScale(0.5f);
-        return font;
-    }
-
     public BitmapFont makeFont(int size, Color color){
         FreeTypeFontParameter parameters = new FreeTypeFontParameter();
         parameters.size = size;
