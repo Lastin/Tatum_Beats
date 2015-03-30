@@ -547,7 +547,7 @@ public class Play extends GameState {
             String trackName = trackData.getSongName();
             String artistName = trackData.getArtist();
             String album = trackData.getAlbumName();
-            gsm.setState(new HighScoreView(gsm, trackName, artistName, album, player.getHighScore()));
+            gsm.setState(new HighScoreView(gsm, fontGenerator, trackName, artistName, album, player.getHighScore()));
         }
 
         //check scores / set new high score

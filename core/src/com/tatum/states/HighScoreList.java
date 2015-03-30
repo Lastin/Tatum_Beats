@@ -47,9 +47,9 @@ public class HighScoreList extends GameState{
     private HashMap<String,Integer> highScores;
     private FontGenerator fontGenerator;
 
-    public HighScoreList(GameStateManager gsm,Background bg) {
+    public HighScoreList(GameStateManager gsm, FontGenerator fontGenerator, Background bg) {
         super(gsm);
-        fontGenerator = new FontGenerator();
+        this.fontGenerator = fontGenerator;
         highScores = getHighScores();
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
@@ -182,7 +182,7 @@ public class HighScoreList extends GameState{
                 String meta = metaData.get(i).getText();
                 String[] split = meta.split("~");
                 int score = highScores.get(meta+"~"+track);
-                gsm.setState(new HighScoreView(gsm,track,split[0],split[1],score,bg));
+                gsm.setState(new HighScoreView(gsm, fontGenerator, track,split[0],split[1],score,bg));
             }
         }
 

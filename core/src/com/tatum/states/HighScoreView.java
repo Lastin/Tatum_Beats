@@ -35,9 +35,9 @@ public class HighScoreView extends GameState{
     private MusicItem Album;
     private MusicItem Score;
 
-    public HighScoreView(GameStateManager gsm,String trackName, String artistName, String album, int score) {
+    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, int score) {
         super(gsm);
-        fontGenerator = new FontGenerator();
+        this.fontGenerator = fontGenerator;
         Texture menu = resources.getTexture("menu2");
         bg = new Background(game, new TextureRegion(menu), cam, 1f);
         bg.setVector(-20, 0);
@@ -63,8 +63,8 @@ public class HighScoreView extends GameState{
         });
         Gdx.input.setInputProcessor(new InputProcessor());
     }
-    public HighScoreView(GameStateManager gsm,String trackName, String artistName, String album, int score, Background bg){
-        this( gsm,trackName,artistName,album,score);
+    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, int score, Background bg){
+        this(gsm, fontGenerator, trackName,artistName,album,score);
         this.bg = bg;
     }
     private void setArtistSong(){
@@ -128,7 +128,7 @@ public class HighScoreView extends GameState{
             gsm.setState(new Menu(gsm));
         }
         if(backButton.isClicked()){
-            gsm.setState(new HighScoreList(gsm,bg));
+            gsm.setState(new HighScoreList(gsm, fontGenerator, bg));
         }
         if(shareButton.isClicked()){
             //here goes twitter interface

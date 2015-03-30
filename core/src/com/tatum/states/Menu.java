@@ -155,7 +155,7 @@ public class Menu extends GameState {
         });
         scoresButton.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                gsm.setState(new HighScoreList(gsm,bg));
+                gsm.setState(new HighScoreList(gsm, fontGenerator, bg));
             }
         });
         stage = new Stage(new ExtendViewport(320, 240, cam));
