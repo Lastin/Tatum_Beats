@@ -85,6 +85,7 @@ public class Play extends GameState {
     private MusicItem backButton;
     private MusicItem SongName;
     private MusicItem ArtistName;
+    private MusicItem Album;
     float titleFade = 0.1f;
     float titleTimer =0;
     private boolean rotate;
@@ -147,40 +148,38 @@ public class Play extends GameState {
         initialiseCamerasAndRenderers();
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
-        //backButton = new MusicItem(sb, FontGenerator.listFont,"Menu",cam,5,game.height-10);
         game.setSwipeInput();
-        setArtistSong();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setArtistSong();
+            }
+        });
         this.instructor = hud.getInstructor();
         music.play();
         setSongCharactaristics();
         shaderVal = 1;
-        //System.out.println(trackData.getTwitterHandle());
     }
 
     private void setArtistSong(){
+        BitmapFont font;
+        int size = 70;
+        float widthA = 0;
+        float widthS = 0;
+        float widthL = 0;
+        do {
+            size -= 5;
+            font = fontGenerator.makeFont(size, Color.BLACK);
+            widthA = font.getBounds(paceMaker.getTrackData().getArtist()).width;
+            widthS = font.getBounds(paceMaker.getTrackData().getSongName()).width;
+            widthL = font.getBounds(paceMaker.getTrackData().getAlbumName()).width;
 
-        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
-        float widthS = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
+        } while(widthA > 300f || widthS > 300f || widthL > 300);
+        float middle = game.getWidth()/2;
+        ArtistName = new MusicItem(sb, font,paceMaker.getTrackData().getArtist(),cam, (int)(middle - widthA/2),game.getHeight()-100);
+        SongName =  new MusicItem(sb, font,paceMaker.getTrackData().getSongName(),cam, (int)(middle - widthS/2),game.getHeight()-70);
+        Album =  new MusicItem(sb, font,paceMaker.getTrackData().getAlbumName(),cam, (int)(middle - widthL/2),game.getHeight()-130);
 
-        float newXArtist = (320/2)-(widthA/2);
-        float newXSong = (320/2)-(widthS/2);
-        int size =70;
-        sb.setColor(0,0,0,0);
-        while(true)
-            if(newXArtist<10 || newXSong < 10 || widthA>310 || widthS>310){
-                size--;
-                widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getArtist(),cam,0,game.getHeight()-100).getWidth();
-                widthS = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),paceMaker.getTrackData().getSongName(),cam,0,game.getHeight()-130).getWidth();
-                newXArtist = (320/2)-(widthA/2);
-                newXSong = (320/2)-(widthS/2);
-            }
-            else break;
-
-        //System.out.println("Width: "+width+" Artist Width: "+ widthA + " newX: " + newXArtist);
-        //System.out.println("Width: "+width+" Song Width: "+ widthS + " newX: " + newXSong);
-        ArtistName = new MusicItem(sb,fontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getArtist(),cam,(int)newXArtist,game.getHeight()-130);
-        SongName =  new MusicItem(sb,fontGenerator.makeFont(size, Color.WHITE),paceMaker.getTrackData().getSongName(),cam,(int)newXSong,game.getHeight()-100);
-        System.out.println(ArtistName.getWidth());
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -481,10 +480,14 @@ public class Play extends GameState {
         //backButton.render();
         if(music.getPosition()<5) {
             //sb.setColor(255f,0f,0f,titleFade);
-            SongName.getFont().setColor(0,0,0,titleFade);
-            SongName.render();
-            ArtistName.getFont().setColor(0,0,0,titleFade);
-            ArtistName.render();
+            if(ArtistName!=null&&SongName!=null&&Album!=null) {
+                SongName.getFont().setColor(0, 0, 0, titleFade);
+                SongName.render();
+                ArtistName.getFont().setColor(0, 0, 0, titleFade);
+                ArtistName.render();
+                Album.getFont().setColor(0, 0, 0, titleFade);
+                Album.render();
+            }
             if(titleFade<1f&&(music.getPosition()>titleTimer+0.1)) {
                 titleFade += 0.05;
                 titleTimer=music.getPosition();
@@ -495,10 +498,14 @@ public class Play extends GameState {
         }
         else if(music.getPosition()>5 && titleFade>0){
             //  sb.setColor(255f,0f,0f,titleFade);
-            SongName.getFont().setColor(0,0,0,titleFade);
-            SongName.render();
-            ArtistName.getFont().setColor(0,0,0,titleFade);
-            ArtistName.render();
+            if(ArtistName!=null&&SongName!=null&&Album!=null) {
+                SongName.getFont().setColor(0, 0, 0, titleFade);
+                SongName.render();
+                ArtistName.getFont().setColor(0, 0, 0, titleFade);
+                ArtistName.render();
+                Album.getFont().setColor(0, 0, 0, titleFade);
+                Album.render();
+            }
             if((music.getPosition()>titleTimer+0.1))
                 titleFade -= 0.03;
         }

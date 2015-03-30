@@ -3,6 +3,7 @@ package com.tatum.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -166,20 +167,10 @@ public class Menu extends GameState {
     }
 
     public void createLoadings(){
-        MusicItem temp = new MusicItem(sb, fontGenerator.loadingFont,"Loading",cam,0,game.getHeight()-100);
-        float widthL = temp.getWidth();
-        float height = temp.getHeight();
-        float widthG = new MusicItem(sb, fontGenerator.loadingFont,"Generating",cam,0,game.getHeight()-130).getWidth();
-        float widthU = new MusicItem(sb, fontGenerator.loadingFont,"Uploading",cam,0,game.getHeight()-130).getWidth();
-
-        float newXLoading = (320/2)-(widthL/2);
-        float newXGenerating = (320/2)-(widthG/2);
-        float newXUploading = (320/2)-(widthU/2);
-        float newY = (320/2)-(height/2);
-
-        uploadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.red),"Uploading",cam,(int)newXUploading,(int)newY);
-        loadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.yellow),"Loading",cam,(int)newXLoading,(int)newY);
-        generatingText = new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.green),"Generating",cam,(int)newXGenerating,(int)newY);
+      //cut down as string is static
+        uploadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.red),"Uploading",cam,74,148);
+        loadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.yellow),"Loading",cam,91,148);
+        generatingText = new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.green),"Generating",cam,67,148);
 
     }
 

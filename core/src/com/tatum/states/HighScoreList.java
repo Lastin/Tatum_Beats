@@ -69,35 +69,21 @@ public class HighScoreList extends GameState{
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
-        Thread loader = new Thread(){
+        Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-
-            //    setNoTracks();
+                setNoTracks();
             }
-        }; loader.start();
-        setNoTracks();
+        });
+
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
         Gdx.input.setInputProcessor(new InputProcessor());
     }
     private void setNoTracks(){
-        float widthA = new MusicItem(sb,fontGenerator.makeFont(70, Color.WHITE),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
-
-
-        float newXArtist = (320/2)-(widthA/2);
-
-        int size =70;
-        while(true)
-            if(newXArtist<10 ||widthA>310  ){
-                size = size-10;
-                widthA = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,0,game.getHeight()-100).getWidth();
-                newXArtist = (320/2)-(widthA/2);
-            }
-            else break;
-
-        notracks = new MusicItem(sb,fontGenerator.makeFont(size, Color.BLACK),"Go Play The Game First!",cam,(int)newXArtist,game.getHeight()-100);
+        //cut down as string is static
+        notracks = new MusicItem(sb,fontGenerator.makeFont(50, Color.BLACK),"Go Play The Game First!",cam,15,151);
 
     }
 
