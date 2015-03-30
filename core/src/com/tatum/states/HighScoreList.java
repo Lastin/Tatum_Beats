@@ -14,12 +14,10 @@ import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.InputProcessor;
-import com.tatum.handlers.SelectionHandler;
 import com.tatum.music.MusicItem;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
@@ -168,7 +166,7 @@ public class HighScoreList extends GameState{
                 String meta = metaData.get(i).getText();
                 String[] split = meta.split("~");
                 int score = highScores.get(meta+"~"+track);
-                gsm.setState(new HighScoreView(gsm, fontGenerator, track,split[0],split[1],score,bg));
+                gsm.setState(new HighScoreView(gsm, fontGenerator, track,split[0],split[1],"no handle",score,bg));
             }
         }
 

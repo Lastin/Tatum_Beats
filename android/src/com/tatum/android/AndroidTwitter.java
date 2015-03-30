@@ -17,7 +17,7 @@ public class AndroidTwitter implements TwitterInterface {
     }
 
     @Override
-    public void share(String artist, String song, int score) {
+    public void share(String artist, String song, int score, String twitterHandle) {
         String message;
         if(song == null || song == ""){
             song = "";
@@ -29,7 +29,7 @@ public class AndroidTwitter implements TwitterInterface {
         } else {
             artist = " by " + artist;
         }
-        message = "I just scored " + score + song + artist + " on Tatum!";
+        message = "I just scored " + score + song + artist + " on Tatum!" + (twitterHandle.equals("no handle") ? "" : " @" + twitterHandle) + " @TatumBeats";
         new TweetComposer.Builder(context).text(message).show();
     }
 }

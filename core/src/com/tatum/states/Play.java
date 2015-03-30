@@ -1,14 +1,11 @@
 package com.tatum.states;
 
-import static com.tatum.handlers.B2DVars.*;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -22,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.echonest.api.v4.Song;
+import com.tatum.Game;
 import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
 import com.tatum.entities.Coin;
@@ -31,15 +28,12 @@ import com.tatum.entities.Instructor;
 import com.tatum.entities.Player;
 import com.tatum.entities.Slime;
 import com.tatum.handlers.B2DVars;
-import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.BoundedCamera;
+import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.Game;
-import com.tatum.handlers.Input;
-import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumDirectionListener;
@@ -47,11 +41,15 @@ import com.tatum.handlers.TatumMap;
 import com.tatum.music.MusicItem;
 import com.tatum.music.TrackData;
 
-import java.awt.Font;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
+import static com.tatum.handlers.B2DVars.BIT_GRASS_BLOCK;
+import static com.tatum.handlers.B2DVars.BIT_ICE_BLOCK;
+import static com.tatum.handlers.B2DVars.BIT_SAND_BLOCK;
+import static com.tatum.handlers.B2DVars.GRAVITY;
+import static com.tatum.handlers.B2DVars.PPM;
 
 public class Play extends GameState {
     private boolean debug = false;
@@ -554,7 +552,7 @@ public class Play extends GameState {
             String trackName = trackData.getSongName();
             String artistName = trackData.getArtist();
             String album = trackData.getAlbumName();
-            gsm.setState(new HighScoreView(gsm, fontGenerator, trackName, artistName, album, player.getHighScore()));
+            gsm.setState(new HighScoreView(gsm, fontGenerator, trackName, artistName, album, trackData.getTwitterHandle(), player.getHighScore()));
         }
 
         //check scores / set new high score

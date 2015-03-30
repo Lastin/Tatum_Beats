@@ -5,11 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.tatum.TwitterInterface;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
@@ -18,6 +16,7 @@ import com.tatum.handlers.InputProcessor;
 import com.tatum.music.MusicItem;
 public class HighScoreView extends GameState{
 
+    private String twitterHandle;
     private Background bg;
     private World world;
     private Box2DDebugRenderer b2dRenderer;
@@ -35,7 +34,7 @@ public class HighScoreView extends GameState{
     private MusicItem Album;
     private MusicItem Score;
 
-    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, int score) {
+    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, String twitterHandle, int score) {
         super(gsm);
         this.fontGenerator = fontGenerator;
         Texture menu = resources.getTexture("menu2");
@@ -55,6 +54,7 @@ public class HighScoreView extends GameState{
         this.artistName = artistName;
         this.album = album;
         this.score = score;
+        this.twitterHandle = twitterHandle;
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -63,8 +63,8 @@ public class HighScoreView extends GameState{
         });
         Gdx.input.setInputProcessor(new InputProcessor());
     }
-    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, int score, Background bg){
-        this(gsm, fontGenerator, trackName,artistName,album,score);
+    public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, String twitterHandle, int score, Background bg){
+        this(gsm, fontGenerator, trackName,artistName,album, twitterHandle, score);
         this.bg = bg;
     }
     private void setArtistSong(){
@@ -133,7 +133,7 @@ public class HighScoreView extends GameState{
         if(shareButton.isClicked()){
             //here goes twitter interface
             System.out.println("sharing");
-            game.getTwitterInterface().share(artistName, trackName, score);
+            game.getTwitterInterface().share(artistName, trackName, score, twitterHandle);
         }
     }
     @Override
