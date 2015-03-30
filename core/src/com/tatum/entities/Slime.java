@@ -1,8 +1,10 @@
 package com.tatum.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.tatum.handlers.B2DVars;
 import com.tatum.handlers.ContentManager;
 import com.tatum.music.TrackData;
 
@@ -10,11 +12,11 @@ import com.tatum.music.TrackData;
  * Created by Ben on 18/02/2015.
  */
 public class Slime extends B2DSprite {
-
-
+    private static TextureRegion[] sprites;
+    String theme;
     public Slime(Body body, ContentManager cont,String theme) {
         super(body, cont);
-
+        this.theme=theme;
         switch(theme){
             case ("pop"):
                 pop();
@@ -74,12 +76,24 @@ public class Slime extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void indie(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/fence.png");
-        Texture tex = cont.getTexture("fence");
-        TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
-        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
-        animation.setFrames(sprites, 1 / 12f);
+        if(this.sprites==null){
+            cont.loadTexture("res/images/PlatformerPack/Enemies/ground/cactus.png");
+            Texture tex = cont.getTexture("cactus");
+            TextureRegion[] sprites = new TextureRegion[44];
+            TextureRegion[][] temp = TextureRegion.split(tex, 157, 126);
+
+            int count = 0;
+            for(int i = 0;i<8;i++){
+                for(int j = 0; j <6; j++){
+                    if(i==7&&j==2)
+                        break;
+                    sprites[count]= temp[i][j];
+                    count++;
+                }
+            }
+            this.sprites = sprites;
+        }
+        animation.setFrames(sprites, 1 / 30f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
@@ -133,7 +147,14 @@ public class Slime extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void hipHop(){
-
+        cont.loadTexture("res/images/PlatformerPack/Enemies/ground/hip-hop-jump.png");
+        Texture tex = cont.getTexture("hip-hop-jump");
+        TextureRegion[] sprites = new TextureRegion[2];
+        sprites[0] = TextureRegion.split(tex, 124, 111)[0][0];
+        sprites[1] = TextureRegion.split(tex, 124, 111)[0][0];
+        animation.setFrames(sprites, 1 / 12f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void punk(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/ground/slimeRed.png");
@@ -172,5 +193,23 @@ public class Slime extends B2DSprite {
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
+    }
+    @Override
+    public void render(SpriteBatch sb) {
+        if(theme.equals("hip-hop")){
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  65f, 62f, 124, 111, 0.35f, 0.35f, 0f);
+            sb.end();
+        }
+        else if(theme.equals("indie")){
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  81f, 80f, 157, 126, 0.35f, 0.35f, 0f);
+            sb.end();
+        }
+        else {
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
+            sb.end();
+        }
     }
 }

@@ -11,10 +11,11 @@ import com.tatum.handlers.ContentManager;
  * Created by Ben on 18/02/2015.
  */
 public class Bat extends B2DSprite {
-
+    String theme;
+    private static TextureRegion[] sprites;
     public Bat(Body body, ContentManager cont, String theme) {
         super(body, cont);
-
+        this.theme = theme;
         switch(theme){
             case ("pop"):
                 pop();
@@ -70,24 +71,32 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void rock(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/rock_rubble.png");
-        Texture tex = cont.getTexture("rock_rubble");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/hangingRock.png");
+        Texture tex = cont.getTexture("hangingRock");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 32, 28)[0][0];
-        sprites[1] = TextureRegion.split(tex, 32, 28)[0][0];
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
         animation.setFrames(sprites, 1 / 6f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
     public void indie(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly_fly.png");
-        Texture tex = cont.getTexture("fly");
-        TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 36, 18)[0][0];
-        tex = cont.getTexture("fly_fly");
-        sprites[1] = TextureRegion.split(tex, 38, 16)[0][0];
-        animation.setFrames(sprites, 1 / 12f);
+        if(this.sprites==null) {
+            cont.loadTexture("res/images/PlatformerPack/Enemies/flying/butterfly.png");
+            Texture tex = cont.getTexture("butterfly");
+            TextureRegion[] sprites = new TextureRegion[84];
+            TextureRegion[][] temp = TextureRegion.split(tex, 70, 65);
+
+            int count = 0;
+            for (int i = 0; i < 6; i++) {
+                for (int j = 13; j >= 0; j--) {
+                    sprites[count] = temp[i][j];
+                    count++;
+                }
+            }
+            this.sprites = sprites;
+        }
+        animation.setFrames(sprites, 1 / 35f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
@@ -102,12 +111,11 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void asian(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/icicle.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/icicle.png");
-        Texture tex = cont.getTexture("icicle");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/kpop_duck.png");
+        Texture tex = cont.getTexture("kpop_duck");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 35, 84)[0][0];
-        sprites[1] = TextureRegion.split(tex, 35, 84)[0][0];
+        sprites[0] = TextureRegion.split(tex, 45,27)[0][0];
+        sprites[1] = TextureRegion.split(tex, 45, 27)[0][0];
         animation.setFrames(sprites, 1 / 12f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
@@ -136,7 +144,22 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void hipHop(){
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/firefly.png");
+        Texture tex = cont.getTexture("firefly");
+        TextureRegion[] sprites = new TextureRegion[40];
+        TextureRegion[][] temp = TextureRegion.split(tex, 87, 40);
 
+        int count = 0;
+        for(int i = 0;i<4;i++){
+            for(int j = 0; j <10; j++){
+                sprites[count]= temp[i][j];
+                count++;
+            }
+        }
+
+        animation.setFrames(sprites, 1 / 35f);
+        width = sprites[0].getRegionWidth();
+        height = sprites[0].getRegionHeight();
     }
     public void punk(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/flying/boxExplosive.png");
@@ -169,4 +192,24 @@ public class Bat extends B2DSprite {
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
-}
+
+    public void render(SpriteBatch sb) {
+        if(theme.equals("hip-hop")){
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
+            sb.end();
+        }
+        else if(theme.equals("indie")){
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  35f, 20f, 70, 65, 0.80f, 0.80f, 0f);
+            sb.end();
+        }
+
+        else {
+            sb.begin();
+            sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
+            sb.end();
+        }
+    }
+
+    }

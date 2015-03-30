@@ -488,7 +488,7 @@ public class TrackData {
             theme = map.get(genre.toLowerCase());
         }
         else{
-            theme = "rock";
+            theme = "indie";
         }
         System.out.println(genre+" HERE WE ARE " +theme);
         //this.genreBucket = genreBucket.getString("bucket");

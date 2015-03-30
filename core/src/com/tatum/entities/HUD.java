@@ -83,34 +83,15 @@ public class HUD {
     public void render(SpriteBatch sb) {
         sb.begin();
         instructor.render(sb);
-       // sb.draw(container, 32, game.getHeight()-50);
-       /* short bits = player.getBody().getFixtureList().first().getFilterData().maskBits;
-        if ((bits & B2DVars.BIT_GRASS_BLOCK) != 0) {
-            sb.draw(blocks[0], 40, game.getHeight()-42);
-        }
-        else if ((bits & B2DVars.BIT_ICE_BLOCK) != 0) {
-            sb.draw(blocks[1], 40, game.getHeight()-42);
-        }
-        else if ((bits & B2DVars.BIT_SAND_BLOCK) != 0) {
-            sb.draw(blocks[2], 40, game.getHeight()-42);
-        }*/
 
-        //draw crystals
-        //sb.draw(crystal, game.getWidth()-50, game.getHeight()-50);
-        //drawString(sb, player.getNumCrystals() + " / " + player.getTotalCrystals(), game.getWidth()-132, game.getHeight()-45);
-        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-140,game.getHeight()-10);
-        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore(), game.getWidth()-140,game.getHeight()-30);
-        fontGenerator.getScoreFont().draw(sb, "MULTIPLIER: " + player.getMultiplyer(), game.getWidth()-140,game.getHeight()-50);
-        //drawString(sb,"highscore "+ String.valueOf(player.getHighScore()),game.getWidth()-160,game.getHeight()-10);
-        //drawString(sb,"score "+ String.valueOf(player.getScore()),game.getWidth()-160,game.getHeight()-30);
-        //drawString(sb,"multiplier "+ String.valueOf(player.getMultiplyer()),game.getWidth()-160,game.getHeight()-50);
-
+        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10);
+        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), game.getWidth()-170,game.getHeight()-30);
+        //fontGenerator.getScoreFont().draw(sb, "MULTIPLIER: " + player.getMultiplyer(), game.getWidth()-140,game.getHeight()-50);
         int space = 0;
-        //System.out.println("here");
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 70);
+            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 50);
             space+=15;
         }
         if(debug) {
@@ -153,22 +134,13 @@ public class HUD {
             else if(c ==' ') continue;
             else if(c== '-') continue;
             else {
-            //    System.out.println(c);
-            //    System.out.println(c-97);
                 sb.draw(fullFont[c-97], x + i * 9, y);
-                //sb.draw(fullFont[24], x + i * 9, y);
                 continue;
             }
             sb.draw(font[c], x + i * 9, y);
         }
     }
     public void setPaceMaker(PaceMaker paceMaker){this.paceMaker=paceMaker;}
-    public TextureRegion getCrystal() {
-        return crystal;
-    }
-    public TextureRegion[] getBlocks() {
-        return blocks;
-    }
     public Instructor getInstructor(){
         return instructor;
     }

@@ -84,11 +84,11 @@ public class GameBodiesCreator {
             case ("rock"):
                 return 0.8f;
             case ("indie"):
-                return 0.8f;
+                return 0.9f;
             case ("jazz"):
                 return 0.8f;
             case ("asian"):
-                return 1f;
+                return 0.8f;
             case ("metal"):
                 return 0.8f;
             case ("death-metal"):
@@ -143,7 +143,7 @@ public class GameBodiesCreator {
             case ("death-metal"):
                 return 0.41f;
             case ("hip-hop"):
-                return 0.4f;
+                return 0.43f;
             case ("punk"):
                 return 0.4f;
             case ("classical"):
