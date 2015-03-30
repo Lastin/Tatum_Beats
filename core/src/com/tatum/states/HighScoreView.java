@@ -55,11 +55,10 @@ public class HighScoreView extends GameState{
         this.artistName = artistName;
         this.album = album;
         this.score = score;
-        setArtistSong();
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-
+                setArtistSong();
             }
         });
         Gdx.input.setInputProcessor(new InputProcessor());
@@ -133,6 +132,8 @@ public class HighScoreView extends GameState{
         }
         if(shareButton.isClicked()){
             //here goes twitter interface
+            System.out.println("sharing");
+            game.getTwitterInterface().share(artistName, trackName, score);
         }
     }
     @Override

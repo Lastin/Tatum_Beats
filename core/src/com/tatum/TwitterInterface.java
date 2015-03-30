@@ -5,5 +5,5 @@ package com.tatum;
  */
 public interface TwitterInterface {
 
-    public void share(int score);
+    public void share(String artist, String song, int score);
 }

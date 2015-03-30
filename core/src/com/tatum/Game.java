@@ -104,6 +104,10 @@ public class Game extends ApplicationAdapter {
         Gdx.input.setInputProcessor(new InputProcessor());
     }
 
+    public TwitterInterface getTwitterInterface(){
+        return twitterInterface;
+    }
+
     public TatumDirectionListener getTatumDirectionListener(){
         return tatumDirectionListener;
     }
