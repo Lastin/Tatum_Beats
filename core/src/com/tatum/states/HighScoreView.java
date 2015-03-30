@@ -71,14 +71,13 @@ public class HighScoreView extends GameState{
     private void setArtistSong(){
         update(Gdx.graphics.getDeltaTime());
         int size = 70;
-        BitmapFont font = fontGenerator.makeFont(size, Color.BLACK);
         float widthA = 0;
         float widthS = 0;
         float widthL = 0;
         float widthG = 0;
         do {
             size -= 5;
-            font = fontGenerator.makeFont(size, Color.BLACK);
+            BitmapFont font = fontGenerator.makeFont(size, Color.BLACK);
             widthA = font.getBounds(artistName).width;
             widthS = font.getBounds(trackName).width;
             widthL = font.getBounds(album).width;
