@@ -214,4 +214,7 @@ public class Slime extends B2DSprite {
             sb.end();
         }
     }
+    public static void setSpriteNull(){
+        sprites = null;
+    }
 }

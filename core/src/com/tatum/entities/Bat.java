@@ -213,4 +213,8 @@ public class Bat extends B2DSprite {
         }
     }
 
+    public static void setSpriteNull(){
+        sprites = null;
+    }
+
     }

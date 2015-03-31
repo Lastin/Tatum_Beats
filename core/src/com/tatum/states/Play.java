@@ -118,6 +118,8 @@ public class Play extends GameState {
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
         super(gsm);
+        Slime.setSpriteNull(); // set to null as in android static memory is readdressed when the user changes to a different process
+        Bat.setSpriteNull();    // therefore if they exit the game and come back in, the animations will appear as black squares
         //create map and saved passed variables
         this.tatumMap = tatumMap;
         this.tiledMap = tatumMap.getTiledMap();
