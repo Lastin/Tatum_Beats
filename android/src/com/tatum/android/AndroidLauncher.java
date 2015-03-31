@@ -74,16 +74,17 @@ public class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
         try {
-            SensingKitLibInterface mSensingKitLib = SensingKitLib.getSensingKitLib(this);
+            SensingKitLibInterface mSensingKitLib = SensingKitLib.getSensingKitLib(this); //create new senseing kit interface
 
-            mSensingKitLib.subscribeToSensor(SensorModuleType.ACCELEROMETER, new SKSensorDataListener() {
+            mSensingKitLib.subscribeToSensor(SensorModuleType.ACCELEROMETER, new SKSensorDataListener() { // attach to the accelerometer
+                // when new accelerometer data is received, split it and store in data array
                 @Override
                 public void onDataReceived(final SensorModuleType moduleType, final DataInterface data) {
                     String[] dataArray = data.getDataInString().split(",");
                     sensorData(dataArray);
                 }
             });
-            mSensingKitLib.startContinuousSensingWithSensor(SensorModuleType.ACCELEROMETER);
+            mSensingKitLib.startContinuousSensingWithSensor(SensorModuleType.ACCELEROMETER); // start listen
 
 
         } catch (SKException e) {
@@ -92,54 +93,6 @@ public class AndroidLauncher extends AndroidApplication {
 
 
         initialize(new Game(data, new AndroidTwitter(this)), config);
- //       fbUiLifecycleHelper = new UiLifecycleHelper(this, new Session.StatusCallback() {
-  //          @Override
-   //         public void call(Session session, SessionState state, Exception exception) {
-    //            // Add code here to accommodate session changes
-     //           updateView();
-     //       }
-     //   });
-     //   fbUiLifecycleHelper.onCreate(savedInstanceState);
+
 	}
-
-  //  private void updateView() {
-   //     if (isResumed) {
-    //        Session session = Session.getActiveSession();
-     //       if (session.isOpened() && !((tatum)getApplication()).isLoggedIn() &&
-      //              fragments[HOME] != null) {
-       //         fetchUserInformationAndLogin();
-       //     } else if (session.isClosed() && ((FriendSmashApplication)getApplication()).isLoggedIn() &&
-        //            fragments[FB_LOGGED_OUT_HOME] != null) {
-         //       showFragment(FB_LOGGED_OUT_HOME, false);
-          //  }
-        //}
-   // }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        fbUiLifecycleHelper.onResume();
-//        // Logs 'install' and 'app activate' App Events.
-///        AppEventsLogger.activateApp(this);
- //   }
-  //  @Override
-  //  protected void onPause() {
- //       super.onPause();
- //       fbUiLifecycleHelper.onPause();
- //       // Logs 'app deactivate' App Event.
-  //      AppEventsLogger.deactivateApp(this);
-   // }
-    //@Override
-   // protected void onSaveInstanceState(Bundle outState){
-   //     super.onSaveInstanceState(outState);
-
-   //     fbUiLifecycleHelper.onSaveInstanceState(outState);
-    //}
-
-   // @Override
-   // protected void onDestroy(){
-    //    super.onDestroy();
-
-    //    fbUiLifecycleHelper.onDestroy();
-   // }
 }

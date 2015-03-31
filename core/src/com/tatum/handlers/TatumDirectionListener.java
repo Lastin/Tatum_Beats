@@ -6,12 +6,13 @@ import com.echonest.api.v4.Track;
  * Created by Ben on 22/02/2015.
  */
 public class TatumDirectionListener implements DirectionListener {
-
+    //This class stores the information on the users swipe directions
     private boolean[] bools;
     public TatumDirectionListener(){
         bools = new boolean[4];
         resetBools();
     }
+    //
     @Override
     public void onLeft() {
         bools[2]=true;

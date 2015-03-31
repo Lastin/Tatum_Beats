@@ -7,7 +7,7 @@ import com.tatum.entities.Slime;
 import java.util.ArrayList;
 
 public class TatumMap {
-
+    //wrapper for the tiledMap and its bar positions
     private final TiledMap tiledMap;
     private final int[] barsPositions;
 

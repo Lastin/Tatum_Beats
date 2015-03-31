@@ -61,7 +61,6 @@ public class HighScoreView extends GameState{
         this.album = album;
         this.score = score;
         this.twitterHandle = twitterHandle;
-        System.out.println(twitterHandle);
 
         Gdx.app.postRunnable(new Runnable() {
             @Override
