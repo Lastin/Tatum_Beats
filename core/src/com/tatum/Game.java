@@ -98,7 +98,7 @@ public class Game extends ApplicationAdapter {
         tatumDirectionListener = new TatumDirectionListener();
         SimpleDirectionGestureDetector temp2 = new SimpleDirectionGestureDetector(tatumDirectionListener);
         Gdx.input.setInputProcessor(temp2);
-    }
+    }   //create the swipe listener so the player can use the swipe in the play state
 
     public void setTouchInput(){
         Gdx.input.setInputProcessor(new InputProcessor());

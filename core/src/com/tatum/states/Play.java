@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -45,9 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import static com.tatum.handlers.B2DVars.BIT_GRASS_BLOCK;
-import static com.tatum.handlers.B2DVars.BIT_ICE_BLOCK;
-import static com.tatum.handlers.B2DVars.BIT_SAND_BLOCK;
 import static com.tatum.handlers.B2DVars.GRAVITY;
 import static com.tatum.handlers.B2DVars.PPM;
 
@@ -113,10 +109,8 @@ public class Play extends GameState {
 
 
     private int lastCoin =1;
-
     float previousPosition  = 0;
     float deltaPos = 0, deltaPosPrev =  0, deltaDiff = 0;
-    float total = 0;
     private final TrackData trackData;
     private FontGenerator fontGenerator;
     private float sbColor = 1;
@@ -124,6 +118,7 @@ public class Play extends GameState {
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
         super(gsm);
+        //create map and saved passed variables
         this.tatumMap = tatumMap;
         this.tiledMap = tatumMap.getTiledMap();
         this.music = music;
@@ -137,25 +132,37 @@ public class Play extends GameState {
         MapProperties properties = tiledMap.getProperties();
         width = (Float) properties.get("width");
         height = (Integer) properties.get("height");
+
+        //create the player and the objectives
         player = createPlayer();
         createObstacles();
+
+        //create the oncreen hud and pass the pacemaker
         hud = new HUD(resources, fontGenerator, game, player,paceMaker, this);
         hud.setPaceMaker(paceMaker);
+
         backgrounds = createBackground();
+
+        //create the blocks to stand on and the cameras
         GameBodiesCreator.createBlocks(tiledMap, world);
         initialiseCamerasAndRenderers();
+
         startTime= System.nanoTime();
         data = gsm.getGame().getData();
+
+        //set the game to use the swipe input
         game.setSwipeInput();
+
+        //create the meta data display items
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 setArtistSong();
             }
-        });
+        }); // done in separate thread to speed up transition time
         this.instructor = hud.getInstructor();
-        music.play();
-        setSongCharactaristics();
+        music.play(); //play music
+        setSongCharactaristics(); // set the way the instructor works based on song key
         shaderVal = 1;
     }
 
@@ -177,7 +184,8 @@ public class Play extends GameState {
         ArtistName = new MusicItem(sb, font,paceMaker.getTrackData().getArtist(),cam, (int)(middle - widthA/2),game.getHeight()-100);
         SongName =  new MusicItem(sb, font,paceMaker.getTrackData().getSongName(),cam, (int)(middle - widthS/2),game.getHeight()-70);
         Album =  new MusicItem(sb, font,paceMaker.getTrackData().getAlbumName(),cam, (int)(middle - widthL/2),game.getHeight()-130);
-
+        // this method works out the font size required to display all of the artist information
+        // at the start of the song if there is any
     }
 
     private void initialiseCamerasAndRenderers(){
@@ -187,6 +195,7 @@ public class Play extends GameState {
         b2dRenderer = new Box2DDebugRenderer();
         cam.setBounds(0, width * PPM, 0, height * tileSide);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        //this method creates all cameras that display the HUD and follows the character throughout the level
     }
 
     private void setSongCharactaristics(){
@@ -233,7 +242,10 @@ public class Play extends GameState {
         if(mode.equals("minor"))
             rotate = false;
         else rotate = true;
-
+    // this method sets how the controles change based on the key that the song is in
+    // this is done by passing an enum to the Instructor out of teh several options that are available
+     // it additionally sets weather the camera should rotate based on the modality of the song
+        // but this was removed as it wasn't liked by play testers
     }
 
     private Player createPlayer() {
@@ -243,7 +255,6 @@ public class Play extends GameState {
         bdef.type = BodyType.DynamicBody;
         bdef.position.set(60 / PPM, 120 / PPM);
         bdef.fixedRotation = true;
-        //bdef.linearVelocity.set(1f, 0f);
 
         // create body from bodydef
         Body body = world.createBody(bdef);
@@ -295,30 +306,32 @@ public class Play extends GameState {
         int[] barsPositions = tatumMap.getBarsPositions();
         MonsterCoinLocation monsterCoinLocation = new MonsterCoinLocation(); // contains all event data for collision
         Random random = new Random();
-        for(int each : barsPositions){
+        for(int each : barsPositions){   //for each of the bars in the song we create an event
             float temp =random.nextFloat();
-            System.out.println("Float = "+temp);
+            // we get a random float, this is then split into thirds to get a distribution of ground/ flying enemies
+            // and coins
             if(temp<=0.3) {
                 Slime slime = GameBodiesCreator.createSlime(each, world, resources,trackData.getTheme());
                 events.add(slime);
-                monsterCoinLocation.addEvent("Slime", each,slime); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                monsterCoinLocation.addEvent("Slime", each,slime); // create ground enemy and add to array list
             }
             else if((temp>0.3)&&(temp<=0.6)){
                 Bat bat = GameBodiesCreator.createBat(each, world, resources,trackData.getTheme());
                 events.add(bat);
-                monsterCoinLocation.addEvent("Bat", each,bat); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                monsterCoinLocation.addEvent("Bat", each,bat); //create flying enemy and add to array list
             }
 
             else if((temp>0.6)&&(temp<=0.7)) {
                 if (lastCoin == 2) {
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Pink");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("PinkCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("PinkCoin", each, coin); //create pink coin unless last coin was pink
+                                                                         // in which case create blue coin
                     lastCoin=3;
                 } else {
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Blue");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("BlueCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("BlueCoin", each, coin);
                     lastCoin=2;
                 }
             }
@@ -326,12 +339,13 @@ public class Play extends GameState {
                 if (lastCoin == 3) {
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("GreenCoin", each,coin); //create green coin unless last coin was green
+                                                                          // in which case create pink coin
                     lastCoin=1;
                 } else {
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources, "Pink");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("PinkCoin", each, coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("PinkCoin", each, coin);
                     lastCoin=3;
                 }
             }
@@ -339,20 +353,21 @@ public class Play extends GameState {
                 if(lastCoin==1){
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Blue");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("BlueCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("BlueCoin", each,coin); //create blue coin unless last coin was blue
+                                                                           // in which case create green coin
                     lastCoin=2;
                 }
                 else{
                     Coin coin = GameBodiesCreator.createCoin(each, world, resources,"Green");
                     events.add(coin);
-                    monsterCoinLocation.addEvent("GreenCoin", each,coin); // will add other later "Bat" "Slime" "RedCoin" "GreenCoin" "BlueCoin"
+                    monsterCoinLocation.addEvent("GreenCoin", each,coin);
                     lastCoin=1;
                }
             }
 
-            //bats.add(GameBodiesCreator.createBat(each, world, resources));
         }
         paceMaker.setMonsterCoinLocation(monsterCoinLocation);
+        // give the pacemaker the events so that it knows what to do each bar/ beat
     }
 
 
@@ -370,6 +385,8 @@ public class Play extends GameState {
         resources.loadTexture("res/images/backgrounds/metal.png");
         resources.loadTexture("res/images/backgrounds/rock.png");
         resources.loadTexture("res/images/backgrounds/punk.png");
+        //load in all backgrounds for the different themes
+
         Texture temp = resources.getTexture("asian");
         bgTheme.put("asian",new TextureRegion(temp,0,0,949,240));
         temp = resources.getTexture("classical");
@@ -390,12 +407,13 @@ public class Play extends GameState {
         bgTheme.put("rock",new TextureRegion(temp,0,0,320,240));
         temp = resources.getTexture("punk");
         bgTheme.put("punk",new TextureRegion(temp,0,0,427,240));
+        //add all backgrounds to hashmap
 
         if((theme.equals("jazz"))||(theme.equals("asian"))){
             Background[] backgrounds = new Background[1];
             backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0.0f);
             return backgrounds;
-        }
+        }// these are separate as they have the option to rotate but this is turned off
         else if (theme.equals("pop")) {
             Texture bgs = resources.getTexture("GrassColour");
             TextureRegion sky = new TextureRegion(bgs, 0, 0, 320, 240);
@@ -406,13 +424,12 @@ public class Play extends GameState {
             backgrounds[1] = new Background(game, clouds, cam, 0.15f);
             backgrounds[2] = new Background(game, mountains, cam, 0.25f);
             return backgrounds;
-        }
+        }// pop was kept with the original game theme, and as such is separate
         else{
-            System.out.println(theme);
             Background[] backgrounds = new Background[1];
             backgrounds[0] = new Background(game,bgTheme.get(theme),cam,0f);
             return backgrounds;
-        }
+        } // checks the theme of the song, and sets the background accordingly
     }
 
     @Override
@@ -422,17 +439,14 @@ public class Play extends GameState {
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
         if(rotate){
-            //cam.rotate(-0.4f);
-
-            //needs to be done better
+            //turned off
         }
-        // draw bgs
 
         sb.setProjectionMatrix(hudCam.combined);
 
         for (Background each : backgrounds) {
             each.render(sb);
-        }
+        }// draw all backgrounds (some are multi layered)
 
         // draw tiledmap
         mapRenderer.setView(cam);
@@ -456,16 +470,12 @@ public class Play extends GameState {
                 }catch (IndexOutOfBoundsException e){
                     break; //end of song
                 }
-            }
+            } //renders the events that are in view
             player.render(sb);
-            // draw hud
+
             sb.setProjectionMatrix(hudCam.combined);
             hud.render(sb);
-            /*if(shaderVal<1f){
-                shaderVal+=0.05f;
-                if(shaderVal>1f)
-                    shaderVal=1f;
-            }*/
+
         }
 
         // debug draw box2d
@@ -475,9 +485,7 @@ public class Play extends GameState {
             b2dRenderer.render(world, b2dCam.combined);
         }
 
-        //backButton.render();
         if(music.getPosition()<5) {
-            //sb.setColor(255f,0f,0f,titleFade);
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
                 SongName.getFont().setColor(0, 0, 0, titleFade);
                 SongName.render();
@@ -493,7 +501,8 @@ public class Play extends GameState {
                     titleFade=1f;
                 }
             }
-        }
+        } // draws the fade in song meta data
+
         else if(music.getPosition()>5 && titleFade>0){
             //  sb.setColor(255f,0f,0f,titleFade);
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
@@ -506,9 +515,9 @@ public class Play extends GameState {
             }
             if((music.getPosition()>titleTimer+0.1))
                 titleFade -= 0.03;
-        }
+        }   // draw the song meta data fade out
         else{
-            //don't render
+            //don't render song meta data after set time
         }
     }
 
@@ -520,10 +529,9 @@ public class Play extends GameState {
             if(!paceMaker.getNewBeat() && sbColor > 0.7f) {
                 sbColor -= 0.01f;
             } else {
-                System.out.println("pulse");
                 sbColor = 1;
             }
-        }
+        } // handles background flashing
 
         //end
         float currPosition = music.getPosition();
@@ -531,9 +539,7 @@ public class Play extends GameState {
         previousPosition = currPosition;
         deltaDiff = deltaPos - deltaPosPrev;
         deltaPosPrev = deltaPos;
-        // System.out.println("Delta diff: " + deltaDiff);
 
-        //System.out.println(System.nanoTime());
         // update box2d world
         world.step(Game.STEP, 1, 1);
         // update player
@@ -544,15 +550,14 @@ public class Play extends GameState {
         if(player.manageScore(music.getPosition()))
             player.scoreStep();
 
-
         //check if level is finished
         if(player.getBody().getPosition().x>=width){
             player.saveHighScore();
-            //gsm.setState(new Menu(gsm));
             String trackName = trackData.getSongName();
             String artistName = trackData.getArtist();
             String album = trackData.getAlbumName();
             gsm.setState(new HighScoreView(gsm, fontGenerator, trackName, artistName, album, trackData.getTwitterHandle(), player.getHighScore()));
+            // if level has finished go to highscore view for song
         }
 
         //check scores / set new high score
@@ -567,15 +572,9 @@ public class Play extends GameState {
             player.getBody().setLinearVelocity(player.getBody().getLinearVelocity().x,0);
             player.scoreBreak();
             player.randomSprite();
-        }
-        //if(player.getBody().getLinearVelocity().x < 0.001f) {
-        //    player.getBody().setTransform(new Vector2(player.getPosition().x,player.getPosition().y+(300/PPM)),0);
-        //player.getBody().setLinearVelocity(1,0);
-        //    player.scoreBreak();
-        //    player.randomSprite();
-        //}
+        } // depricated as player can no longer go through blocks, left in incase they somehow manage to
 
-        //check if need to reskin
+        //check if need to change from jumping/ducking back to walking
         if(player.getIsJumping() && cl.playerCanJump() && (music.getPosition() > player.getJumpTime()+0.1) && !paceMaker.getJumping()){
             player.removeSkin();
             player.setIsJumping(false);
@@ -590,13 +589,11 @@ public class Play extends GameState {
             resources.getSound("hit").play();
             gsm.setState(new Menu(gsm));
             music.stop();
-        }
+        }                                               //both depricated from previous versions of game
         if(player.getBody().getPosition().x>walkCheck){
-            //resources.getSound("crystal").play();
             walkCheck+=(32/PPM);
         }
 
-        //checkMotion2ElectricBoogaloo();
 
         for(int i =paceMaker.getRenderCounter()-2;i<paceMaker.getRenderCounter()+3;i++) {
             if (i < 0)
@@ -607,31 +604,18 @@ public class Play extends GameState {
                 break;
                 //end of song
             }
-        }
+        }   // updates events that are in view
     }
 
     private void updateVelocity(float deltaTime){
-        double currTime = (System.nanoTime()-startTime);
-        //System.out.println("Curr time:" + currTime);
-        //System.out.println(currTime/1000000000);
-        //System.out.println("Music: "+ music.getPosition());
-        //if(time >= delay){
         paceMaker.updateVelocity(player, music.getPosition());
-        // paceMaker.updateVelocity(player, currTime/1000000000);
-
-        //}
+        // this method used to use System nano time, changed to music position as it stopped
+        // some issues with freezing
     }
 
     @Override
     public void handleInput(){
-        /*backButton.update(0);
-        if(backButton.isClickedPlay()){
-            System.out.println("Clicked");
-            sb.setColor(1f, 1f, 1f, 1f);
-            music.stop();
-            gsm.setState(new Menu(gsm));
-            return;
-        }*/
+
         TatumDirectionListener tatumDirectionListener = game.getTatumDirectionListener();
 
         if(!player.getIsJumping()&&!player.getIsDucking()) {
@@ -649,50 +633,30 @@ public class Play extends GameState {
             }
             tatumDirectionListener.resetBools();
 
-        }
+        } // check if the user has swipped, and if so call the instructor method in the chosen direction
+            // so that the users action choice may be perfomred on the character
     }
 
     public void playerJump(){
-        if(cl.playerCanJump()&&(!player.getIsJumping())&&(!player.getIsDucking())){
+        if(cl.playerCanJump()&&(!player.getIsJumping())&&(!player.getIsDucking())){ //checks if the user is not currently jumping or ducking
 
             //paceMaker.setJumping(true); // use for in time
             player.getBody().applyForceToCenter(0, 200, true); // use for working jump, time independent
             player.setJumpSkin();
             player.setJumpTime(music.getPosition());
             //resources.getSound("jump").play();
+            // applies a force to the player to launch them into the air
         }
-    }
-
-    private void switchBlocks(){
-        //get foot mask bits
-        Filter filter = player.getBody().getFixtureList().get(1).getFilterData();
-        short bits = filter.maskBits;
-        //switch block
-        switch (bits){
-            case BIT_GRASS_BLOCK:
-                bits = BIT_ICE_BLOCK;
-                break;
-            case BIT_ICE_BLOCK:
-                bits = BIT_SAND_BLOCK;
-                break;
-            case BIT_SAND_BLOCK:
-                bits = BIT_GRASS_BLOCK;
-                break;
-        }
-        //set foot mask bits
-        filter.maskBits = bits;
-        player.getBody().getFixtureList().get(1).setFilterData(filter);
-        //set mask bits
-        filter.maskBits = bits;
-        player.getBody().getFixtureList().get(0).setFilterData(filter);
-
-        resources.getSound("changeblock").play();
     }
 
     @Override
     public void dispose() {
 
     }
+
+    //***************************** Below are the shake methods which are no longer being used
+    //***************************** Left in in case we decide to reenable
+
     public void checkMotion(){
         now = Long.parseLong(data[0]);
 

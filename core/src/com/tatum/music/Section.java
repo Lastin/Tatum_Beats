@@ -13,8 +13,11 @@ public class Section extends TimedEvent {
 	private int timeSignature;
 	private double timeSignatureConfidence;
 	private String stringKey;
-    private int length;
-	
+
+    //this class stores all the information for a section (chorus, intro, bridge etc)
+    // of the song, it is just getters and setters for the different data
+    // parsed from the echonest api call with our additional generated data explained in track data
+
 	public Section(double start, double duration, double confidence,double loudness,double tempo,
 				   double tempoConfidence, int key, double keyConfidence, int mode, double modeConfidence,
 			       int timeSignature, double timeSignatureConfidence,ArrayList<TimedEvent> array,int position) {
@@ -29,9 +32,11 @@ public class Section extends TimedEvent {
 		this.setModeConfidence(modeConfidence);
 		this.setTimeSignature(timeSignature);
 		this.setTimeSignatureConfidence(timeSignatureConfidence);
+
 		setKeyString();
 
 	}
+
 	public String getStringKey(){
 		return stringKey;
 	}
@@ -146,6 +151,6 @@ public class Section extends TimedEvent {
 		      case 11: stringKey = "b";
 		              return;
 		    }
-		  }
+		  } // gives the key of the section in an understandable format
 
 }

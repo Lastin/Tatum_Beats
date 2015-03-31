@@ -50,38 +50,41 @@ public class HighScoreList extends GameState{
         this.fontGenerator = fontGenerator;
         highScores = getHighScores();
         fontGenerator = new FontGenerator();
-        Texture menu = resources.getTexture("menu2");
-        //bg = new Background(game, new TextureRegion(menu), cam, 1f);
-        //bg.setVector(-20, 0);
         this.bg = bg;
         cont = gsm.getGame().getResources();
+
+        //get textures for arrows
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");
         Texture downArrowFast = cont.getTexture("arrowDownFast");
         Texture upArrowFast = cont.getTexture("arrowUpFast");
+
+        //initilize arrows
         upButtonFast = new GameButton(resources, new TextureRegion(upArrowFast,70,85), game.getWidth()-30, game.getHeight()-50, cam);
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
         downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
         toWriteItem = new MusicItem(sb, fontGenerator.listFont,"",cam,10,game.getHeight()-5);
+
+        //create the list position (we have max 5 items on the screen at a time)
         listPosition= new int[5];
-        setListPosition("start");
-        setMusicItems();
+        setListPosition("start"); // set the list to be at the top/start
+        setMusicItems();       //create the initial list items
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
                 setNoTracks();
             }
-        });
+        }); // creates the "Go play first" string (in separate thread to improve performance)
 
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-        Gdx.input.setInputProcessor(new InputProcessor());
+        Gdx.input.setInputProcessor(new InputProcessor()); // change input to touch incase has come from game and input set to swipe
     }
     private void setNoTracks(){
         //cut down as string is static
-        notracks = new MusicItem(sb,fontGenerator.makeFont(50, Color.BLACK),"Go Play The Game First!",cam,15,151);
+        notracks = new MusicItem(sb,fontGenerator.makeFont(50, Color.BLACK),"Go Play The Game First!",cam,15,151); // create go play first string in centre of state/screen
 
     }
 
@@ -93,12 +96,10 @@ public class HighScoreList extends GameState{
             if(file.isDirectory())
                 if (file.child("userData/test/score.json").exists())
                     if(file.child("/meta.json").exists()){
-                        System.out.println(file);
                         InputStream is = file.child("userData/test/score.json").read();
                         JsonReader rdr = Json.createReader(is);
                         JsonObject hi = rdr.readObject();
                         int score = hi.getInt("Score");
-                        System.out.println(score);
                         is = file.child("/meta.json").read();
                         rdr = Json.createReader(is);
                         JsonObject meta = rdr.readObject();
@@ -106,13 +107,10 @@ public class HighScoreList extends GameState{
                         String trackName = meta.getString("title");
                         String albumName = meta.getString("album");
                         highScores.put(artistName+"~"+albumName+"~"+trackName,score);
-                }
-        }
-        Set<String> keySet = highScores.keySet();
+                    }
+        } // this block checks through all the users data in the music data folder (all songs attempted)
+        // if the song has a score and some meta data to display, it is added to the Hashmap of highscores to display
 
-        for(String key: keySet){
-            System.out.println(key+": "+highScores.get(key));
-        }
         return highScores;
     }
 
@@ -120,55 +118,46 @@ public class HighScoreList extends GameState{
     public void handleInput() {
         if(upButton.isClicked()){
 
-            System.out.println("Up click");
-            if(listPosition[0]!=0) {
-                System.out.println("inside");
+            if(listPosition[0]!=0) { // makes sure list does not go below 0
                 setListPosition("up");
                 setMusicItems();
             }
-        }
+        } // check if the up button has been clicked, if so recreate the list with from the new position
         if(upButtonFast.isClicked()){
-
-            System.out.println("Up click");
             if(listPosition[0]!=0) {
-                System.out.println("inside");
                 setListPosition("quickup");
                 setMusicItems();
             }
-        }
+        }   // same as above, except moves up by 5 instead of 1
 
 
         if(downButton.isClicked()){
-            System.out.println("Down click");
             if(listPosition[4]<highScores.size()-1){
-                System.out.println("in");
                 setListPosition("down");
                 setMusicItems();
             }
-        }
+        }   // if down button has been pressed, move list down by one
 
         if(downButtonFast.isClicked()){
-            System.out.println("Down click");
             if(listPosition[4]<highScores.size()-1){
-                System.out.println("in");
                 setListPosition("quickdown");
                 setMusicItems();
             }
-        }
+        } // save as above, moves down by 5 instead of 1
 
         if(backButton.isClicked()){
-           gsm.setState(new Menu(gsm,bg));
-        }
+            gsm.setState(new Menu(gsm,bg));
+        }   // if the back button is pressed go back to menu
         if(Gdx.input.isTouched())
-        for(int i =0;i< trackNames.size();i++){
-            if(trackNames.get(i).isClicked()||metaData.get(i).isClicked()){
-                String track = trackNames.get(i).getText();
-                String meta = metaData.get(i).getText();
-                String[] split = meta.split("~");
-                int score = highScores.get(meta+"~"+track);
-                gsm.setState(new HighScoreView(gsm, fontGenerator, track,split[0],split[1],"no handle",score,bg));
-            }
-        }
+            for(int i =0;i< trackNames.size();i++){
+                if(trackNames.get(i).isClicked()||metaData.get(i).isClicked()){
+                    String track = trackNames.get(i).getText();
+                    String meta = metaData.get(i).getText();
+                    String[] split = meta.split("~");
+                    int score = highScores.get(meta+"~"+track);
+                    gsm.setState(new HighScoreView(gsm, fontGenerator, track,split[0],split[1],"no handle",score,bg));
+                }
+            } //checks if the list items have been clicked, if so go to the highscore view for that list item
 
     }
 
@@ -189,7 +178,7 @@ public class HighScoreList extends GameState{
             metaData .get(i).update(dt);
         }
         backButton.update(dt);
-    }
+    }   // updates all of the buttons, list items and background
 
     @Override
     public void render() {
@@ -205,17 +194,17 @@ public class HighScoreList extends GameState{
             downButtonFast.render(sb);
             toWriteItem.renderFull();
             toWriteItem.render();
-                for (int i = 0; i < trackNames.size(); i++) {
-                    trackNames.get(i).render();
-                }
-                for (int i = 0; i < metaData.size(); i++) {
-                    metaData.get(i).renderFull();
-                }
+            for (int i = 0; i < trackNames.size(); i++) {
+                trackNames.get(i).render();
+            }
+            for (int i = 0; i < metaData.size(); i++) {
+                metaData.get(i).renderFull();
+            }
         }
 
 
         backButton.render();
-    }
+    }   // renders all the buttons, list items and background
 
     private void setMusicItems(){
         ArrayList<String> names;
@@ -232,7 +221,6 @@ public class HighScoreList extends GameState{
             Collections.sort(keys);
             for (String key : keys) {
                 try {
-                    System.out.println(key);
                     String[] split = key.split("~");
                     names.add(split[2]);
                     meta.add(split[0] + "~" + split[1]);
@@ -245,23 +233,24 @@ public class HighScoreList extends GameState{
             e.printStackTrace();
             return;
         }
-            backButton = new MusicItem(sb, fontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);
-            System.out.println(names.size());
-            try {
-                trackNames = new ArrayList<MusicItem>();
-                metaData = new ArrayList<MusicItem>();
-                int bufferFromCeil = 40;
-                for (int i = 0; i < 5; i++) {
-                    System.out.println(listPosition[i]);
-                    String name = names.get(listPosition[i]);
-                    trackNames.add(new MusicItem(sb, fontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
-                    String metaD = meta.get(listPosition[i]);
-                    metaData.add(new MusicItem(sb, fontGenerator.underListFont, metaD, cam, 10, game.getHeight() - bufferFromCeil - 15));
-                    bufferFromCeil += 35;
-                }
-            } catch (IndexOutOfBoundsException e) {
+        // This above segment gets all of the Highscore meta data and sorts it alphabetically
+        // Two lists are produced which can then be accessed and list list items made from
+        backButton = new MusicItem(sb, fontGenerator.listFont, "Back to Menu", cam, 10, game.getHeight() - 10);
 
-            }
+        try {
+            trackNames = new ArrayList<MusicItem>();
+            metaData = new ArrayList<MusicItem>();
+            int bufferFromCeil = 40;
+            for (int i = 0; i < 5; i++) {
+                String name = names.get(listPosition[i]);
+                trackNames.add(new MusicItem(sb, fontGenerator.listFont, name, cam, 10, game.getHeight() - bufferFromCeil));
+                String metaD = meta.get(listPosition[i]);
+                metaData.add(new MusicItem(sb, fontGenerator.underListFont, metaD, cam, 10, game.getHeight() - bufferFromCeil - 15));
+                bufferFromCeil += 35;
+            }// create list items showing song names in big and artist/album in small - space accordingly
+        } catch (IndexOutOfBoundsException e) {
+            //incase there are less than 5 items to display, simpler than createing several if cases
+        }
 
     }
     public void setListPosition(String position){
@@ -306,7 +295,10 @@ public class HighScoreList extends GameState{
                     listPosition[i]-=5;
                 }
         }
-    }
+    } // this class sets the 5 items to be viewed out of all possible items
+    // it takes a string parameter and based upon that moves the list accordingly
+    // error handling for our of bounds is dealt with by makes sure the values never go out of bounds of
+    // the amount of highscores (<0 and >size)
 
     @Override
     public void dispose() {

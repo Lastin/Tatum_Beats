@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-// stage
-// finish
-import com.tatum.Game;
+
 import com.tatum.handlers.Background;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.InputProcessor;
@@ -51,19 +49,23 @@ public class Select extends GameState {
         selectionHandler = new SelectionHandler(Gdx.files.external(""));
         fontGenerator = new FontGenerator();
         Texture menu = resources.getTexture("menu2");
-        //bg = new Background(game, new TextureRegion(menu), cam, 1f);
-        //bg.setVector(-20, 0);
+
         this.bg = bg;
         cont = gsm.getGame().getResources();
+
+        //get textures for arrows
         Texture downArrow = cont.getTexture("arrowDown");
         Texture upArrow = cont.getTexture("arrowUp");
         Texture downArrowFast = cont.getTexture("arrowDownFast");
         Texture upArrowFast = cont.getTexture("arrowUpFast");
+
+        //create arrows and place them at side of screen
         upButtonFast = new GameButton(resources, new TextureRegion(upArrowFast,70,85), game.getWidth()-30, game.getHeight()-50, cam);
         upButton = new GameButton(resources, new TextureRegion(upArrow,70,70), game.getWidth()-30, game.getHeight()-90, cam);
         downButton = new GameButton(resources, new TextureRegion(downArrow,70,70), game.getWidth()-30, game.getHeight()-130, cam);
         downButtonFast = new GameButton(resources, new TextureRegion(downArrowFast,70,85), game.getWidth()-30, game.getHeight()-170, cam);
         toWriteItem = new MusicItem(sb,fontGenerator.listFont,"",cam,10,game.getHeight()-5);
+
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
@@ -74,47 +76,42 @@ public class Select extends GameState {
         Gdx.input.setInputProcessor(new InputProcessor());
     }
 
-
     @Override
     public void handleInput() {
 
         if(upButton.isClicked()){
 
-            System.out.println("Up click");
-            if(listPosition[0]!=0) {
-                System.out.println("inside");
+
+            if(listPosition[0]!=0) { // make sure list does not go below 0
+
                 setListPosition("up");
                 setMusicItems();
             }
-            }
+            } // if up button is clicked move up file list by 1
         if(upButtonFast.isClicked()){
 
-            System.out.println("Up click");
             if(listPosition[0]!=0) {
-                System.out.println("inside");
                 setListPosition("quickup");
                 setMusicItems();
             }
-        }
+        } // if fast up is pressed move up list by 5 or as much as possible
 
 
         if(downButton.isClicked()){
-            System.out.println("Down click");
             if(listPosition[4]<selectionHandler.getScreenCount()-1){
-                    System.out.println("in");
+
                     setListPosition("down");
                     setMusicItems();
             }
-         }
+         } // if down button is pressed, move down the file list by one
 
         if(downButtonFast.isClicked()){
-            System.out.println("Down click");
             if(listPosition[4]<selectionHandler.getScreenCount()-1){
-                System.out.println("in");
+
                 setListPosition("quickdown");
                 setMusicItems();
             }
-        }
+        } // if fast down is pressed, move down the file list by 5 or as much as possible
 
         if(backButton.isClicked()){
             if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
@@ -123,24 +120,24 @@ public class Select extends GameState {
                 setMusicItems();
                 return;
             }
-        }
+        } // if previous directory button is pressed go up a directory unless already in route
         if(backButtonMenu.isClicked()){
             gsm.setState(new Menu(gsm));
-        }
+        }   // if back button is pressed, go back to menu
+
         for(int i =0;i<musicItems.size();i++){
             if(musicItems.get(i).isClicked()){
                 String text = musicItems.get(i).getText();
                 if(selectionHandler.isDir(text)){
-                    System.out.println(musicItems.get(i).getText());
                     selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
                     setListPosition("start");
                     setMusicItems();
                     return;
-                }
+                } // if a list is clicked, change the select screen to represent that directory and display contained files in list
                 else{
                     musicItems.get(i).getText();
                     gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
-                    return;
+                    return; // if a track is clicked, return to the menu, passing the path to the track
                 }
             }
         }
@@ -162,7 +159,7 @@ public class Select extends GameState {
         }
         backButton.update(dt);
         backButtonMenu.update(dt);
-    }
+    }   // upadte the background, buttons and all shown files
 
     @Override
     public void render() {
@@ -183,25 +180,26 @@ public class Select extends GameState {
             musicItems.get(i).render();
         }
         backButton.render();
-    }
+    }   // render the background, buttons and all shown files
 
     private void setMusicItems(){
 
-        ArrayList<String> names = selectionHandler.getPrunedNames();
+        ArrayList<String> names = selectionHandler.getPrunedNames();    // get list of files/directories that are relevant
         backButtonMenu = new MusicItem(sb,fontGenerator.listFont,"Back to Menu",cam,10,game.getHeight()-20);
         backButton = new MusicItem(sb,fontGenerator.listFont,"Previous Directory",cam,10,game.getHeight()-50);
-        System.out.println(names.size());
+
             try{
                 musicItems= new ArrayList<MusicItem>();
                 int bufferFromCeil = 75;
                 for(int i =0;i<5;i++){
-                    System.out.println(listPosition[i]);
+
                     String name = names.get(listPosition[i]);
                     musicItems.add(new MusicItem(sb,fontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=25;
-                }
+                }   //create file text items for current list position - space evening down the screen
             }catch (IndexOutOfBoundsException e){
-
+                // if there are less than 5 items to display
+                // easier than creating several if cases
             }
 
         fileCounter();
@@ -248,6 +246,9 @@ public class Select extends GameState {
                     listPosition[i]-=5;
             }
         }
+        // this class sets the "view" that we have of the files. As we only see 5 at a time,
+        // and there might be many more. We move up and down the list of possible files using the arrows
+        // which pass a string param moving our position but a specified amount
     }
 
     public void fileCounter(){
@@ -280,6 +281,10 @@ public class Select extends GameState {
             toWrite = start+": " + (listPosition[0]+1) + "-"+(listPosition[4]+1) +" / " +size;
         }
         toWriteItem = new MusicItem(sb,fontGenerator.titleFont,toWrite,cam,10,game.getHeight()-5);
+
+        //this method creates a string of the current directory that you are in and displays it at
+        // the top of the screen - additionally it specifies the file numbers we are currently viewing
+        // out of the total to further aid navigation
     }
     @Override
     public void dispose() {

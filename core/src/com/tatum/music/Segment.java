@@ -9,7 +9,10 @@ public class Segment extends TimedEvent{
 	private ArrayList<Double> pitches;
 	private ArrayList<Double> timbres;
 
-	
+    //this class stores all the information for a segment (even sized cuts throughout the song,
+    // holding information on timbre and pitch and loudness)
+    // of the song, it is just getters and setters for the different data
+    // parsed from the echonest api call with our additional generated data explained in track data
 	
 	public Segment(double start, double duration, double confidence, double loudnessStart,
 					double loudnessMaxTime, double loudnessMax, ArrayList<Double> pitches,

@@ -84,13 +84,13 @@ public class TrackData {
 
         fileUploader = new FileUploaderGDX(trackPath);
 
-    }
+    } //create file uploader for given track
 
     public void setTrack(String trackPath) {
 
         fileUploader = new FileUploaderGDX(trackPath);
 
-    }
+    } // update track incase song is changed
     public void upload(){
         try {
             fileUploader.uploadGDX();
@@ -99,7 +99,7 @@ public class TrackData {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    } // wrapper for fileUploader upload method
     public void initilize() {
         try {
             trackInformation = fileUploader.getJsonMap();
@@ -114,6 +114,7 @@ public class TrackData {
 
             // get all json objects
             try {
+                //get all meta data and save in variables
                 this.trackPath = meta.getString("filename");
                 this.artistName = meta.getString("artist");
                 this.trackName = meta.getString("title");
@@ -122,8 +123,12 @@ public class TrackData {
                 setGenreBucket();
                 this.bitrate = meta.getInt("bitrate");
                 this.sampleRate = meta.getInt("sample_rate");
-                this.dancebility = audio.getJsonNumber("danceability").doubleValue();
 
+
+                // gather all audio information and store in variables
+                // some are in try catch as they do not exist in all songs
+                // so blank vars must be set to a default i.e. 0
+                this.dancebility = audio.getJsonNumber("danceability").doubleValue();
                 this.duration = audio.getJsonNumber("duration").doubleValue();
                 this.energy = audio.getJsonNumber("energy").doubleValue();
                 this.loudness = 0;
@@ -137,46 +142,48 @@ public class TrackData {
                     this.speechiness = 0;
                 }
                 try {
-                this.acousticness = audio.getJsonNumber("acousticness").doubleValue();
+                    this.acousticness = audio.getJsonNumber("acousticness").doubleValue();
                 }catch (ClassCastException e){
                     this.acousticness = 0;
                 }
                 try {
-                this.valence = audio.getJsonNumber("valence").doubleValue();
+                    this.valence = audio.getJsonNumber("valence").doubleValue();
                 }catch (ClassCastException e){
-                this.valence = 0;
+                    this.valence = 0;
                 }
                 try {
-                this.instrumentalness = audio.getJsonNumber("instrumentalness").doubleValue();
+                    this.instrumentalness = audio.getJsonNumber("instrumentalness").doubleValue();
                 }
                 catch (ClassCastException e){
                     this.instrumentalness = 0;
                 }
                 try{
-                this.liveness = audio.getJsonNumber("liveness").doubleValue();
+                    this.liveness = audio.getJsonNumber("liveness").doubleValue();
                 }
                 catch (ClassCastException e){
                     this.liveness = 0;
                 }
-                this.tempo = audio.getJsonNumber("tempo").doubleValue();
 
+                this.tempo = audio.getJsonNumber("tempo").doubleValue();
                 this.key = audio.getInt("key");
                 setKeyString();
-                this.mode = audio.getInt("mode");
+                this.mode = audio.getInt("mode"); // key and mode are translated into text to make
+                                                  // them better understood for dev and user alike
                 setModeString();
                 this.timeSig = audio.getInt("time_signature");
 
+                //gather additional track data, not currently used, but stored for future use
                 this.endFade = track.getJsonNumber("end_of_fade_in").doubleValue();
                 this.startFade = track.getJsonNumber("start_of_fade_out").doubleValue();
                 this.tempoConf = track.getJsonNumber("tempo_confidence").doubleValue();
                 this.timeSigConf = track.getJsonNumber("time_signature_confidence").doubleValue();
                 this.keyConf = track.getJsonNumber("key_confidence").doubleValue();
                 this.modeConf = track.getJsonNumber("mode_confidence").doubleValue();
-                twitterhandle();
+                twitterhandle(); // get artist tiwtter handle
             } catch (NullPointerException e) {
-               // JOptionPane.showMessageDialog(null, "not possible to use this file");
                 e.printStackTrace();
             }
+            // Get all tatums within the song, transfer all data to timed event object and store in arraylist
             tatums = new ArrayList<TimedEvent>();
             int position =0;
             for (JsonObject object : Jtatums) {
@@ -186,6 +193,7 @@ public class TrackData {
                 tatums.add(new TimedEvent(start, duration, confidence, new ArrayList<TimedEvent>(),position));
                 position++;
             }
+            //Do the same as beats, with addition see below
             beats = new ArrayList<TimedEvent>();
             int tatumsCount = 0;
             position =0;
@@ -193,48 +201,44 @@ public class TrackData {
                 double start = (double) Math.floor(object.getJsonNumber("start").doubleValue() * 100) / 100;
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
                 double confidence = object.getJsonNumber("confidence").doubleValue();
-                ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
+                ArrayList<TimedEvent> array = new ArrayList<TimedEvent>(); // create arraylist to contain tatums within this beat
                 while (true) {
                     try {
                         TimedEvent unit = tatums.get(tatumsCount);
-                        if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
-                            array.add(unit);
-                            unit.setContainedIn(beats.size());
+                        if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) { // checks if a tatum is within the time of this beat
+                            array.add(unit); // if so add it to the tatum arraylist
+                            unit.setContainedIn(beats.size()); // let the tatum know which beat it is in
                             int count = beats.size() + 1;
-                            //System.out.println("Added tatum " + tatumsCount + " to beat " + count);
-                            tatumsCount++;
-                        } else if (unit.getStart() >= start + duration) {
+                            tatumsCount++; // increment the count so this tatum is not checked again
+                        } else if (unit.getStart() >= start + duration) { // the tatums are now outside the bar and we can stop
                             break;
                         }
-                        //else if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()>start+duration)){
-                        else {
+                        else { // this is buffer case for when the data is a little wrong (like microseconds wrong)
+                                // which can throw off the above cases, does the same thing though
                             double unitDur = unit.getStart() + unit.getduration();
                             double startDur = (start + duration);
                             //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
                             if ((unit.getStart() + 0.0001 >= start + duration)) {
-
-                                //	System.out.println("break inner");
                                 break;
                             }
                             if ((unit.getStart() >= start - 0.0001)) {
                                 int count = beats.size() + 1;
                                 unit.setContainedIn(beats.size());
-                                //System.out.println("Added tatum " + tatumsCount + " to beat " + count);
                                 array.add(unit);
                             } else {
                                 int count = beats.size() + 1;
-                                //System.out.println("NOT Added tatum " + tatumsCount + " to beat " + count);
                             }
                             tatumsCount++;
                         }
-
                     } catch (IndexOutOfBoundsException e) {
                         break;
                     }
                 }
-                beats.add(new TimedEvent(start, duration, confidence, array,position));
-                position++;
+                beats.add(new TimedEvent(start, duration, confidence, array,position)); // add the tatum array tp
+                position++; // go to next beat
             }
+            //this is an exact copy of the above process, the only difference is that the smaller unit is beats
+            // and the larger unit are bars
             bars = new ArrayList<TimedEvent>();
             tatumsCount = 0;
             position =0;
@@ -243,20 +247,17 @@ public class TrackData {
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
                 double confidence = object.getJsonNumber("confidence").doubleValue();
                 ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
-                int Testcount = 0;
                 while (true) {
                     try {
                         TimedEvent unit = beats.get(tatumsCount);
                         double unitDur = unit.getStart() + unit.getduration();
                         double startDur = (start + duration);
-                        System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
 
 
                         if ((unit.getStart() >= start) && (unit.getStart() + unit.getduration() <= start + duration)) {
                             array.add(unit);
                             unit.setContainedIn(bars.size());
                             int count = bars.size() + 1;
-                            System.out.println("Added beat " + tatumsCount + " to bar " + count);
                             tatumsCount++;
                         } else if (unit.getStart() >= start + duration) {
                             break;
@@ -266,42 +267,29 @@ public class TrackData {
                             tatumsCount++;
 
                         }else {
-                            //double unitDur = unit.getStart() + unit.getduration();
-                            //double startDur = (start + duration);
-                            //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " beat start " + start + " beat finished" + startDur);
                             if ((unit.getStart() + 0.0001 >= start + duration)) {
-
-                                //	System.out.println("break inner");
                                 break;
                             }
                             if ((unit.getStart() >= start - 0.0001)) {
                                 int count = bars.size() + 1;
 
                                 unit.setContainedIn(bars.size());
-                                System.out.println("Added beat " + tatumsCount + " to bar " + count);
                                 array.add(unit);
                             }
-                            //if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
-
-                            //}
                             else {
                                 int count = bars.size() + 1;
-                                //System.out.println("NOT Added beat " + tatumsCount + " to bar " + count);
                             }
                             tatumsCount++;
                         }
-                        Testcount++;
                     } catch (IndexOutOfBoundsException e) {
                         break;
                     }
                 }
-                if (Testcount != 3) {
-                    //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                }
                 bars.add(new TimedEvent(start, duration, confidence, array,position));
                 position++;
             }
-
+            //sections are a little different to smaller timedevents as they contain a similar amount of data
+            // as the overall song.
             sections = new ArrayList<Section>();
             tatumsCount = 0;
             position =0;
@@ -311,6 +299,9 @@ public class TrackData {
                 double duration = (double) Math.floor(object.getJsonNumber("duration").doubleValue() * 100) / 100;
                 double confidence = object.getJsonNumber("confidence").doubleValue();
                 double loudness = 0;
+                //variables are again set in try catch incase they do not exist for the song
+                // if they do not, they are set to the overall songs value, which could also
+                // not exist and therefore be 0
                 try {
                     loudness = object.getJsonNumber("loudness").doubleValue();
                 } catch (NullPointerException e) {
@@ -357,12 +348,14 @@ public class TrackData {
                 }
 
                 ArrayList<TimedEvent> array = new ArrayList<TimedEvent>();
+                //same as above, but for some reason the bar at the end of every section did not
+                //fit into any sections. I added a weirdBeat variable which deals with this and
+                //places it into one of the sections it sit between
                 while (true) {
                     try {
                         TimedEvent unit = bars.get(tatumsCount);
                         double unitDur = unit.getStart() + unit.getduration();
                         double startDur = (start + duration);
-                        //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
                         if(wierdBeat){
                             wierdBeat=!wierdBeat;
                             tatumsCount++;
@@ -374,11 +367,6 @@ public class TrackData {
                             array.add(unit);
                             unit.setContainedIn(sections.size());
                             int count = sections.size() + 1;
-                            System.out.println("Added bar " + tatumsCount + " to section " + count);
-                            //double unitDur = unit.getStart() + unit.getduration();
-                            //double startDur = (start + duration);
-                            //System.out.println("Unit start "+ unit.getStart() + "unit finished " + unitDur + " section start " + start + " section finished" + startDur);
-
                             tatumsCount++;
                         }
 
@@ -392,21 +380,14 @@ public class TrackData {
                         else {
 
                             if ((unit.getStart() + 0.0001 >= start + duration)) {
-
-                                //	System.out.println("break inner");
                                 break;
                             }
                             if ((unit.getStart() >= start - 0.0001)) {
                                 int count = sections.size() + 1;
-                                //System.out.println("Added bar " + tatumsCount + " to section " + count + "dsas");
                                 array.add(unit);
                             }
-                            //if((unit.getStart()>=start)&&(unit.getStart()+unit.getduration()<=start+duration)){
-
-                            //}
                             else {
                                 int count = sections.size() + 1;
-                                //System.out.println("NOT Added bar " + tatumsCount + " to section " + count);
                             }
                             tatumsCount++;
                         }
@@ -418,6 +399,9 @@ public class TrackData {
                 sections.add(new Section(start, duration, confidence, loudness, tempo, tempoConf, key, keyConf, mode, modeConf, timeSig, timeSigConf, array,position));
             }
             position =0;
+            //segments are independent of of all other timed events, but do contain extra data not available anywhere else
+            //most of this data are multidimentional ways of describing the texture of the song
+            //for full understanding of what they all are refer to the echonest pdf in the report
             segments = new ArrayList<Segment>();
             for (JsonObject object : Jsegments) {
                 double start = object.getJsonNumber("start").doubleValue();
@@ -436,7 +420,7 @@ public class TrackData {
                     }
 
                 } catch (IndexOutOfBoundsException e) {
-                    //end of array because I am a lazy bastard and can't be bothered to find out how to get the length
+                    //end of array
                 }
                 JsonArray timbres = object.getJsonArray("timbre");
                 ArrayList<Double> timbreArray = new ArrayList<Double>();
@@ -448,7 +432,7 @@ public class TrackData {
                     }
 
                 } catch (IndexOutOfBoundsException e) {
-                    //end of array because I am a lazy bastard and can't be bothered to find out how to get the length
+                    //end of array
                 }
 
                 segments.add(new Segment(start, duration, confidence, loudness_start, loudness_max_time, loudness_max, pitchArray, timbreArray,position));
@@ -459,13 +443,13 @@ public class TrackData {
 
     }
     private void twitterhandle(){
-        if(trackInformation.containsKey("twitter")){
+        if(trackInformation.containsKey("twitter")){ // check if there is twitter data
             JsonObject twitter = (JsonObject) trackInformation.get("twitter");
-            if(twitter.containsKey("twitter")){
-                twitterHandle = twitter.getString("twitter");
+            if(twitter.containsKey("twitter")){ //if there is check if there is a handle
+                twitterHandle = twitter.getString("twitter"); // if there is save handle in variable
             }
             else{
-                twitterHandle = "no handle";
+                twitterHandle = "no handle";    //else set to no handle
             }
         }
     }
@@ -474,26 +458,24 @@ public class TrackData {
         InputStream is = Gdx.files.internal("res/GenreBuckets.json").read();
         JsonReader rdr = Json.createReader(is);
         JsonObject genreBucketJson = rdr.readObject();
-        JsonArray genres = genreBucketJson.getJsonArray("genres");
+        JsonArray genres = genreBucketJson.getJsonArray("genres"); //read in array of genres from echonest map
         HashMap<String, String> map = new HashMap<String, String>();
-        for(int i =0; i < genres.size(); i++){
+        for(int i =0; i < genres.size(); i++){ //for each of the genres, add to map
 
             JsonObject temp = genres.getJsonObject(i);
             String name = temp.getString("name");
             String theme = temp.getString("theme");
-            System.out.println(name +": "+ theme);
             map.put(name.toLowerCase(),theme);
         }
-        if(map.containsKey(genre.toLowerCase())){
+        if(map.containsKey(genre.toLowerCase())){ // check if map contains song key
+                                                  // if so, set song bucket
             theme = map.get(genre.toLowerCase());
         }
         else{
-            theme = "indie";
+            theme = "indie";    // if not set to indie which is our default
         }
-        System.out.println(genre+" HERE WE ARE " +theme);
-        //this.genreBucket = genreBucket.getString("bucket");
     }
-
+    //***************************HERE BE GETTERS *********************************\\
     public List<JsonObject> getAsList(Object array) {
         if (array instanceof JsonArray)
             return ((JsonArray) array).getValuesAs(JsonObject.class);
@@ -561,7 +543,7 @@ public class TrackData {
                 return;
         }
     }
-
+    //get X IN methods deprecated for in object references
     public int getBarIn(double time) {
         if (time == 0) return 1;
         if (time < 0) return -1;
@@ -575,7 +557,6 @@ public class TrackData {
 
         int count = 0;
         while (true) {
-            //System.out.println("Count:" + count);
             try {
                 timeBar = bars.get(midpoint);
 
@@ -590,17 +571,11 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                //System.out.println("error bars " + midpoint);
                 midpoint--;
             }
             count++;
 
         }
-        /*System.out.println("bars");
-        System.out.println(time);
-        System.out.println(bar);
-        System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());*/
 
         return bar;
     }
@@ -617,7 +592,6 @@ public class TrackData {
         int end = beats.size();
 
         while (true) {
-            System.out.println("Count:" + count);
             try {
                 timeBar = beats.get(midpoint);
 
@@ -632,16 +606,10 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("error beats" + midpoint);
                 midpoint--;
             }
             count++;
         }
-        System.out.println("beats");
-        System.out.println(time);
-        System.out.println(beat);
-        System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());
         return beat;
     }
 
@@ -658,7 +626,6 @@ public class TrackData {
 
         while (true) {
 
-            System.out.println("Count:" + count);
             try {
                 timeBar = tatums.get(midpoint);
 
@@ -676,16 +643,10 @@ public class TrackData {
                     break;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("error tatums" + midpoint);
                 midpoint--;
             }
             count++;
         }
-        System.out.println("tatums");
-        System.out.println(time);
-        System.out.println(bar);
-        System.out.println(timeBar.getStart());
-        System.out.println(timeBar.getduration());
         return bar;
     }
 
@@ -700,7 +661,6 @@ public class TrackData {
         int end = sections.size();
         int count = 0;
         while (true) {
-            System.out.println("Count:" + count);
             try {
                 timeBar = sections.get(midpoint);
 
@@ -715,17 +675,12 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("error sections " + midpoint);
                 midpoint--;
             }
             count++;
 
         }   // This is too slow, gonna write a new one where you add the section you are currently in
-//        System.out.println("sections");
-//        System.out.println(time);
-//        System.out.println(bar);
-//        System.out.println(timeBar.getStart());
-//        System.out.println(timeBar.getduration());
+
         return bar;
     }
 
@@ -755,7 +710,6 @@ public class TrackData {
         int count = 0;
         while (true) {
 
-            //System.out.println("Count:" + count);
             try {
                 timeBar = segments.get(midpoint);
 
@@ -770,19 +724,12 @@ public class TrackData {
                     midpoint = (start + end) / 2;
                 }
             } catch (IndexOutOfBoundsException e) {
-                //System.out.println("error segments " + midpoint);
                 midpoint--;
             }
             count++;
         }
-        //System.out.println("segments");
-        //System.out.println(time);
-        //System.out.println(bar);
-        //System.out.println(timeBar.getStart());
-        //System.out.println(timeBar.getduration());
         return bar;
     }
-
 
     public String getArtist() {
         return artistName;
