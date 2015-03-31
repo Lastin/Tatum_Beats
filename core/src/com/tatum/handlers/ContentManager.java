@@ -16,6 +16,12 @@ import com.tatum.music.TrackData;
 
 
 public class ContentManager {
+
+    //this class deals with getting all resources from file
+    // these are then put into a hashmap where they can be retrieved
+    // this abstracts this process so that you do no have to deal with GDX Files in every class
+    // also means that you can pass round the manager and only have to load in a resource once
+
     private HashMap<String, Texture> textures = new HashMap<String, Texture>();
     private HashMap<String, Music> music = new HashMap<String, Music>();
     private HashMap<String, Sound> sounds = new HashMap<String, Sound>();
@@ -56,9 +62,9 @@ public class ContentManager {
 
     //Setters
     public void loadTexture(String path) {
-        if(Gdx.files.internal(path) == null) return;
-        Texture t = new Texture(path);
-        textures.put(makeKey(path), t);
+        if(Gdx.files.internal(path) == null) return; //if file doesn't exist return
+        Texture t = new Texture(path); // get texture
+        textures.put(makeKey(path), t); //add texture to texture hashmap with key from make key
     }
     public Music loadMusic(String path) {
         if(Gdx.files.external(path) == null) return null;
@@ -84,12 +90,12 @@ public class ContentManager {
     }
     //unified method for all above to produce a key
     public String makeKey(String path) {
-        int slashIndex = path.lastIndexOf('/');
-        int dotIndex = path.lastIndexOf('.');
+        int slashIndex = path.lastIndexOf('/'); //strip away everything before file name
+        int dotIndex = path.lastIndexOf('.'); // strip away file extention
         if(slashIndex < 0) {
             return path.substring(0, dotIndex);
         }
-        return path.substring(++slashIndex, dotIndex);
+        return path.substring(++slashIndex, dotIndex); // return file name - this means no two files may have the same name
     }
     //GETTERS
     public Texture getTexture(String key) {
@@ -126,7 +132,6 @@ public class ContentManager {
     }
     public void printKeys(){
         Set<String> h =  textures.keySet();
-        System.out.println("KEYS KEYS KEYS");
         for(String s : h ){
             System.out.println(s);
         }

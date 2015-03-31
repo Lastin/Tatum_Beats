@@ -28,7 +28,7 @@ public class Background {
     public void setVector(float dx, float dy) {
         this.dx = dx;
         this.dy = dy;
-    }
+    } // allows for reposition fo the image manually
 
     public void update(float dt) {
         x += (dx * scale) * dt;
@@ -36,6 +36,11 @@ public class Background {
     }
 
     public void render(SpriteBatch sb) {
+        // renders the background
+        // if the scale is set higher than 0 then the image will move in the background
+        //wrapping background to appear to be a constant move
+        //this only works for images the same size as the window at the moment though
+        //that is why jazz and asian are set to not move
         float x = ((this.x + gameCam.viewportWidth / 2 - gameCam.position.x) * scale) % image.getRegionWidth();
         float y = ((this.y + gameCam.viewportHeight / 2 - gameCam.position.y) * scale) % image.getRegionHeight();
         sb.begin();

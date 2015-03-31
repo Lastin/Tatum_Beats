@@ -6,7 +6,6 @@ import com.tatum.music.TrackData;
 import com.tatum.states.Menu;
 
 public class TrackLoader {
-
     private ContentManager resources;
     private String path;
     private String key;
@@ -14,7 +13,6 @@ public class TrackLoader {
     private TrackData trackData;
     private boolean ready = false;
     private boolean uploadingFinished = false;
-
 
     public TrackLoader(ContentManager resources, String path) {
         this.resources = resources;
@@ -40,9 +38,7 @@ public class TrackLoader {
             trackData = new TrackData(path);
 
         }
-
     }
-
     public Music getMusic(){
         return music;
     }

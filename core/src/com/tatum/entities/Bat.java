@@ -16,7 +16,8 @@ public class Bat extends B2DSprite {
     public Bat(Body body, ContentManager cont, String theme) {
         super(body, cont);
         this.theme = theme;
-        switch(theme){
+        switch(theme){ //Check which skin we need to load onto the bat
+                        // calls the method for that skin
             case ("pop"):
                 pop();
                 break;
@@ -52,40 +53,38 @@ public class Bat extends B2DSprite {
                 break;
 
         }
-
-
-
-
     }
 
     public void pop(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly.png");
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly_fly.png");
+        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/fly_fly.png");   // load in the textures
         Texture tex = cont.getTexture("fly");
         TextureRegion[] sprites = new TextureRegion[2];
         sprites[0] = TextureRegion.split(tex, 36, 18)[0][0];
         tex = cont.getTexture("fly_fly");
-        sprites[1] = TextureRegion.split(tex, 38, 16)[0][0];
-        animation.setFrames(sprites, 1 / 12f);
+        sprites[1] = TextureRegion.split(tex, 38, 16)[0][0]; // cut out the textres and add to sprites array
+        animation.setFrames(sprites, 1 / 12f); // set sprites to be animated at 1/12 speed
         width = sprites[0].getRegionWidth();
-        height = sprites[0].getRegionHeight();
+        height = sprites[0].getRegionHeight();  // set width and height from first texture
     }
     public void rock(){
         cont.loadTexture("res/images/PlatformerPack/Enemies/flying/hangingRock.png");
         Texture tex = cont.getTexture("hangingRock");
         TextureRegion[] sprites = new TextureRegion[2];
-        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
-        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];
-        animation.setFrames(sprites, 1 / 6f);
-        width = sprites[0].getRegionWidth();
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];    //same as above, this one however
+        sprites[1] = TextureRegion.split(tex, 35, 35)[0][0];    //is stationary
+        animation.setFrames(sprites, 1 / 6f);                   //animated for ease of coding, has
+        width = sprites[0].getRegionWidth();                    // no affect on game
         height = sprites[0].getRegionHeight();
     }
     public void indie(){
-        if(this.sprites==null) {
+        //indie has higher quality animation
+        if(this.sprites==null) { //as this can take a long time, can't have every slime do it
+                                 // set static first time round
             cont.loadTexture("res/images/PlatformerPack/Enemies/flying/butterfly.png");
-            Texture tex = cont.getTexture("butterfly");
+            Texture tex = cont.getTexture("butterfly"); // get full sprite sheet
             TextureRegion[] sprites = new TextureRegion[84];
-            TextureRegion[][] temp = TextureRegion.split(tex, 70, 65);
+            TextureRegion[][] temp = TextureRegion.split(tex, 70, 65); //cut out all sprites
 
             int count = 0;
             for (int i = 0; i < 6; i++) {
@@ -93,10 +92,10 @@ public class Bat extends B2DSprite {
                     sprites[count] = temp[i][j];
                     count++;
                 }
-            }
-            this.sprites = sprites;
+            }   // add all sprites to sprite array
+            this.sprites = sprites; // set temp sprites to static sprites
         }
-        animation.setFrames(sprites, 1 / 35f);
+        animation.setFrames(sprites, 1 / 35f); // animate sprites
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
@@ -144,19 +143,21 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
     public void hipHop(){
-        cont.loadTexture("res/images/PlatformerPack/Enemies/flying/firefly.png");
-        Texture tex = cont.getTexture("firefly");
-        TextureRegion[] sprites = new TextureRegion[40];
-        TextureRegion[][] temp = TextureRegion.split(tex, 87, 40);
+        if(this.sprites==null) {
+            cont.loadTexture("res/images/PlatformerPack/Enemies/flying/firefly.png");
+            Texture tex = cont.getTexture("firefly");
+            TextureRegion[] sprites = new TextureRegion[40];
+            TextureRegion[][] temp = TextureRegion.split(tex, 87, 40);
 
-        int count = 0;
-        for(int i = 0;i<4;i++){
-            for(int j = 0; j <10; j++){
-                sprites[count]= temp[i][j];
-                count++;
+            int count = 0;
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 10; j++) {
+                    sprites[count] = temp[i][j];
+                    count++;
+                }
             }
+            this.sprites = sprites;
         }
-
         animation.setFrames(sprites, 1 / 35f);
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
@@ -193,22 +194,22 @@ public class Bat extends B2DSprite {
         height = sprites[0].getRegionHeight();
     }
 
-    public void render(SpriteBatch sb) {
+    public void render(SpriteBatch sb) { //overwrite the default Sprite renderer to allow for scaling
         if(theme.equals("hip-hop")){
             sb.begin();
             sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
-            sb.end();
+            sb.end(); // decided to keep hip-hop the same size as the firefly was not that big ingame
         }
         else if(theme.equals("indie")){
             sb.begin();
             sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  35f, 20f, 70, 65, 0.80f, 0.80f, 0f);
-            sb.end();
+            sb.end();   // scale butterfly down to 0.8* - reposition so that it is back in the correct place
         }
 
         else {
             sb.begin();
             sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2));
-            sb.end();
+            sb.end(); // all others are fine and cen just be rendered
         }
     }
 

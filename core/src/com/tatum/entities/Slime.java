@@ -14,6 +14,8 @@ import com.tatum.music.TrackData;
 public class Slime extends B2DSprite {
     private static TextureRegion[] sprites;
     String theme;
+    //the comments in this class are minimal as everything is explained in bat (as the two are basically identical)
+    //the only difference being that the textures in slimes are placed onto the floor in game not flying above it
     public Slime(Body body, ContentManager cont,String theme) {
         super(body, cont);
         this.theme=theme;

@@ -31,10 +31,11 @@ public class Coin extends B2DSprite {
         else {
             cont.loadTexture("res/images/PlatformerPack/Items/PinkCoin.png");
             tex = cont.getTexture("PinkCoin");
-        }
+        } //load in the coin texture for the passed colour
+
         TextureRegion[] sprites = new TextureRegion[1];
-        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0];
-        animation.setFrames(sprites, 1 / 12f);
+        sprites[0] = TextureRegion.split(tex, 35, 35)[0][0]; // cut out coin texture and set in sprites
+        animation.setFrames(sprites, 1 / 12f); //set animation to appease render method
         width = sprites[0].getRegionWidth();
         height = sprites[0].getRegionHeight();
     }
@@ -43,12 +44,12 @@ public class Coin extends B2DSprite {
     }
     public void collected(){
         doRender=false;
-    }
+    } // checks if the coin has been collected by the player, because it should not be rendered after this
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        //sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),(animation.getFrame().getRegionWidth()/100)*60,(animation.getFrame().getRegionHeight()/100)*60);
         sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  17.5f, 17.5f, 35, 35, 0.5f, 0.5f, 0f);
+        //scale down to 0.5 and reposition as default coins were too big
         sb.end();
     }
 }

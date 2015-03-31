@@ -10,9 +10,9 @@ public class MenuButton {
 
     public MenuButton(FontGenerator fontGenerator, String text, float x, float y){
         TextButtonStyle style = new TextButtonStyle();
-        style.font = fontGenerator.getMenuFont();
-        button = new TextButton(text, style);
-        button.setPosition(x, y, 5);
+        style.font = fontGenerator.getMenuFont(); //get font for buttons
+        button = new TextButton(text, style); //create new button
+        button.setPosition(x, y, 5); // set at given co-ordinance
     }
 
     public void render(Batch sb){

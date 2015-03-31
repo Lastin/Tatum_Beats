@@ -1,7 +1,7 @@
 package com.tatum.handlers;
 
 public class Input {
-
+    // this classes deals with if the user is currently touching the screen
     public static int x, y;
     public static boolean down, pdown;
     public static boolean[] keys, pkeys;

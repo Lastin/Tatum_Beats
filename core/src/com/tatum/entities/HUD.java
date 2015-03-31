@@ -38,7 +38,10 @@ public class HUD {
         Texture tex = cont.getTexture("hud2");
         container = new TextureRegion(tex, 0, 0, 32, 32);
         cont.loadTexture("res/images/letters.png");
+        //create new instructor
         instructor = new Instructor(cont,game,player,paceMaker,play);
+
+        //load in textures for debug information
         Texture letter = cont.getTexture("letters");
         fullFont = new TextureRegion[26];
         TextureRegion[][] regi = TextureRegion.split(letter,9,9);
@@ -73,6 +76,7 @@ public class HUD {
         for(int i = 0; i < blockSprites.length; i++) {
             blockSprites[i] = new TextureRegion(tex, 58 + i * 5, 34, 5, 5);
         }
+        //get time signature and store pacemaker
         timeSig=paceMaker.getTimeSig();
         timePoint=1;
         this.paceMaker=paceMaker;
@@ -84,17 +88,16 @@ public class HUD {
         sb.begin();
         instructor.render(sb);
 
-        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10);
-        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), game.getWidth()-170,game.getHeight()-30);
-        //fontGenerator.getScoreFont().draw(sb, "MULTIPLIER: " + player.getMultiplyer(), game.getWidth()-140,game.getHeight()-50);
+        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10); //render the Current highscore for the song
+        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), game.getWidth()-170,game.getHeight()-30); //renders the users current score and multiplier
         int space = 0;
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
             sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 50);
             space+=15;
-        }
-        if(debug) {
+        } // renders the blocks that represent how many beats till an increase in multiplier
+        if(debug) { // debug info, no longer used
             // X Y Z data
             String temp = game.getData()[1].replaceAll("\\.", " ");
             drawString(sb, "x " + temp, game.getWidth() - 132, game.getHeight() - 80);
@@ -126,7 +129,7 @@ public class HUD {
         sb.end();
     }
 
-    private void drawString(SpriteBatch sb, String s, float x, float y) {
+    private void drawString(SpriteBatch sb, String s, float x, float y) { //old text method used in debug
         for(int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if(c == '/') c = 10;

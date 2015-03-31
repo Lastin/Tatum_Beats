@@ -21,13 +21,9 @@ import java.util.ArrayList;
 
 import java.util.List;
 
+//Depricated Class, used when EchoNest API was in use fully
+
 class MetaGrabber{
-    PrintStream supresser = new PrintStream(new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
-            //supressed
-        }
-    });
     private EchoNestAPI en;
     private String trackPath;
     private File file; //done

@@ -74,19 +74,7 @@ public class Player extends B2DSprite {
         lastTime = 0;
         playerNum = 1;
         this.paceMaker = paceMaker;
-        loadPlayers(resources);
-        /*TextureRegion[][] spriteSplit = TextureRegion.split(tex,71,93);
-        int count =0;
-        for(int i =0;i<4;i++){
-            for(int j=0;j<3;j++){
-                if(count==11){
-                    break;
-                }
-                sprites[count] = spriteSplit[i][j];
-                count++;
-            }
-        }
-    */
+        loadPlayers(resources); // load in all character skins
 
         animation = new Animation(sprites1);
         animation.setFrames(sprites1, 1/15f);
@@ -94,80 +82,68 @@ public class Player extends B2DSprite {
         height = sprites1[0].getRegionHeight();
 
     }
-    public void collectCrystal() { numCrystals++; }
-    public int getNumCrystals() { return numCrystals; }
-    public void setTotalCrystals(int i) { totalCrystals = i; }
-    public int getTotalCrystals() { return totalCrystals; }
     public void scoreStep(){
-
+        //increase the score
         score = score +2*multiplyer;
 
         if(paceMaker.getLastBeatHitId()>stepStage) {
+            //increase the multiplyer step if a new beat is hit
             step = step + 1;
             stepStage=paceMaker.getLastBeatHitId();
         }
-        if(step == 5)
+        if(step == 5) // if five beats past increase multiplier
             if(multiplyer<100) {
                 multiplyer += 1;
                 step = 0;
             }
 
-
     }
     public void scoreBreak(){
+        //if user done something wrong cut multiplier and score in half
         score = score/2;
         if(multiplyer==1)
             multiplyer=1;
         else
             multiplyer= multiplyer/2;
         step=0;
-        setHurt();
+        setHurt(); //se the hurt animation
     }
-    public int getScore(){return score;}
-    public int getStep(){return step;}
-    public int getMultiplyer(){return  multiplyer;}
-    public boolean manageScore(double time){
-
-
+    public boolean manageScore(double time){ //used to make sure phones with quicker processors don't call scoreStep more often
         if(time >= lastTime + 0.1) {
             lastTime = time;
             return true;
-
-
         }
         return false;
     }
-    public int getHighScore(){return highScore;}
-    public String getPlayerName(){return playerName;}
-    public void randomSprite(){
-    if(!isJumping&&!isDucking) {
-        if (playerNum == 3) {
-            animation = new Animation(sprites1);
+    public void randomSprite(){ //move charaacter one to the right - ORDER: Green - Blue - Red
+    if(!isJumping&&!isDucking) { //if user is not ducking or jumping
+        if (playerNum == 3) { // if user is red
+            animation = new Animation(sprites1); //change to green
             animation.setFrames(sprites1, 1 / 15f);
-            playerNum = 1;
-        } else if (playerNum == 2) {
-            animation = new Animation(sprites3);
+            playerNum = 1; //set num to green
+        } else if (playerNum == 2) { // if user is blue
+            animation = new Animation(sprites3); //set to red
             animation.setFrames(sprites3, 1 / 15f);
-            playerNum = 3;
-        } else {
-            animation = new Animation(sprites2);
+            playerNum = 3; // set number to red
+        } else { //else user green
+            animation = new Animation(sprites2); //set to blue
             animation.setFrames(sprites2, 1 / 15f);
-            playerNum = 2;
+            playerNum = 2; // set num to blue
         }
 
     }
     }
-    public void randomSpriteReverse(){
+    public void randomSpriteReverse(){ // same method as above but for left
         if(!isJumping&&!isDucking) {
-            if (playerNum == 3) {
+            if (playerNum == 3) { //user red change to blue
                 animation = new Animation(sprites2);
                 animation.setFrames(sprites2, 1 / 15f);
                 playerNum = 2;
-            } else if (playerNum == 2) {
+            } else if (playerNum == 2) { //user blue change to green
                 animation = new Animation(sprites1);
                 animation.setFrames(sprites1, 1 / 15f);
                 playerNum = 1;
-            } else {
+            } else { // user green change to red
                 animation = new Animation(sprites3);
                 animation.setFrames(sprites3, 1 / 15f);
                 playerNum = 3;
@@ -175,57 +151,54 @@ public class Player extends B2DSprite {
 
         }
     }
-    public int getPlayerNum(){return playerNum;}
     public void loadPlayers(ContentManager resources){
 
-        for(int i=1;i<12;i++) {
-        if(i<10) {
+        for(int i=1;i<12;i++) //load in all the walking textures for green char
+        if(i<10)
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
-            System.out.println("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk0" + i + ".png");
-        }
         else
             resources.loadTexture("res/images/PlatformerPack/Player/p1_walk/PNG/mini/p1_walk" + i + ".png");
-            //System.out.println("Load " +i);
-        }
+
         Texture[] tex = new Texture[11];
-        for(int i=0;i<11;i++) {
+        for(int i=0;i<11;i++) { //cut textures out and store in sprites1
             int j = i + 1;
             if(j<10)
                 tex[i] = resources.getTexture("p1_walk0" + j);
             else
                 tex[i] = resources.getTexture("p1_walk" + j);
-            //System.out.println("get " +(i+1));
         }
         for(int i=0;i<11;i++) {
             sprites1[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
 
         }
-        for(int i=1;i<12;i++) {
+
+        for(int i=1;i<12;i++) //load in all the walking texture for blue
             if(i<10)
                 resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk0" + i + ".png");
             else
                 resources.loadTexture("res/images/PlatformerPack/Player/p2_walk/PNG/mini/p2_walk" + i + ".png");
-            //System.out.println("Load " +i);
-        }
+
+
         tex = new Texture[11];
-        for(int i=0;i<11;i++) {
+        for(int i=0;i<11;i++) { // cut out all textures and save in sprites2
             int j = i + 1;
             if(j<10)
                 tex[i] = resources.getTexture("p2_walk0" + j);
             else
                 tex[i] = resources.getTexture("p2_walk" + j);
-            //System.out.println("get " +(i+1));
         }
-        for(int i=0;i<11;i++) {
+        for(int i=0;i<11;i++)
             sprites2[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
 
-        }for(int i=1;i<12;i++) {
+
+        //load in all textures for walking red
+        for(int i=1;i<12;i++)
             if(i<10)
                 resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk0" + i + ".png");
             else
                 resources.loadTexture("res/images/PlatformerPack/Player/p3_walk/PNG/mini/p3_walk" + i + ".png");
-            //System.out.println("Load " +i);
-        }
+
+        //cut out and save all textures into sprites 3
         tex = new Texture[11];
         for(int i=0;i<11;i++) {
             int j = i + 1;
@@ -233,13 +206,12 @@ public class Player extends B2DSprite {
                 tex[i] = resources.getTexture("p3_walk0" + j);
             else
                 tex[i] = resources.getTexture("p3_walk" + j);
-            //System.out.println("get " +(i+1));
         }
         for(int i=0;i<11;i++) {
             sprites3[i] = TextureRegion.split(tex[i], 36, 47)[0][0];
         }
 
-        setExtraSkins(resources);
+        setExtraSkins(resources); // call method below to load jump/dunk/ hurt
 
     }
     public void setExtraSkins(ContentManager resources){
@@ -271,6 +243,9 @@ public class Player extends B2DSprite {
 
     }
     public int loadHighScore(){
+        //check if a previous highscore existed
+        //if so load it in and return it
+        //else return 0
         String trackName = path.replaceAll("/","");
         File file = Gdx.files.external("musicdata/"+trackName+"/"+"userData/"+playerName+"/score.json").file();
         if(file.exists()){
@@ -287,46 +262,40 @@ public class Player extends B2DSprite {
         String trackname = path.replaceAll("/","");
         if(newHighScore){
             File file = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName).file();
-            if(!file.exists()){
+            if(!file.exists()){ // if no previous high score, make folder to save it in
                 file.mkdir();
             }
-            FileHandle ff = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName+"/score.json");
+            FileHandle ff = Gdx.files.external("musicdata/"+trackname+"/"+"userData/"+playerName+"/score.json"); // create/open score file
             OutputStream OS = ff.write(false);
             try {
-                OS.write(("{\"Score\": "+highScore+"}").getBytes());
+                OS.write(("{\"Score\": "+highScore+"}").getBytes()); // write score to file
                 OS.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-    }
-    public void newHighScore(){
-        newHighScore=true;
-    }
-    public void setHighScore(){
-        highScore=score;
     }
     public void setJumpSkin(){
         setIsHurt(false);
-        if(playerNum ==3){
+        if(playerNum ==3){ // if player red set red jump
             TextureRegion[] temp = {sprite3Jump,sprite3Jump};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
         }
-        else if(playerNum ==2){
+        else if(playerNum ==2){ // if player blue set blue jump
             TextureRegion[] temp = {sprite2Jump,sprite2Jump};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
         }
-        else {
+        else { // if player green set green jump
             TextureRegion[] temp = {sprite1Jump,sprite1Jump};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
         }
-        setIsJumping(true);
+        setIsJumping(true); // set jumping to be true
     }
     public void removeSkin(){
+        //sets the character back to the walking skin after hurt/jumping/ducking
         if(playerNum ==3){
             animation = new Animation(sprites3);
             animation.setFrames(sprites3, 1/15f);
@@ -341,17 +310,17 @@ public class Player extends B2DSprite {
         }
     }
     public void setCrouchSkin(int beat){
-    if(!isJumping&&!isDucking) {
+    if(!isJumping&&!isDucking) {//check if the user not already jumping/ducking
         setIsHurt(false);
-        if (playerNum == 3) {
+        if (playerNum == 3) { // if red set red duck
             TextureRegion[] temp = {sprite3Duck, sprite3Duck};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
-        } else if (playerNum == 2) {
+        } else if (playerNum == 2) { //blue - blue duck
             TextureRegion[] temp = {sprite2Duck, sprite2Duck};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
-        } else {
+        } else { // green - green duck
             TextureRegion[] temp = {sprite1Duck, sprite1Duck};
             animation = new Animation(temp);
             animation.setFrames(temp, 1f);
@@ -361,17 +330,17 @@ public class Player extends B2DSprite {
     }
     }
     public void setHurt(){
-        if(playerNum ==3){
+        if(playerNum ==3){ //if red set between red hurt and blank for flashing effect
             TextureRegion[] temp = {sprite3Hurt,spriteHurt};
             animation = new Animation(temp);
             animation.setFrames(temp, 1/12f);
         }
-        else if(playerNum ==2){
+        else if(playerNum ==2){ // blue - blue hurt and blank
             TextureRegion[] temp = {sprite2Hurt,spriteHurt};
             animation = new Animation(temp);
             animation.setFrames(temp, 1/12f);
         }
-        else {
+        else { // green - green hurt and blank
             TextureRegion[] temp = {sprite1Hurt,spriteHurt};
             animation = new Animation(temp);
             animation.setFrames(temp, 1/12f);
@@ -379,12 +348,16 @@ public class Player extends B2DSprite {
         setIsHurt(true);
     }
     public void coinCollect(){
+        // additional bonus for collecting a coin
         score+=1000;
         multiplyer+=2;
         if(multiplyer>100){
             multiplyer=100;
         }
     }
+
+
+    //*****************HERE BE GETTERS AND SETTERS ***************\\
     public boolean getIsJumping(){
         return isJumping;
     }
@@ -411,12 +384,16 @@ public class Player extends B2DSprite {
     }
     public void setIsHurt(boolean temp ){isHurt = temp;}
     public boolean getIsHurt(){return isHurt;}
-
-//    @Override
-//    public void render(SpriteBatch sb) {
-//        sb.begin();
-//        //sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),(animation.getFrame().getRegionWidth()/100)*60,(animation.getFrame().getRegionHeight()/100)*60);
-//        sb.draw(animation.getFrame(), (body.getPosition().x * B2DVars.PPM - width / 2), (int) (body.getPosition().y * B2DVars.PPM - height / 2),  7f, 9f, 36, 48, 0.8f, 0.8f, 0f);
-//        sb.end();
-//    }
+    public int getPlayerNum(){return playerNum;}
+    public int getScore(){return score;}
+    public int getStep(){return step;}
+    public int getMultiplyer(){return  multiplyer;}
+    public void newHighScore(){
+        newHighScore=true;
+    }
+    public void setHighScore(){
+        highScore=score;
+    }
+    public int getHighScore(){return highScore;}
+    public String getPlayerName(){return playerName;}
 }

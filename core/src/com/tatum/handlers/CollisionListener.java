@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class CollisionListener implements ContactListener {
 
+    //this class checks if the player is currently touching the floor
     private int numFootContacts;
     private Array<Body> bodiesToRemove;
     private boolean playerDead;
@@ -19,36 +20,27 @@ public class CollisionListener implements ContactListener {
         bodiesToRemove = new Array<Body>();
     }
 
-    public void beginContact(Contact contact) {
-        Fixture fa = contact.getFixtureA();
+    public void beginContact(Contact contact) { //called whenever there is contact between bodies in the game
+        Fixture fa = contact.getFixtureA(); // get both fixtures
         Fixture fb = contact.getFixtureB();
-
         if (fa == null || fb == null) return;
         if (fa.getUserData() != null) {
-            if (fa.getUserData().equals("foot"))
+            if (fa.getUserData().equals("foot")) //check if one is the players foot, and if so, foot is touching platform
                 numFootContacts++;
-            else if (fa.getUserData().equals("crystal"))
-                bodiesToRemove.add(fa.getBody());
-            else if (fa.getUserData().equals("spike"))
-                playerDead = true;
         }
         else if (fb.getUserData() != null) {
             if (fb.getUserData().equals("foot"))
                 numFootContacts++;
-            else if (fb.getUserData().equals("crystal"))
-                bodiesToRemove.add(fb.getBody());
-            else if (fb.getUserData().equals("spike"))
-                playerDead = true;
         }
     }
 
-    public void endContact(Contact contact) {
+    public void endContact(Contact contact) { //called when contact ends
 
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
         if (fa == null || fb == null) return;
 
-        if(fa.getUserData() != null && fa.getUserData().equals("foot")) {
+        if(fa.getUserData() != null && fa.getUserData().equals("foot")) { //check if one is the player foot, if so, no longer touching floor
             numFootContacts--;
         }
         if(fb.getUserData() != null && fb.getUserData().equals("foot")) {
@@ -57,9 +49,9 @@ public class CollisionListener implements ContactListener {
 
     }
 
-    public boolean playerCanJump() { return numFootContacts > 0; }
+    public boolean playerCanJump() { return numFootContacts > 0; } //player can jump if foot touching floor
     public Array<Body> getBodies() { return bodiesToRemove; }
-    public boolean isPlayerDead() { return playerDead; }
+    public boolean isPlayerDead() { return playerDead; } // method from old version of game
 
     public void preSolve(Contact c, Manifold m) {}
     public void postSolve(Contact c, ContactImpulse ci) {}

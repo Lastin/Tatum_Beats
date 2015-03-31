@@ -43,15 +43,16 @@ public class Instructor {
         top = "P_TOP";
         bot = "P_DUCK";
         left = "P_LEFT";
-        right = "P_RIGHT";
-        loadSkins();
+        right = "P_RIGHT"; //set all directions to default
+        loadSkins();    //load in characters to display on arrow
         this.play = play;
         this.paceMaker = paceMaker;
-        rotation = Rotation.NONE;
+        rotation = Rotation.NONE; //set rotation to none by default
         swapper = false;
     }
     private void loadSkins(){
         Texture tex;
+        //load in all walking and jumping textures and save into walk/jump array
         for(int i =0; i <3; i++) {
             cont.loadTexture("res/images/PlatformerPack/Player/icons/p" + (i + 1) + "_icon.png");
             tex = cont.getTexture("p"+(i+1)+"_icon");
@@ -60,6 +61,7 @@ public class Instructor {
             tex = cont.getTexture("p"+(i+1)+"_icon_jump");
             jumping[i] = TextureRegion.split(tex, 20, 28)[0][0];
         }
+        //duck done separately as player 2 duck is one pixel short
         cont.loadTexture("res/images/PlatformerPack/Player/icons/p1_icon_duck.png");
         tex = cont.getTexture("p1_icon_duck");
         ducking[0] = TextureRegion.split(tex, 21, 22)[0][0];
@@ -72,63 +74,67 @@ public class Instructor {
         tex = cont.getTexture("p3_icon_duck");
         ducking[2] = TextureRegion.split(tex, 21, 22)[0][0];
 
+        //load in instructor texture
         cont.loadTexture("res/images/instructor.png");
         tex = cont.getTexture("instructor");
         instructor = TextureRegion.split(tex,77,77)[0][0];
     }
     public void render(SpriteBatch sb){
         sb.draw(instructor,xPos,yPos);
-        drawTop(sb);
-        drawBot(sb);
-        drawLeft(sb);
-        drawRight(sb);
-    }
+        drawTop(sb);//check what up arrow is set to and draws char accordingly
+        drawBot(sb); //checks down arrow
+        drawLeft(sb); // left arrow
+        drawRight(sb); // right arrow
+    }   //render instructor and all 4 characters
     private void drawTop(SpriteBatch sb){
-        if(top.equals("P_RIGHT")){
-            if(player.getPlayerNum() == 1){
+        if(top.equals("P_RIGHT")){ //if up arrow is set to charchange right
+            if(player.getPlayerNum() == 1){ // if character green draw blue guy
                 sb.draw(walking[1],xPos+28,yPos+47);
             }
-            else if(player.getPlayerNum() == 2){
+            else if(player.getPlayerNum() == 2){ // blue draw red guy
                 sb.draw(walking[2],xPos+28,yPos+47);
             }
-            else{
+            else{ // red draw green guy
                 sb.draw(walking[0],xPos+28,yPos+47);
             }
         }
-        else if (top.equals("P_LEFT")){
-            if(player.getPlayerNum() == 1){
+        else if (top.equals("P_LEFT")){ // if up arrow is set to char change left
+            if(player.getPlayerNum() == 1){ // if green draw red guy
                 sb.draw(walking[2],xPos+28,yPos+47);
             }
-            else if(player.getPlayerNum() == 2){
+            else if(player.getPlayerNum() == 2){ //blue draw green guy
                 sb.draw(walking[0],xPos+28,yPos+47);
             }
-            else{
+            else{ // red draw blue guy
                 sb.draw(walking[1],xPos+28,yPos+47);
             }
         }
-        else if (top.equals("P_DUCK")){
-            if(player.getPlayerNum() == 1){
+        else if (top.equals("P_DUCK")){ // if up arrow is set to duck
+            if(player.getPlayerNum() == 1){ //green draw green ducking
                 sb.draw(ducking[0],xPos+28,yPos+53);
             }
-            else if(player.getPlayerNum() == 2){
+            else if(player.getPlayerNum() == 2){ // blue draw blue ducking
                 sb.draw(ducking[1],xPos+28,yPos+53);
             }
-            else{
+            else{   // red draw red ducking
                 sb.draw(ducking[2],xPos+28,yPos+53);
             }
         }
-        else{
-            if(player.getPlayerNum() == 1){
+        else{ // else if up arrow set to jumping
+            if(player.getPlayerNum() == 1){ // if char green draw green jumping
                 sb.draw(jumping[0],xPos+29,yPos+47);
             }
-            else if(player.getPlayerNum() == 2){
+            else if(player.getPlayerNum() == 2){ // if char blue draw blue jumping
                 sb.draw(jumping[1],xPos+29,yPos+47);
             }
-            else{
+            else{ // if char red draw red jumping
                 sb.draw(jumping[2],xPos+29,yPos+47);
             }
         }
     }
+    //these methods do the exact same as above but for the down arrow, left arrow and right arrow
+    //respectively. The only difference is the position that they are rendered in
+    // to allow them to be drawn onto the correct arrow
     private void drawBot(SpriteBatch sb){
         if(bot.equals("P_RIGHT")){
             if(player.getPlayerNum() == 1){
@@ -268,21 +274,25 @@ public class Instructor {
         }
     }
 
+    //these methods are called when a users swipes up, down, left, right respectively
+    // they then interact with the player and perform the users action
     public void doTop(){
-        if(top.equals("P_RIGHT")){
-            player.randomSprite();
+        if(top.equals("P_RIGHT")){ //checks if the up arrow is set to change char to the right
+            player.randomSprite(); // changes char to the right
         }
-        else if (top.equals("P_LEFT")){
-            player.randomSpriteReverse();
+        else if (top.equals("P_LEFT")){ // check if the up arrow is set to change char to the left
+            player.randomSpriteReverse(); // set the player model to the let
         }
-        else if (top.equals("P_DUCK")){
-            player.setCrouchSkin(paceMaker.getLastBeatHitId());
+        else if (top.equals("P_DUCK")){ // check if the up arrow is set to make the character duck
+            player.setCrouchSkin(paceMaker.getLastBeatHitId()); // make the char duck
         }
         else{
-            play.playerJump();
+            play.playerJump(); // else must be set to jump - make player jump
         }
-        checkRotation();
+        checkRotation(); // check if we need to rotate the instructor
     }
+    //these methods do the exact same as above but for the down arrow, left arrow and right arrow
+    //respectively.
     public void doBot(){
         if(bot.equals("P_RIGHT")){
             player.randomSprite();
@@ -331,6 +341,9 @@ public class Instructor {
 
         checkRotation();
     }
+
+    //these methods change the arrow instruction values around in several ways, each explained by
+    //the signature of the method
     private void rotateClockWise(){
         String tempTop   = top;
         String tempBot   = bot;
@@ -412,8 +425,6 @@ public class Instructor {
             swapper=!swapper;
         }
     }
-
-
     private void randomise(){
         Random random = new Random();
         int rotate = random.nextInt(3);
@@ -441,6 +452,8 @@ public class Instructor {
     }
 
     private void checkRotation(){
+        // in here we check the rotation that has been set by the user
+        // based on the value of the stored enum and call the equivalent method
         switch (rotation){
             case NONE:
                 //do nothing
@@ -472,6 +485,8 @@ public class Instructor {
         }
     }
     public enum Rotation {
+        // for each of the rotations available to the user
+        // we create an enum which can then be used to choose the rotation
         NONE,COUNTER_CLOCKWISE,CLOCKWISE, SWAP_HORIZONTAL,
         SWAP_VERTICAL,INVERT, RANDOMISE, BOTTOM,
         TOP

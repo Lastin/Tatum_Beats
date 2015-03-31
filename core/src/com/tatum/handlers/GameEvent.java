@@ -16,10 +16,10 @@ public class GameEvent {
     }
     public int getBar(){
         return bar;
-    }
+    } // which bar the event occurs at
     public String getEvent(){
         return event;
-    }
-    public B2DSprite getSprite(){return sprite;}
+    }// the type of event (ground/flying enemy or coin)
+    public B2DSprite getSprite(){return sprite;} // the slime/bat/coin entity
 
 }

@@ -58,11 +58,14 @@ public class GameBodiesCreator {
 
     public static Bat createBat(int position, World world, ContentManager resources,String theme){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position) * 0.32f;
-        float y = batY(theme);
+        bodyDef.type = BodyDef.BodyType.StaticBody; // create new body
+        float x = (position) * 0.32f; // put body in the position given *32 (where that beat lies)
+        float y = batY(theme); // y is dependent on theme as sprites are different sizes
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
+
+        //depricated as collistion dealt with in pace maker
+        //left in incase we change back
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(5/100);
@@ -71,6 +74,8 @@ public class GameBodiesCreator {
         fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("bat");
+
+        //create bat and return
         Bat bat = new Bat(body, resources, theme);
         body.setUserData(bat);
         circleShape.dispose();
@@ -78,6 +83,8 @@ public class GameBodiesCreator {
     }
 
     public static float batY(String theme){
+        //height varies depending on theme
+        //returns the height needed to have flying enemy at right position over head
         switch(theme){
             case ("pop"):
                 return 0.8f;
@@ -107,11 +114,13 @@ public class GameBodiesCreator {
     }
     public static Slime createSlime(int position, World world, ContentManager resources,String theme){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position) * 0.32f;
-        float y = slimeY(theme);
+        bodyDef.type = BodyDef.BodyType.StaticBody;//create body
+        float x = (position) * 0.32f; // place at beat
+        float y = slimeY(theme); // get Y for given theme
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
+
+        //depricated collision objects
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.15f);
@@ -120,13 +129,15 @@ public class GameBodiesCreator {
         fixtureDef.filter.categoryBits = B2DVars.BIT_BAT;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData("slime");
+
+        // create slime and return
         Slime slime = new Slime(body, resources,theme);
         body.setUserData(slime);
         circleShape.dispose();
         return slime;
     }
     public static float slimeY(String theme){
-
+        //get Y to allow ground enemy to be on ground level
         switch(theme){
             case ("pop"):
                 return 0.5f;
@@ -157,11 +168,13 @@ public class GameBodiesCreator {
     }
     public static Coin createCoin(int position, World world, ContentManager resources,String Colour){
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        float x = (position) * 0.32f;
-        float y = 0.6f;
+        bodyDef.type = BodyDef.BodyType.StaticBody; //create body
+        float x = (position) * 0.32f; //place coin at beat
+        float y = 0.6f; // coin always at same height
         bodyDef.position.set(x, y);
         Body body = world.createBody(bodyDef);
+
+        //old collision objects
         FixtureDef fixtureDef = new FixtureDef();
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.15f);
@@ -170,6 +183,8 @@ public class GameBodiesCreator {
         fixtureDef.filter.categoryBits = B2DVars.BIT_COIN;
         fixtureDef.filter.maskBits =  B2DVars.BIT_PLAYER;
         body.createFixture(fixtureDef).setUserData(Colour+" Coin");
+
+        //create coin and return
         Coin coin = new Coin(body, resources,Colour);
         body.setUserData(coin);
         circleShape.dispose();

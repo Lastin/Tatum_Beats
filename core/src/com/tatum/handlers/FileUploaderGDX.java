@@ -48,87 +48,51 @@ public class FileUploaderGDX {
 
     public void uploadGDX() throws EchoNestException, IOException {
         //System.setOut(supresser);
-        FileHandle fH = Gdx.files.external(trackPath);
+        FileHandle fH = Gdx.files.external(trackPath); //get file from external source
         File file = fH.file();
 
-        String extRoot = Gdx.files.getExternalStoragePath();
-        String locRoot = Gdx.files.getLocalStoragePath();
-
-        String trackName = trackPath.replaceAll("/","");
-
-        //trackName = trackName.replaceAll(".","");
+        String trackName = trackPath.replaceAll("/",""); //create unique folder naem by removing / from path
 
         File dirCheck = Gdx.files.external("musicdata/"+trackName).file();
 
         trackInformation = new HashMap<String, Object>();
-        if(dirCheck.exists()) {
-            /*
-            InputStream is = new FileInputStream("musicdata/"+trackName+"/meta.json");
-            JsonReader rdr = Json.createReader(is);
-            JsonObject meta = rdr.readObject();
-            System.out.println(meta);
-            is = new FileInputStream("musicdata/"+trackName+"/track.json");
-            rdr = Json.createReader(is);
-            JsonObject track = rdr.readObject();
+        if(dirCheck.exists()) { // check if that track has already been uploaded previously
 
-            is = new FileInputStream("musicdata/"+trackName+"/audioSum.json");
-            rdr = Json.createReader(is);
-            JsonObject audio = rdr.readObject();
-
-            is = new FileInputStream("musicdata/"+trackName+"/bars.json");
-            rdr = Json.createReader(is);
-            JsonArray bars = rdr.readArray();
-
-            is = new FileInputStream("musicdata/"+trackName+"/beats.json");
-            rdr = Json.createReader(is);
-            JsonArray beats = rdr.readArray();
-
-            is = new FileInputStream("musicdata/"+trackName+"/tatums.json");
-            rdr = Json.createReader(is);
-            JsonArray tatums = rdr.readArray();
-
-            is = new FileInputStream("musicdata/"+trackName+"/sections.json");
-            rdr = Json.createReader(is);
-            JsonArray sections = rdr.readArray();
-
-            is = new FileInputStream("musicdata/"+trackName+"/segments.json");
-            rdr = Json.createReader(is);
-            JsonArray segments = rdr.readArray();
-            */
-
+            //if so load in echonest data saved to file
             InputStream is = Gdx.files.external("musicdata/"+trackName+"/meta.json").read();
             JsonReader rdr = Json.createReader(is);
-            JsonObject meta = rdr.readObject();
-            System.out.println(meta);
+            JsonObject meta = rdr.readObject(); //load in meta data
 
             is = Gdx.files.external("musicdata/"+trackName+"/track.json").read();
             rdr = Json.createReader(is);
-            JsonObject track = rdr.readObject();
+            JsonObject track = rdr.readObject(); //read in track data
 
             is = Gdx.files.external("musicdata/"+trackName+"/audioSum.json").read();
             rdr = Json.createReader(is);
-            JsonObject audio = rdr.readObject();
+            JsonObject audio = rdr.readObject(); // read in audio summary
 
             is = Gdx.files.external("musicdata/"+trackName+"/bars.json").read();
             rdr = Json.createReader(is);
-            JsonArray bars = rdr.readArray();
+            JsonArray bars = rdr.readArray(); //ready in bar data
 
             is = Gdx.files.external("musicdata/"+trackName+"/beats.json").read();
             rdr = Json.createReader(is);
-            JsonArray beats = rdr.readArray();
+            JsonArray beats = rdr.readArray(); //read in bears data
 
             is = Gdx.files.external("musicdata/"+trackName+"/tatums.json").read();
             rdr = Json.createReader(is);
-            JsonArray tatums = rdr.readArray();
+            JsonArray tatums = rdr.readArray(); //read in tatum data
 
             is = Gdx.files.external("musicdata/"+trackName+"/sections.json").read();
             rdr = Json.createReader(is);
-            JsonArray sections = rdr.readArray();
+            JsonArray sections = rdr.readArray(); //read in section data
 
             is = Gdx.files.external("musicdata/"+trackName+"/segments.json").read();
             rdr = Json.createReader(is);
-            JsonArray segments = rdr.readArray();
+            JsonArray segments = rdr.readArray(); //read in segment data
 
+            //put all read in data into track information hashmap, which is then passed to Trackdata
+            // from trackdata perspective, same result if track is uploaded or data loaded from memory
             trackInformation.put("Meta", meta);
             trackInformation.put("Track", track);
             trackInformation.put("audio_summary", audio);
@@ -138,46 +102,52 @@ public class FileUploaderGDX {
             trackInformation.put("Sections", sections);
             trackInformation.put("Segments", segments);
         }
-        else{
+        else{ //if this is the first time, the track is uploaded
 
             realUpload(file);
 
         }
-        artistTwitterHandle(trackName);
+        artistTwitterHandle(trackName); // deals with twitter data
+        //separate as it was added after everything above, and was easier to keep it on its own
 
     }
     private void realUpload(File file) throws EchoNestException, IOException {
 
-        en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP");
+        //this is the original echonest api call,
+        //we couldn't upload the track ourself, so used their working method
+        en = new EchoNestAPI("B0EHJCUJPBJOZ5MOP"); //pass our api key
         en.setTraceSends(true);
         en.setTraceRecvs(false);
         track = null;
 
         track = en.uploadTrack(file);
         while (track.getStatus() == Track.AnalysisStatus.PENDING) {
-            //do nothing
+            //wait for track to upload
         }
-
-
+        //checking what each method done as there is no API documentation
         //System.out.println(track.getOriginalID()); // weird stuff
         //System.out.println(track.getSongID()); // SOMBINS136004B720
         //System.out.println(track.getAudioUrl()); // NULL
         //System.out.println(track.getForeignID()); // NULL
         //System.out.println(track.getID()); // THIS ONE!! Track ID, TRAESKT145E82A824C for test
+
+
+        //where our api starts
         URL url = null;
         trackInformation = new HashMap<String, Object>();
 
             try {
-                url = new URL(track.getAnalysisURL());
+                url = new URL(track.getAnalysisURL()); //create url of the analysis data returned
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
             try { //changed, because it seems that android does not support try with resources
-                InputStream is = url.openStream();
+                InputStream is = url.openStream(); //open stream to url
 
                 JsonReader rdr = Json.createReader(is);
-                JsonObject struct = rdr.readObject();
+                JsonObject struct = rdr.readObject(); //read full json file into json object
 
+                //get the individual json objects out of the file and put them into the trackInformation hashmap
                 trackInformation.put("Meta", struct.getJsonObject("meta"));
                 trackInformation.put("Track", struct.getJsonObject("track"));
                 trackInformation.put("Bars", struct.getJsonArray("bars"));
@@ -187,141 +157,63 @@ public class FileUploaderGDX {
                 trackInformation.put("Segments", struct.getJsonArray("segments"));
                 // above returns a java List type containing all JsonObjects in our JsonArray!
 
-                audioSummary();
-                String trackname = trackPath.replaceAll("/", "");
-                //trackname = trackname.replaceAll(".","");
+                audioSummary(); // does addtional api call to get audio summary data
+
+                String trackname = trackPath.replaceAll("/", ""); //generate track name as above
                 FileHandle ff = Gdx.files.internal("");
-                boolean exists = Gdx.files.external("doitexist.txt").exists();
-                boolean isDirectory = Gdx.files.external("test/").isDirectory();
+
                 File fff = Gdx.files.external("musicData").file();
                 if (!fff.exists()) {
                     fff.mkdir();
-                    System.out.println("BEEP BEEP BEPP");
-                } /// if music directory does not exist create
+                } /// if music data directory does not exist create
 
-                boolean test = (Gdx.files.external("musicdata/" + trackname).file()).mkdir();
-                if (test) System.out.println("good shit fam"); //make directory for song
+               Gdx.files.external("musicdata/" + trackname).file().mkdir();
+
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/meta.json");
                 OutputStream OS = ff.write(false);
                 OS.write(trackInformation.get("Meta").toString().getBytes());
-                OS.close();
+                OS.close(); //create meta data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/track.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Track").toString().getBytes());
-                OS.close();
+                OS.close(); //create track data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/bars.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Bars").toString().getBytes());
-                OS.close();
+                OS.close(); //create bars data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/beats.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Beats").toString().getBytes());
-                OS.close();
+                OS.close(); //create beats data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/tatums.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Tatums").toString().getBytes());
-                OS.close();
+                OS.close(); //create tatums data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/sections.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Sections").toString().getBytes());
-                OS.close();
+                OS.close(); // create sections data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/segments.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("Segments").toString().getBytes());
-                OS.close();
+                OS.close(); //create segments data file and write out to it
 
                 ff = Gdx.files.external("musicdata/" + trackname + "/audioSum.json");
                 OS = ff.write(false);
                 OS.write(trackInformation.get("audio_summary").toString().getBytes());
-                OS.close();
-                //out = new PrintWriter(ff.file());
-                //out.println(trackInformation.get("Meta").toString());
-                // out.close(); // save metaData to file
-            /*
-            PrintWriter  out = new PrintWriter("musicdata/"+trackname+"/track.json");
-            out.println(trackInformation.get("Track").toString());
-            out.close(); // track data to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/bars.json");
-            out.println(trackInformation.get("Bars").toString());
-            out.close(); // bars data to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/beats.json");
-            out.println(trackInformation.get("Beats").toString());
-            out.close(); //beats data to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/tatums.json");
-            out.println(trackInformation.get("Tatums").toString());
-            out.close(); //tatums to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/sections.json");
-            out.println(trackInformation.get("Sections").toString());
-            out.close(); // sections to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/segments.json");
-            out.println(trackInformation.get("Segments").toString());
-            out.close();  //segments to file
-
-            out = new PrintWriter("musicdata/"+trackname+"/audioSum.json");
-            out.println(trackInformation.get("audio_summary").toString());
-            out.close();  //segments to file
-            */
+                OS.close(); //create audio summary data file and write out to it
 
             } catch (Exception e) {
-                System.out.println("Error line 116");
+                //catching Exception is bad, but there are like 500 different ones thrown and I do the same for all of then - this looks a lot cleaner
                 e.printStackTrace();
             }
-
-		/*
-        Map<String, String> parameters = new HashMap<String, String>();
-
-    	//parameters.put("api_key", "B0EHJCUJPBJOZ5MOP");
-    	//parameters.put("filetype", "mp3");
-    	parameters.put("track", "@test.mp3");
-
-    	InputStream is = null;
-        try {
-        	is = new FileInputStream("res/music/test.mp3");
-        	is.close();
-        }
-        catch(Exception e) { e.printStackTrace(); }
-
-    	Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
-    	request.setHeader("Content-Type", "application/x-www-form-urlencoded");
-    	request.setHeader("Content-Type", "application/octet-stream");
-
-        request.setContent(HttpParametersUtils.convertHttpParameters(parameters));
-        //request.setContent(is, fileSize);
-
-        //request.setUrl("http://developer.echonest.com/api/v4/track/upload");
-        //request.setUrl("http://developer.echonest.com/api/v4/track/profile?api_key=FILDTEOIK2HBORODV&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
-        request.setUrl("http://developer.echonest.com/api/v4/track/upload?api_key=B0EHJCUJPBJOZ5MOP&filetype=mp3");
-
-        System.out.println(request.getContent());
-    	Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
-
-            public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                Gdx.app.log("kjlkjbfcxkcxv", "response : " + httpResponse.getResultAsString());
-            }
-
-
-            public void failed(Throwable t) {
-                Gdx.app.error("HttpRequestExample", "something went wrong", t);
-            }
-
-
-            public void cancelled() {
-                Gdx.app.log("HttpRequestExample", "cancelled");
-            }
-        });
-		 */
     }
     public FileUploaderGDX(String trackPath) {
         this.trackPath = trackPath;
@@ -329,15 +221,15 @@ public class FileUploaderGDX {
 
     public void setPath(String trackPath) {
         this.trackPath = trackPath;
-    }
+    } // allow path to change to load different data
 
     public HashMap<String, Object> getJsonMap() {
         return trackInformation;
-    }
+    } //return hashmap of data
 
     public String getUploadProgress() throws EchoNestException {
 
-
+        //get the progress of the upload
         if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
             return "complete";
         } else if (track.getStatus() == Track.AnalysisStatus.ERROR) {
@@ -353,85 +245,77 @@ public class FileUploaderGDX {
     public void artistTwitterHandle(String trackName){
         File twitter = Gdx.files.external("musicdata/"+trackName+"/twitterhandle.json").file();
 
-        if(twitter.exists()) {
+        if(twitter.exists()) { //checks if this track already has twitter data
             InputStream is = Gdx.files.external("musicdata/"+trackName+"/twitterhandle.json").read();
             JsonReader rdr = Json.createReader(is);
             JsonObject artist = rdr.readObject();
-            trackInformation.put("twitter",artist);
+            trackInformation.put("twitter",artist); // if so, reads it in and puts it in the hashmap
         }
-        else {
+        else { // if not we must do an additional api call to ge the twitter data
             boolean outOfApiCalls = true;
-            while(outOfApiCalls) {
+            while(outOfApiCalls) { // if the upload fails due to no api calls, attempts to rerun until there are some
                 URL url = null;
                 try {
                     JsonObject meta = (JsonObject) trackInformation.get("Meta");
-                    String artist = meta.getString("artist").replaceAll(" ","+");
+                    String artist = meta.getString("artist").replaceAll(" ","+"); //gets artist name and replaces spaces with plus for url
                     if(artist.equals("")){
-                        break;
+                        break; // if no meta data we cannot run
                     }
-                    url = new URL("http://developer.echonest.com/api/v4/artist/twitter?api_key=B0EHJCUJPBJOZ5MOP&name="+artist+"&format=json");
-                    //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
+                    url = new URL("http://developer.echonest.com/api/v4/artist/twitter?api_key=B0EHJCUJPBJOZ5MOP&name="+artist+"&format=json"); //create url
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
                 try {
-                    InputStream is = url.openStream();
+                    InputStream is = url.openStream(); // open stream to url
 
                     JsonReader rdr = Json.createReader(is);
                     JsonObject struct = rdr.readObject();
-                    struct = struct.getJsonObject("response");
-                    if(!struct.getJsonObject("status").getString("message").equals("Success")){
+                    struct = struct.getJsonObject("response"); // read the response object
+                    if(!struct.getJsonObject("status").getString("message").equals("Success")){ //check if the call was successful
                         //the api is our of calls
-                        System.out.println("out of Api Calls");
-                        continue;
-                    }else{
-                        System.out.println("Got the calls");
+                        continue; // if not go back to try again
                     }
-                    JsonObject artist = struct.getJsonObject("artist");
-                    trackInformation.put("twitter", artist);
+                    JsonObject artist = struct.getJsonObject("artist"); // get twitter info (called artist)
+                    trackInformation.put("twitter", artist); // add to hashmap
 
                     FileHandle ff = Gdx.files.external("musicdata/" + trackName + "/twitterhandle.json");
                     OutputStream OS = ff.write(false);
                     OS.write(trackInformation.get("twitter").toString().getBytes());
-                    OS.close();
+                    OS.close(); //write twitter data to file
 
                 } catch (Exception e) {
                     e.printStackTrace(); //catching any error, not a good habit, but there are like 500 errors thrown
                 }
-                break;
+                break; // we were successful, break the loop
             }
         }
     }
     public void audioSummary(){
         boolean outOfApiCalls = true;
-        while(outOfApiCalls) {
+        while(outOfApiCalls) { // same as above
             URL url = null;
             try {
                 url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id="
-                        + track.getID() + "&bucket=audio_summary");
-                //	url = new URL("http://developer.echonest.com/api/v4/track/profile?api_key=B0EHJCUJPBJOZ5MOP&format=json&id=TRTLKZV12E5AC92E11&bucket=audio_summary");
+                        + track.getID() + "&bucket=audio_summary"); // build url to audio summery for given track
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
             try {
-                InputStream is = url.openStream();
+                InputStream is = url.openStream(); //open stream to url
 
                 JsonReader rdr = Json.createReader(is);
                 JsonObject struct = rdr.readObject();
-                struct = struct.getJsonObject("response");
-                if(!struct.getJsonObject("status").getString("message").equals("Success")){
+                struct = struct.getJsonObject("response"); //read in the response object
+                if(!struct.getJsonObject("status").getString("message").equals("Success")){ // check if we were successful
                     //the api is our of calls
-                    System.out.println("out of Api Calls");
-                    continue;
-                }else{
-                    System.out.println("Got the calls");
+                    continue; // if not retry
                 }
                 JsonObject track1 = struct.getJsonObject("track");
-                trackInformation.put("audio_summary", track1.getJsonObject("audio_summary"));
+                trackInformation.put("audio_summary", track1.getJsonObject("audio_summary")); //get the tsummary data and store it in the hashmap
             } catch (Exception e) {
                 e.printStackTrace(); //catching any error, not a good habit, but there are like 500 errors thrown
             }
-            break;
+            break; //we were successful - break
         }
     }
 }

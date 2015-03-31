@@ -3,6 +3,7 @@ package com.tatum.handlers;
 import com.badlogic.gdx.math.Vector2;
 
 public class B2DVars {
+    //Static variables used throughout the project  -  Kept trach of here to make sure they are always the same
     // pixels per meter
     public static final float PPM = 100;
     public static final Vector2 GRAVITY = new Vector2(0, -7f);

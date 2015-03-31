@@ -12,7 +12,7 @@ import com.tatum.handlers.B2DVars;
 import java.util.ArrayList;
 
 public class PaceMaker {
-
+    //this class is used to keep the player in time with the song, and deals with the collisions between the player and events
     private final TrackData trackData;
     private final TiledMap map;
     private final ArrayList<TimedEvent> beats;
@@ -48,96 +48,89 @@ public class PaceMaker {
     }
 
 
-
     public void updateVelocity(Player player, double musicTime){
 
-        int beatId = findMatchingBeat(musicTime);
-        if(beatId < 0) return;
-        //if(newBeat) {
-        //    System.out.println(lastBeatHitId + " " + lastBarHitId + " " + lastSectionHitId);
-            //System.out.println(beats.get(lastBarHitId).getStart()+" ");
-        //}
-        if(lastBeatHitId>0)
+        int beatId = findMatchingBeat(musicTime); // get the beat we are currently at
+        if(beatId < 0) return; // if song has yet to start
+
+        if(lastBeatHitId>0) // buffer to allow everything to load
             setBar();
-        if(lastBarHitId>0)
+        if(lastBarHitId>0) //^^^^^^^^^
             setSection(musicTime);
 
-        //Vector2 velocity = player.getBody().getLinearVelocity();
-        //velocity.x = 1.0f;
         setTimeSig();
-        if(newBeat) {
-            System.out.println(renderCounter);
-            setPixelPoints();
-            //float xPos = 32*(lastBeatHitId-1)/PPM;
-            //player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
 
-            GameEvent gm = monsterCoinLocation.checkForEvent(lastBeatHitId-1);
+        if(newBeat) { //if there is a new beat
+            setPixelPoints();
+
+            GameEvent gm = monsterCoinLocation.checkForEvent(lastBeatHitId-1); // check if there is an event
             String event = "null";
             if(gm!=null) {
-               event = gm.getEvent();
+               event = gm.getEvent(); // if the event is not null, set event string
             }
-            if(hitTime<=hitTime+0.4&&player.getIsHurt()){
-                player.setIsHurt(false);
+            if(hitTime<=hitTime+0.4&&player.getIsHurt()){ // if the player was hurt, remove the hurt skin
+                player.setIsHurt(false);                    //after 0.4 seconds
                 player.removeSkin();
             }
 
-            System.out.println(event);
-            if (event.equals("Bat")) {
-                renderCounter++;
+            if (event.equals("Bat")) { // check if the event == bat
+                renderCounter++;    // invrement render counter, so that render window moves up one
                 if (player.getIsDucking()) {
-                    //they safe from dem bats doe
+                    //if the player is ducking they are safe from the flying enemy
                 } else{
-                    player.scoreBreak();
+                    player.scoreBreak(); //else hurt them
                     hitTime = musicTime;
                 }
-            } else if (event.equals("Slime")) {
+            } else if (event.equals("Slime")) { // check if event == slime
                 renderCounter++;
                 if (player.getIsJumping()) {
-                    //they safe from dem slimes doe
+                    //if they are jumping they are safe
                 } else{
-                    player.scoreBreak();
+                    player.scoreBreak(); //else hurt them
                     hitTime = musicTime;
                 }
-            } else if (event.equals("PinkCoin")) {
+            } else if (event.equals("PinkCoin")) { //check if event == pink coint
                 renderCounter++;
-                if (player.getPlayerNum() == 3) {
-                    //they get dem coins doe
+                if (player.getPlayerNum() == 3) { // if they are the red char collect coin
+
                     player.coinCollect();
                     Coin coin =(Coin) gm.getSprite();
                     coin.collected();
-                }else{
+                }else{ //else hurt them
                     player.scoreBreak();
                     hitTime = musicTime;
                 }
-            } else if (event.equals("BlueCoin")) {
+            } else if (event.equals("BlueCoin")) { // check if event == blue coin
                     renderCounter++;
-                if (player.getPlayerNum() == 2) {
-                    //they get dem coins doe
+                if (player.getPlayerNum() == 2) { // if they are blue char collect coin
+
                     player.coinCollect();
                     Coin coin =(Coin) gm.getSprite();
                     coin.collected();
-                }else{
+                }else{  //else hurt them
                     player.scoreBreak();
                     hitTime = musicTime;
                 }
-            } else if (event.equals("GreenCoin")) {
+            } else if (event.equals("GreenCoin")) { // check if event == green coin
                 renderCounter++;
-                if (player.getPlayerNum() == 1) {
-                    //they get dem coins doe
+                if (player.getPlayerNum() == 1) { //if player is green char collect coin
+
                     player.coinCollect();
                     Coin coin =(Coin) gm.getSprite();
                     coin.collected();
                 }else{
-                    player.scoreBreak();
+                    player.scoreBreak(); //else hurt them
                     hitTime = musicTime;
                 }
             }
         }
 
         try {
-              if (musicTime > pixelPoints.get(pixelPoint)) {
-                  float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM;
+              if (musicTime > pixelPoints.get(pixelPoint)) { // if the song has moved past the next 1/16th of the beat
+                  float xPos = ((32*(lastBeatHitId-1))+((pixelPoint+1)*2))/PPM; // set the plays X to the next position along
 
+                  //this is here to allow the jumps to be in time with the music, however it does not work as setting the x and y
+                  //causes confilt between the jumping and walking
                   if(jumping){
                       if(PixelPointJumpCount<16) {
                           player.getBody().setTransform(new Vector2(xPos, player.getPosition().y + (2 / PPM)), 0);
@@ -155,48 +148,42 @@ public class PaceMaker {
                   }else{
                       player.getBody().setTransform(new Vector2(xPos,player.getPosition().y),0);
                   }
-                    //System.out.println("TRUE TRUEREUREUREURUEUERU "+ pixelPoint);
-
-                    //player.getBody().setTransform(new Vector2(player.getPosition().x + (1/PPM), player.getPosition().y), 0);
-                    //pixelPoints.remove(i);
-                    //System.out.println("Pixel point: " +pixelPoint);
-                    pixelPoint++;
+                    pixelPoint++; //wait for next 1/16 of the bar
                 }
 
         }catch(NullPointerException e){
-            //bullshit start crap
+            //some of the variables will be null at the very first run
         }catch(IndexOutOfBoundsException e){
             //end of bar
         }
-        //player.getBody().setLinearVelocity(velocity);
     }
 
 
     public int findMatchingBeat(double musicTime){
         int attempts = 0;
+        //this meathod checks what beat we are in
         for(int i=lastBeatHitId;i>-1 && i< beats.size() && attempts<2;){
             double beatStart = beats.get(i).getStart();
             if(musicTime > beatStart){
                 double beatDuration = beats.get(i).getduration();
                 if(musicTime < beatStart+beatDuration) {
-                    //System.out.println(beatStart + " < " + musicTime + " < " + (beatStart+beatDuration));
-                    if(i>lastBeatHitId){
-                        newBeat=true;
+                    if(i>lastBeatHitId){ // if the beat we find is higher than the current beat in
+                        newBeat=true;   //pacemaker  we have hit a new beat
                     }else{
                         newBeat=false;
                     }
-                    if(lastBarHitId>newBarChecker){
+                    if(lastBarHitId>newBarChecker){ //if we hit a new bar
                         newBarChecker=lastBarHitId;
                         newBar=true;
                         canShake=true;
                     }else{
                         newBar=false;
                     }
-                    if(i == 1){
+                    if(i == 1){ // if we have hit the first beat, used above for buffer
                         gotFirstBeat =true;
                     }
-                    if(lastSectionHitId == 1){
-                        hitSecondSection=true;
+                    if(lastSectionHitId == 1){ // used to check if we reached the second session
+                        hitSecondSection=true;// where the events start
                     }
                     lastBeatHitId = i;
 
@@ -213,35 +200,23 @@ public class PaceMaker {
         return -1;
     }
 
-    public int getLastBeatHitId(){return lastBeatHitId;}
-    public int getLastBarHitId() {return lastBarHitId;}
-    public int getLastSectionHitId() { return lastSectionHitId;}
-    public int getTimeSig(){return timeSig;}
+
     private void setPixelPoints(){
         TimedEvent beat = beats.get(lastBeatHitId);
         pixelPoints = new ArrayList<Double>();
-        double duration = beat.getduration()/16;
-        for(int i =0;i<16;i++){
-            pixelPoints.add(beat.getStart()+(duration*i));
+        double duration = beat.getduration()/16; //break the current beat into 16 sub sections,
+        for(int i =0;i<16;i++){                 // so that the char can be moved along in time
+            pixelPoints.add(beat.getStart()+(duration*i));  // 2 px per section
         }
         pixelPoint=0;
     }
-    public boolean getNewBeat(){
-        return newBeat;
-    }
 
-    public boolean gotFirstBeat(){
-        return gotFirstBeat;
-    }
-    public boolean hitSecondSection(){
-        return hitSecondSection;
-    }
+    //***************************HERE BE SETTERS AND GETTERS***************\\
     private void setBar(){
         lastBarHitId = beats.get(lastBeatHitId).getContainedIn();
     }
     private void setSection(double musicTime){
         lastSectionHitId = bars.get(lastBarHitId).getContainedIn();
-        //lastSectionHitId = trackData.getSectionInRedux(musicTime,lastSectionHitId);
     }
     private void setTimeSig(){
        timeSig= sections.get(lastSectionHitId).getTimeSignature();
@@ -251,9 +226,7 @@ public class PaceMaker {
     public void setMonsterCoinLocation(MonsterCoinLocation monsterCoinLocation){
         this.monsterCoinLocation = monsterCoinLocation;
     }
-    public int getRenderCounter(){
-        return renderCounter;
-    }
+
     public boolean canShake(){
         return canShake;
     }
@@ -263,4 +236,20 @@ public class PaceMaker {
     public void setJumping(boolean jumping){ this.jumping = jumping;}
 
     public boolean getJumping(){return jumping;}
+    public int getLastBeatHitId(){return lastBeatHitId;}
+    public int getLastBarHitId() {return lastBarHitId;}
+    public int getLastSectionHitId() { return lastSectionHitId;}
+    public int getTimeSig(){return timeSig;}
+    public boolean getNewBeat(){
+        return newBeat;
+    }
+    public boolean gotFirstBeat(){
+        return gotFirstBeat;
+    }
+    public boolean hitSecondSection(){
+        return hitSecondSection;
+    }
+    public int getRenderCounter(){
+        return renderCounter;
+    }
 }
