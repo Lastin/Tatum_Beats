@@ -114,9 +114,9 @@ public class Play extends GameState {
     private final TrackData trackData;
     private FontGenerator fontGenerator;
     private float sbColor = 1;
+    private boolean expert;
 
-
-    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData) {
+    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData,boolean expert) {
         super(gsm);
         Slime.setSpriteNull(); // set to null as in android static memory is readdressed when the user changes to a different process
         Bat.setSpriteNull();    // therefore if they exit the game and come back in, the animations will appear as black squares
@@ -155,6 +155,7 @@ public class Play extends GameState {
         //set the game to use the swipe input
         game.setSwipeInput();
 
+        this.expert = expert;
         //create the meta data display items
         Gdx.app.postRunnable(new Runnable() {
             @Override
@@ -201,44 +202,45 @@ public class Play extends GameState {
     }
 
     private void setSongCharactaristics(){
-
-        String key = paceMaker.getTrackData().getKeyString();
-        switch (key){
-            case "c":
-                instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
-                break;
-            case "c#":
-                instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
-                break;
-            case "d":
-                instructor.setRotation(Instructor.Rotation.INVERT);
-                break;
-            case "d#":
-                instructor.setRotation(Instructor.Rotation.INVERT);
-                break;
-            case "e":
-                instructor.setRotation(Instructor.Rotation.RANDOMISE);
-                break;
-            case "f":
-                instructor.setRotation(Instructor.Rotation.BOTTOM);
-                break;
-            case "f#":
-                instructor.setRotation(Instructor.Rotation.BOTTOM);
-                break;
-            case "g":
-                instructor.setRotation(Instructor.Rotation.TOP);
-                break;
-            case "g#":
-                instructor.setRotation(Instructor.Rotation.BOTTOM);
-                break;
-            case "a":
-                instructor.setRotation(Instructor.Rotation.CLOCKWISE);
-                break;
-            case "a#":
-                instructor.setRotation(Instructor.Rotation.CLOCKWISE);
-                break;
-            case "b":
-                instructor.setRotation(Instructor.Rotation.SWAP_VERTICAL);
+        if(expert) {
+            String key = paceMaker.getTrackData().getKeyString();
+            switch (key) {
+                case "c":
+                    instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                    break;
+                case "c#":
+                    instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                    break;
+                case "d":
+                    instructor.setRotation(Instructor.Rotation.INVERT);
+                    break;
+                case "d#":
+                    instructor.setRotation(Instructor.Rotation.INVERT);
+                    break;
+                case "e":
+                    instructor.setRotation(Instructor.Rotation.RANDOMISE);
+                    break;
+                case "f":
+                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    break;
+                case "f#":
+                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    break;
+                case "g":
+                    instructor.setRotation(Instructor.Rotation.TOP);
+                    break;
+                case "g#":
+                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    break;
+                case "a":
+                    instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                    break;
+                case "a#":
+                    instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                    break;
+                case "b":
+                    instructor.setRotation(Instructor.Rotation.SWAP_VERTICAL);
+            }
         }
         String mode = paceMaker.getTrackData().getModeString();
         if(mode.equals("minor"))

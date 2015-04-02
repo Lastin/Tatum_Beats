@@ -60,6 +60,7 @@ public class Menu extends GameState {
     private int dotCount = 0;
 
     private FontGenerator fontGenerator;
+    private boolean expert = false;
 
     public Menu(GameStateManager gsm) {
         super(gsm);
@@ -89,16 +90,18 @@ public class Menu extends GameState {
         b2dRenderer = new Box2DDebugRenderer();
         createLoadings();
         time = System.nanoTime()/1000000000;
-
+        playButton.getButton().setDisabled(true);
     }
-    public Menu(GameStateManager gsm, String Path){
+    public Menu(GameStateManager gsm, String Path,boolean expert){
         this(gsm);
         musicSelectionPath = Path;
     } // menu when a song has been slected
-    public Menu(GameStateManager gsm, String Path,Background bg){
+    public Menu(GameStateManager gsm, String Path,Background bg, boolean expert){
         this(gsm);
         this.bg =bg;
         musicSelectionPath = Path;
+        this.expert = expert;
+        initialiseButtons();
     } // song has been selected, and background is passed
     public Menu(GameStateManager gsm,Background bg){
         this(gsm);
@@ -109,7 +112,12 @@ public class Menu extends GameState {
         Texture myStyle = resources.getTexture("sprites");
         //create menu buttons
         playButton = new MenuButton(fontGenerator, "PLAY", 160, 160);
-        selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
+        if(musicSelectionPath==null) {
+            selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
+            System.out.println("INside");
+        }
+        else
+            selectSong = new MenuButton(fontGenerator, "CHANGE SONG", 160, 130);
         scoresButton = new MenuButton(fontGenerator, "HIGHSCORES", 160, 100);
         //set action on playButton, running in a separate thread
         playButton.getButton().addListener(new ClickListener() {
@@ -141,7 +149,7 @@ public class Menu extends GameState {
                             Gdx.app.postRunnable(new Runnable() {
                                 @Override
                                 public void run() {
-                                    gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker, musicSelectionPath, trackLoader.getTrackData()));
+                                    gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker, musicSelectionPath, trackLoader.getTrackData(),expert));
                                 }
                             }); // set state to play - done in separate thread as loading can take a while
                         } catch (Exception e) {
@@ -209,9 +217,13 @@ public class Menu extends GameState {
         bg.render(sb);
         if(!uploading&& !loading && !generating && !done) {
             sb.begin();
-            playButton.render(sb);
             selectSong.render(sb);
             scoresButton.render(sb);
+            sb.end();
+        } // renders all buttons as long as play hasn't been pressed
+        if(!uploading&& !loading && !generating && !done&&musicSelectionPath!=null) {
+            sb.begin();
+            playButton.render(sb);
             sb.end();
         } // renders all buttons as long as play hasn't been pressed
         sb.begin();

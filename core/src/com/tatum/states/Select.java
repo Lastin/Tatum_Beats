@@ -136,7 +136,7 @@ public class Select extends GameState {
                 } // if a list is clicked, change the select screen to represent that directory and display contained files in list
                 else{
                     musicItems.get(i).getText();
-                    gsm.setState(new Menu(gsm,selectionHandler.getChildFullPath(text)));
+                    gsm.setState(new Expert(gsm,bg,selectionHandler.getChildFullPath(text)));
                     return; // if a track is clicked, return to the menu, passing the path to the track
                 }
             }
