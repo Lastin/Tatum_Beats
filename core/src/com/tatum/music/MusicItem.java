@@ -37,6 +37,21 @@ public class MusicItem {
         height = tb.height;
 
     }
+    public MusicItem(Batch batch, BitmapFont font, String text, int x, int y) {
+        this.font = font;
+        this.text = text;
+        originalText = text;
+        checkText();
+        this.batch = batch;
+        this.x = x;
+        this.y = y;
+        batch.begin();
+        tb = font.draw(batch, this.text, x, y);
+        batch.end();
+        width = tb.width;
+        height = tb.height;
+        //no cam
+    }
     public void render() {
         batch.begin();
         font.draw(batch, text, x, y);

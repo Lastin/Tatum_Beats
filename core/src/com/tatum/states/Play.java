@@ -23,7 +23,7 @@ import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
 import com.tatum.entities.Coin;
 import com.tatum.entities.HUD;
-import com.tatum.entities.Instructor;
+import com.tatum.entities.Instructor2;
 import com.tatum.entities.Player;
 import com.tatum.entities.Slime;
 import com.tatum.handlers.B2DVars;
@@ -67,7 +67,7 @@ public class Play extends GameState {
     private HUD hud;
     private Background[] backgrounds;
     private Music music;
-    private Instructor instructor;
+    private Instructor2 instructor;
     //other settings
     private String userName = "test";
     private String path;
@@ -134,7 +134,7 @@ public class Play extends GameState {
         MapProperties properties = tiledMap.getProperties();
         width = (Float) properties.get("width");
         height = (Integer) properties.get("height");
-
+        System.out.println(trackData.getKeyString());
         //create the player and the objectives
         player = createPlayer();
         createObstacles();
@@ -206,40 +206,40 @@ public class Play extends GameState {
             String key = paceMaker.getTrackData().getKeyString();
             switch (key) {
                 case "c":
-                    instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                    instructor.setRotation(Instructor2.Rotation.COUNTER_CLOCKWISE);
                     break;
                 case "c#":
-                    instructor.setRotation(Instructor.Rotation.COUNTER_CLOCKWISE);
+                    instructor.setRotation(Instructor2.Rotation.COUNTER_CLOCKWISE);
                     break;
                 case "d":
-                    instructor.setRotation(Instructor.Rotation.INVERT);
+                    instructor.setRotation(Instructor2.Rotation.INVERT);
                     break;
                 case "d#":
-                    instructor.setRotation(Instructor.Rotation.INVERT);
+                    instructor.setRotation(Instructor2.Rotation.INVERT);
                     break;
                 case "e":
-                    instructor.setRotation(Instructor.Rotation.RANDOMISE);
+                    instructor.setRotation(Instructor2.Rotation.CLOCKWISE);
                     break;
                 case "f":
-                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    instructor.setRotation(Instructor2.Rotation.CLOCKWISE);
                     break;
                 case "f#":
-                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    instructor.setRotation(Instructor2.Rotation.COUNTER_CLOCKWISE);
                     break;
                 case "g":
-                    instructor.setRotation(Instructor.Rotation.TOP);
+                    instructor.setRotation(Instructor2.Rotation.COUNTER_CLOCKWISE);
                     break;
                 case "g#":
-                    instructor.setRotation(Instructor.Rotation.BOTTOM);
+                    instructor.setRotation(Instructor2.Rotation.INVERT);
                     break;
                 case "a":
-                    instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                    instructor.setRotation(Instructor2.Rotation.INVERT);
                     break;
                 case "a#":
-                    instructor.setRotation(Instructor.Rotation.CLOCKWISE);
+                    instructor.setRotation(Instructor2.Rotation.CLOCKWISE);
                     break;
                 case "b":
-                    instructor.setRotation(Instructor.Rotation.SWAP_VERTICAL);
+                    instructor.setRotation(Instructor2.Rotation.CLOCKWISE);
             }
         }
         String mode = paceMaker.getTrackData().getModeString();

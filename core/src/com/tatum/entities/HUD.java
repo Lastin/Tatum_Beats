@@ -25,7 +25,7 @@ public class HUD {
     private int timePoint;
     private int timeSig;
     private int currbeat;
-    private Instructor instructor;
+    private Instructor2 instructor;
     private boolean debug = false;
     private FontGenerator fontGenerator;
 
@@ -39,7 +39,7 @@ public class HUD {
         container = new TextureRegion(tex, 0, 0, 32, 32);
         cont.loadTexture("res/images/letters.png");
         //create new instructor
-        instructor = new Instructor(cont,game,player,paceMaker,play);
+        instructor = new Instructor2(cont,game,player,paceMaker,play);
 
         //load in textures for debug information
         Texture letter = cont.getTexture("letters");
@@ -87,14 +87,14 @@ public class HUD {
     public void render(SpriteBatch sb) {
         sb.begin();
         instructor.render(sb);
-
-        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10); //render the Current highscore for the song
-        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), game.getWidth()-170,game.getHeight()-30); //renders the users current score and multiplier
+        //fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10); //render the Current highscore for the song
+        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), 10,game.getHeight()-10); //renders the users current score and multiplier
+        //fontGenerator.getScoreFont().draw(sb, "SCORE: " + "100000"+" x "+"100", 10,game.getHeight()-10); //renders the users current score and multiplier
         int space = 0;
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], game.getWidth() - 138 + space, game.getHeight() - 50);
+            sb.draw(blockSprites[0], 30 + space, game.getHeight() - 30);
             space+=15;
         } // renders the blocks that represent how many beats till an increase in multiplier
         if(debug) { // debug info, no longer used
@@ -144,7 +144,7 @@ public class HUD {
         }
     }
     public void setPaceMaker(PaceMaker paceMaker){this.paceMaker=paceMaker;}
-    public Instructor getInstructor(){
+    public Instructor2 getInstructor(){
         return instructor;
     }
 }
