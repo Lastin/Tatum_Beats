@@ -556,6 +556,7 @@ public class Play extends GameState {
 
         //check if level is finished
         if(player.getBody().getPosition().x>=width){
+            music.stop();
             player.saveHighScore();
             String trackName = trackData.getSongName();
             String artistName = trackData.getArtist();

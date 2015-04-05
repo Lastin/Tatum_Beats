@@ -97,11 +97,32 @@ public class Menu extends GameState {
         musicSelectionPath = Path;
     } // menu when a song has been slected
     public Menu(GameStateManager gsm, String Path,Background bg, boolean expert){
-        this(gsm);
+        super(gsm);
+
+        levelGenerator = new LevelGenerator(resources);
+        fontGenerator = new FontGenerator();
+
+        loadPlayers(); // load in the player sprites
         this.bg =bg;
         musicSelectionPath = Path;
-        this.expert = expert;
+
+        //attach the player sprites to the rendered Animations
+        p1Animation = new Animation(sprites1, 1/15f);
+        p2Animation = new Animation(sprites2, 1/15f);
+        p3Animation = new Animation(sprites3, 1/15f);
+
+        Texture hud = resources.getTexture("hud2");
         initialiseButtons();
+
+        cam.setToOrtho(false, game.getWidth(), game.getHeight());
+
+        world = new World(new Vector2(0, -9.8f * 5), true);
+        b2dRenderer = new Box2DDebugRenderer();
+        createLoadings();
+        time = System.nanoTime()/1000000000;
+        playButton.getButton().setDisabled(true);
+
+        this.expert = expert;
     } // song has been selected, and background is passed
     public Menu(GameStateManager gsm,Background bg){
         this(gsm);
@@ -114,7 +135,7 @@ public class Menu extends GameState {
         playButton = new MenuButton(fontGenerator, "PLAY", 160, 160);
         if(musicSelectionPath==null) {
             selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
-            System.out.println("INside");
+
         }
         else
             selectSong = new MenuButton(fontGenerator, "CHANGE SONG", 160, 130);

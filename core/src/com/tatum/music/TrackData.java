@@ -128,9 +128,18 @@ public class TrackData {
                 // gather all audio information and store in variables
                 // some are in try catch as they do not exist in all songs
                 // so blank vars must be set to a default i.e. 0
-                this.dancebility = audio.getJsonNumber("danceability").doubleValue();
+                try {
+                    this.dancebility = audio.getJsonNumber("danceability").doubleValue();
+                }catch (NullPointerException e){
+                    this.dancebility=0;
+                }
                 this.duration = audio.getJsonNumber("duration").doubleValue();
-                this.energy = audio.getJsonNumber("energy").doubleValue();
+                try{
+
+                    this.energy = audio.getJsonNumber("energy").doubleValue();
+                }catch (NullPointerException e){
+                    this.energy=0;
+                }
                 this.loudness = 0;
                 try {
                     this.loudness = audio.getJsonNumber("loudness").doubleValue();

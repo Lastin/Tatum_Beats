@@ -94,7 +94,7 @@ public class HUD {
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], 30 + space, game.getHeight() - 30);
+            sb.draw(blockSprites[0], 35 + space, game.getHeight() - 30);
             space+=15;
         } // renders the blocks that represent how many beats till an increase in multiplier
         if(debug) { // debug info, no longer used
