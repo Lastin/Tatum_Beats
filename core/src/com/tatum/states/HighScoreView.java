@@ -89,13 +89,18 @@ public class HighScoreView extends GameState{
             widthA = font.getBounds(artistName).width;
             widthS = font.getBounds(trackName).width;
             widthL = font.getBounds(album).width;
-            widthG = font.getBounds("Score: " + score).width;
+            widthG = font.getBounds("HighScore: " + score).width;
         } while(widthA > 300f || widthS > 300f || widthL > 300 || widthG > 300);
         float middle = game.getWidth()/2;
-        ArtistName = new MusicItem(sb, font,artistName,cam, (int)(middle - widthA/2),game.getHeight()-100);
-        TrackName =  new MusicItem(sb, font,trackName,cam, (int)(middle - widthS/2),game.getHeight()-70);
-        Album =  new MusicItem(sb, font,album,cam, (int)(middle - widthL/2),game.getHeight()-130);
-        Score =  new MusicItem(sb, font,"Score: "+ score,cam, (int)(middle - widthG/2),game.getHeight()-160);
+        if(artistName.length()>1){
+            ArtistName = new MusicItem(sb, font, artistName, cam, (int) (middle - widthA / 2), game.getHeight() - 100);
+            TrackName = new MusicItem(sb, font, trackName, cam, (int) (middle - widthS / 2), game.getHeight() - 70);
+            Album = new MusicItem(sb, font, album, cam, (int) (middle - widthL / 2), game.getHeight() - 130);
+            Score = new MusicItem(sb, font, "HighScore: " + score, cam, (int) (middle - widthG / 2), game.getHeight() - 160);
+        }
+        else {
+            Score = new MusicItem(sb, font, "HighScore: " + score, cam, (int) (middle - widthG / 2), game.getHeight() - 100);
+        }
         //this method works out the font size required to allow all of the text to be centered and not
         //overflow out of the screen
         // the itmes to display are then created using this size
@@ -109,7 +114,7 @@ public class HighScoreView extends GameState{
         if(backButton.isClicked()){
             gsm.setState(new HighScoreList(gsm, fontGenerator, bg));
         } // if second back button is pressed, go back to high score list
-        if(shareButton.isClicked()){
+        if(shareButton.isClicked()&&(artistName.length()>1)){
             //here goes twitter interface
             game.getTwitterInterface().share(artistName, trackName, score, twitterHandle);
         } // if twitter button is pressed, open twitter app with given message
@@ -130,11 +135,14 @@ public class HighScoreView extends GameState{
         bg.render(sb);
         backButton.render();
         backButtonMenu.render();
-        shareButton.render();
-        if(Album!=null&&ArtistName!=null&&TrackName!=null&&Score!=null) { // checks if the setArtistSong() method is finished
+        if((artistName.length()>1))
+            shareButton.render();
+        if(Album!=null&&ArtistName!=null&&TrackName!=null) { // checks if the setArtistSong() method is finished
             ArtistName.render();
             Album.render();
             TrackName.render();
+        }
+        if(Score!=null){
             Score.render();
         }
     }   // render all text, buttons and background to teh screen
