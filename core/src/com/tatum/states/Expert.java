@@ -52,7 +52,7 @@ public class Expert extends GameState{
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-        Gdx.input.setInputProcessor(new InputProcessor()); // change input to touch incase has come from game and input set to swipe
+        game.setTouchInput(); // change input to touch incase has come from game and input set to swipe
         this.path= path;
     }
     public void setText(){

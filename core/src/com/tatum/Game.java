@@ -1,11 +1,12 @@
 package com.tatum;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.tatum.handlers.*;
+import com.tatum.handlers.Input;
+import com.tatum.handlers.InputProcessor;
 
 public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
@@ -21,6 +22,7 @@ public class Game extends ApplicationAdapter {
     private static ContentManager resources;
     private String[] data;
     private TatumDirectionListener tatumDirectionListener;
+    private com.badlogic.gdx.InputProcessor inputProcessor;
 
     public Game(String[] data, TwitterInterface twitterInterface){
         super();
@@ -28,6 +30,7 @@ public class Game extends ApplicationAdapter {
         this.data=data;
         width=320;
         height=240;
+        this.inputProcessor = new InputProcessor();
 
     }
 
@@ -101,7 +104,7 @@ public class Game extends ApplicationAdapter {
     }   //create the swipe listener so the player can use the swipe in the play state
 
     public void setTouchInput(){
-        Gdx.input.setInputProcessor(new InputProcessor());
+        Gdx.input.setInputProcessor(inputProcessor);
     }
 
     public TwitterInterface getTwitterInterface(){

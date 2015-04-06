@@ -73,7 +73,7 @@ public class Select extends GameState {
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-        Gdx.input.setInputProcessor(new InputProcessor());
+       game.setTouchInput();
     }
 
     @Override

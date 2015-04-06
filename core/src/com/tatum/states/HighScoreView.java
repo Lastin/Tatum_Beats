@@ -68,7 +68,7 @@ public class HighScoreView extends GameState{
                 setArtistSong();
             }
         }); //create centered text, done in separate thread to speed up state transaction
-        Gdx.input.setInputProcessor(new InputProcessor()); // set input to click incase was set to swipe
+        game.setTouchInput(); // set input to click incase was set to swipe
     }
     public HighScoreView(GameStateManager gsm, FontGenerator fontGenerator, String trackName, String artistName, String album, String twitterHandle, int score, Background bg){
         this(gsm, fontGenerator, trackName,artistName,album, twitterHandle, score);
