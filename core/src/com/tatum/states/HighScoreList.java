@@ -123,7 +123,7 @@ public class HighScoreList extends GameState{
                 setMusicItems();
             }
         } // check if the up button has been clicked, if so recreate the list with from the new position
-        if(upButtonFast.isClicked()){
+        else if(upButtonFast.isClicked()){
             if(listPosition[0]!=0) {
                 setListPosition("quickup");
                 setMusicItems();
@@ -131,24 +131,24 @@ public class HighScoreList extends GameState{
         }   // same as above, except moves up by 5 instead of 1
 
 
-        if(downButton.isClicked()){
+        else if(downButton.isClicked()){
             if(listPosition[4]<highScores.size()-1){
                 setListPosition("down");
                 setMusicItems();
             }
         }   // if down button has been pressed, move list down by one
 
-        if(downButtonFast.isClicked()){
+        else if(downButtonFast.isClicked()){
             if(listPosition[4]<highScores.size()-1){
                 setListPosition("quickdown");
                 setMusicItems();
             }
         } // save as above, moves down by 5 instead of 1
 
-        if(backButton.isClicked()){
+        else if(backButton.isClicked()){
             gsm.setState(new Menu(gsm,bg));
         }   // if the back button is pressed go back to menu
-        if(Gdx.input.isTouched())
+        else if(Gdx.input.isTouched())
             for(int i =0;i< trackNames.size();i++){
                 if(trackNames.get(i).isClicked()||metaData.get(i).isClicked()){
                     String track = trackNames.get(i).getText();

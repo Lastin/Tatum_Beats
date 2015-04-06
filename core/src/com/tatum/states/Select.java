@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import com.tatum.handlers.Background;
 import com.tatum.handlers.FontGenerator;
-import com.tatum.handlers.InputProcessor;
 import com.tatum.handlers.SelectionHandler;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
@@ -68,18 +67,17 @@ public class Select extends GameState {
 
         listPosition= new int[5];
         setListPosition("start");
+        setMusicItems();
 
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
         game.setTouchInput();
-        setMusicItems();
     }
 
     @Override
     public void handleInput() {
         if(upButton.isClicked()){
-
 
             if(listPosition[0]!=0) { // make sure list does not go below 0
 
@@ -87,7 +85,7 @@ public class Select extends GameState {
                 setMusicItems();
             }
             } // if up button is clicked move up file list by 1
-        if(upButtonFast.isClicked()){
+        else if(upButtonFast.isClicked()){
 
             if(listPosition[0]!=0) {
                 setListPosition("quickup");
@@ -96,7 +94,7 @@ public class Select extends GameState {
         } // if fast up is pressed move up list by 5 or as much as possible
 
 
-        if(downButton.isClicked()){
+        else if(downButton.isClicked()){
             if(listPosition[4]<selectionHandler.getScreenCount()-1){
 
                     setListPosition("down");
@@ -104,7 +102,7 @@ public class Select extends GameState {
             }
          } // if down button is pressed, move down the file list by one
 
-        if(downButtonFast.isClicked()){
+        else if(downButtonFast.isClicked()){
             if(listPosition[4]<selectionHandler.getScreenCount()-1){
 
                 setListPosition("quickdown");
@@ -112,7 +110,7 @@ public class Select extends GameState {
             }
         } // if fast down is pressed, move down the file list by 5 or as much as possible
 
-        if(backButton.isClicked()){
+        else if(backButton.isClicked()){
             if(!(selectionHandler.getCurrent().equals(Gdx.files.external("")))){
                 selectionHandler = new SelectionHandler(selectionHandler.getCurrent().parent());
 
@@ -120,27 +118,28 @@ public class Select extends GameState {
                 return;
             }
         } // if previous directory button is pressed go up a directory unless already in route
-        if(backButtonMenu.isClicked()){
+        else if(backButtonMenu.isClicked()){
             gsm.setState(new Menu(gsm));
         }   // if back button is pressed, go back to menu
 
-        for(int i =0;i<musicItems.size();i++){
-            if(musicItems.get(i).isClicked()){
-                String text = musicItems.get(i).getText();
-                if(selectionHandler.isDir(text)){
-                    selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
-                    setListPosition("start");
-                    setMusicItems();
-                    return;
-                } // if a list is clicked, change the select screen to represent that directory and display contained files in list
-                else{
-                    musicItems.get(i).getText();
-                    gsm.setState(new Expert(gsm,bg,selectionHandler.getChildFullPath(text)));
-                    return; // if a track is clicked, return to the menu, passing the path to the track
+        else{
+            for(int i =0;i<musicItems.size();i++){
+                if(musicItems.get(i).isClicked()){
+                    String text = musicItems.get(i).getText();
+                    if(selectionHandler.isDir(text)){
+                        selectionHandler = new SelectionHandler(selectionHandler.getChild(text));
+                        setListPosition("start");
+                        setMusicItems();
+                        return;
+                    } // if a list is clicked, change the select screen to represent that directory and display contained files in list
+                    else{
+                        musicItems.get(i).getText();
+                        gsm.setState(new Expert(gsm,bg,selectionHandler.getChildFullPath(text)));
+                        return; // if a track is clicked, return to the menu, passing the path to the track
+                    }
                 }
             }
         }
-
     }
 
     @Override

@@ -103,6 +103,7 @@ public class Game extends ApplicationAdapter {
     }   //create the swipe listener so the player can use the swipe in the play state
 
     public void setTouchInput(){
+        Input.down = false;
         Gdx.input.setInputProcessor(inputProcessor);
     }
 
