@@ -68,17 +68,16 @@ public class Select extends GameState {
 
         listPosition= new int[5];
         setListPosition("start");
-        setMusicItems();
 
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
-       game.setTouchInput();
+        game.setTouchInput();
+        setMusicItems();
     }
 
     @Override
     public void handleInput() {
-
         if(upButton.isClicked()){
 
 
@@ -146,7 +145,6 @@ public class Select extends GameState {
 
     @Override
     public void update(float dt) {
-        handleInput();
         world.step(dt / 5, 8, 3);
         bg.update(dt);
         upButton.update(dt);
@@ -159,6 +157,7 @@ public class Select extends GameState {
         }
         backButton.update(dt);
         backButtonMenu.update(dt);
+        handleInput();
     }   // upadte the background, buttons and all shown files
 
     @Override

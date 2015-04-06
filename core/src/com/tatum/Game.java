@@ -22,7 +22,7 @@ public class Game extends ApplicationAdapter {
     private static ContentManager resources;
     private String[] data;
     private TatumDirectionListener tatumDirectionListener;
-    private com.badlogic.gdx.InputProcessor inputProcessor;
+    private final InputProcessor inputProcessor = new InputProcessor();
 
     public Game(String[] data, TwitterInterface twitterInterface){
         super();
@@ -30,7 +30,6 @@ public class Game extends ApplicationAdapter {
         this.data=data;
         width=320;
         height=240;
-        this.inputProcessor = new InputProcessor();
 
     }
 
