@@ -12,8 +12,7 @@ import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.InputProcessor;
-import com.tatum.music.MusicItem;
+import com.tatum.handlers.MusicItem;
 public class HighScoreView extends GameState{
 
     private String twitterHandle;

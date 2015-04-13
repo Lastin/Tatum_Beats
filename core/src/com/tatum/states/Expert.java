@@ -2,22 +2,15 @@ package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
-import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.InputProcessor;
-import com.tatum.music.MusicItem;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.tatum.handlers.MusicItem;
 
 /**
  * Created by Ben on 02/04/2015.

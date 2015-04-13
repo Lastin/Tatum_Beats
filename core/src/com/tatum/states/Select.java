@@ -14,7 +14,7 @@ import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
 import com.tatum.handlers.LevelGenerator;
-import com.tatum.music.MusicItem;
+import com.tatum.handlers.MusicItem;
 
 import java.util.ArrayList;
 

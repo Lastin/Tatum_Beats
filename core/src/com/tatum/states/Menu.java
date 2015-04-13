@@ -19,7 +19,7 @@ import com.tatum.handlers.MenuButton;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.TrackLoader;
-import com.tatum.music.MusicItem;
+import com.tatum.handlers.MusicItem;
 
 import static com.tatum.handlers.B2DVars.PPM;
 

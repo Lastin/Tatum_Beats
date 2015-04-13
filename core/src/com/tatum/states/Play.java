@@ -37,7 +37,7 @@ import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.handlers.TatumDirectionListener;
 import com.tatum.handlers.TatumMap;
-import com.tatum.music.MusicItem;
+import com.tatum.handlers.MusicItem;
 import com.tatum.music.TrackData;
 
 import java.util.ArrayList;

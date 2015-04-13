@@ -13,8 +13,7 @@ import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameButton;
 import com.tatum.handlers.GameStateManager;
-import com.tatum.handlers.InputProcessor;
-import com.tatum.music.MusicItem;
+import com.tatum.handlers.MusicItem;
 
 import java.io.InputStream;
 import java.util.ArrayList;

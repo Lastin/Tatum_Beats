@@ -4,27 +4,12 @@ package com.tatum.entities;
  * Created by Ben on 05/04/2015.
  */
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.tatum.Game;
 import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.FontGenerator;
-import com.tatum.handlers.MenuButton;
-import com.tatum.handlers.PaceMaker;
-import com.tatum.music.MusicItem;
-import com.tatum.states.Play;
-
-import java.util.Random;
-
-
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.tatum.Game;
-import com.tatum.handlers.ContentManager;
 import com.tatum.handlers.PaceMaker;
 import com.tatum.states.Play;
 
