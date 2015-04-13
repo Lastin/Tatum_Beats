@@ -4,9 +4,11 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import com.badlogic.gdx.input.GestureDetector;
 import com.tatum.handlers.*;
 import com.tatum.handlers.Input;
 import com.tatum.handlers.InputProcessor;
+import com.tatum.states.Play;
 
 public class Game extends ApplicationAdapter {
     public static final String TITLE = "Tatum";
@@ -96,9 +98,9 @@ public class Game extends ApplicationAdapter {
     public void getParent(){
 
     }
-    public void setSwipeInput(){
+    public void setSwipeInput(Play play){
         tatumDirectionListener = new TatumDirectionListener();
-        SimpleDirectionGestureDetector temp2 = new SimpleDirectionGestureDetector(tatumDirectionListener);
+        SimpleDirectionGestureDetector temp2 = new SimpleDirectionGestureDetector(tatumDirectionListener, play);
         Gdx.input.setInputProcessor(temp2);
     }   //create the swipe listener so the player can use the swipe in the play state
 

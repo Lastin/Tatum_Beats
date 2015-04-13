@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -115,6 +116,8 @@ public class Play extends GameState {
     private FontGenerator fontGenerator;
     private float sbColor = 1;
     private boolean expert;
+    private boolean paused = false;
+
 
     public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData,boolean expert) {
         super(gsm);
@@ -153,7 +156,7 @@ public class Play extends GameState {
         data = gsm.getGame().getData();
 
         //set the game to use the swipe input
-        game.setSwipeInput();
+        game.setSwipeInput(this);
 
         this.expert = expert;
         //create the meta data display items
@@ -438,6 +441,9 @@ public class Play extends GameState {
 
     @Override
     public void render() {
+        if(paused){
+            return;
+        }
         sb.setColor(sbColor, sbColor, sbColor, shaderVal);
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
@@ -620,9 +626,7 @@ public class Play extends GameState {
 
     @Override
     public void handleInput(){
-
         TatumDirectionListener tatumDirectionListener = game.getTatumDirectionListener();
-
         if(!player.getIsJumping()&&!player.getIsDucking()) {
             if (tatumDirectionListener.down()) {
                 instructor.doBot();
@@ -661,6 +665,16 @@ public class Play extends GameState {
 
     //***************************** Below are the shake methods which are no longer being used
     //***************************** Left in in case we decide to reenable
+
+    public void pause(){
+        if(paused) {
+            paused = false;
+            music.play();
+        } else {
+            paused = true;
+            music.pause();
+        }
+    }
 
     public void checkMotion(){
         now = Long.parseLong(data[0]);

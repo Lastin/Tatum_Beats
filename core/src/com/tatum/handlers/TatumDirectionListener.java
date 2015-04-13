@@ -33,7 +33,7 @@ public class TatumDirectionListener implements DirectionListener {
         bools[1]=true;
     }
     public void resetBools(){
-        bools[0]=false;bools[1]=false;bools[2]=false;bools[3]=false;
+        bools[0] = bools[1] = bools[2] = bools[3] = false;
     }
     public boolean left(){return bools[2];}
 
