@@ -293,10 +293,12 @@ public class Menu extends GameState {
         } else if (showTip){
             //render tip
             sb.begin();
-            float width = fontGenerator.tipFont.getBounds("Double tap to").width;
-            fontGenerator.tipFont.draw(sb, "Double tap to", game.width/2 - width/2, 200);
+            float width = fontGenerator.tipFont.getBounds("Remember!").width;
+            fontGenerator.getTipFont().draw(sb, "Remember!", game.width/2 - width/2, 230);
+            width = fontGenerator.tipFont.getBounds("Double tap to").width;
+            fontGenerator.getTipFont().draw(sb, "Double tap to", game.width/2 - width/2, 200);
             width = fontGenerator.getTipFont().getBounds("pause").width;
-            fontGenerator.tipFont.draw(sb, "pause", game.width/2 - width/2, 195 - fontGenerator.getTipFont().getBounds("Double tap to").height);
+            fontGenerator.getTipFont().draw(sb, "pause", game.width/2 - width/2, 195 - fontGenerator.getTipFont().getBounds("Double tap to").height);
             sb.draw(resources.getTexture("tap"), game.width/2 - 25, 100, 50, 50);
             sb.end();
         }
