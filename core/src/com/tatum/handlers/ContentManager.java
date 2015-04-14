@@ -45,6 +45,7 @@ public class ContentManager {
         loadTexture("res/images/Track.png");
         loadTexture("res/images/PlatformerPack/Player/p1_walk/fix.png");
         loadTexture("res/images/PlatformerPack/Player/mini_walk_combined.png");
+        loadTexture("res/images/tap.png");
         //arrows up and down
         loadTexture("res/images/arrowDown.png");
         loadTexture("res/images/arrowUp.png");

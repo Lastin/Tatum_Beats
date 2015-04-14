@@ -19,6 +19,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.tatum.Game;
 import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
@@ -34,8 +38,11 @@ import com.tatum.handlers.CollisionListener;
 import com.tatum.handlers.FontGenerator;
 import com.tatum.handlers.GameBodiesCreator;
 import com.tatum.handlers.GameStateManager;
+import com.tatum.handlers.Input;
+import com.tatum.handlers.MenuButton;
 import com.tatum.handlers.MonsterCoinLocation;
 import com.tatum.handlers.PaceMaker;
+import com.tatum.handlers.SimpleDirectionGestureDetector;
 import com.tatum.handlers.TatumDirectionListener;
 import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.MusicItem;
@@ -116,10 +123,14 @@ public class Play extends GameState {
     private FontGenerator fontGenerator;
     private float sbColor = 1;
     private boolean expert;
+
+    //Pausing variables
     private boolean paused = false;
+    private MenuButton backToMenuButton;
+    private MenuButton continueButton;
 
 
-    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData,boolean expert) {
+    public Play(GameStateManager gsm, TatumMap tatumMap, Music music, PaceMaker paceMaker, String path, TrackData trackData, boolean expert) {
         super(gsm);
         Slime.setSpriteNull(); // set to null as in android static memory is readdressed when the user changes to a different process
         Bat.setSpriteNull();    // therefore if they exit the game and come back in, the animations will appear as black squares
@@ -158,6 +169,9 @@ public class Play extends GameState {
         //set the game to use the swipe input
         game.setSwipeInput(this);
 
+        //initialise buttons used when paused
+        initialiseButtons();
+
         this.expert = expert;
         //create the meta data display items
         Gdx.app.postRunnable(new Runnable() {
@@ -170,6 +184,27 @@ public class Play extends GameState {
         music.play(); //play music
         setSongCharactaristics(); // set the way the instructor works based on song key
         shaderVal = 1;
+    }
+
+    private void initialiseButtons(){
+        backToMenuButton = new MenuButton(fontGenerator, "Back to menu", game.getWidth()/2, 80);
+        continueButton = new MenuButton(fontGenerator, "Continue", game.getWidth()/2, 130);
+        backToMenuButton.getButton().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y){
+                music.dispose();
+                //sb.dispose();
+                gsm.setState(new Menu(gsm));
+            }
+        });
+        continueButton.getButton().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y){
+                game.setSwipeInput(Play.this);
+                music.play();
+                paused = false;
+            }
+        });
     }
 
     private void setArtistSong(){
@@ -660,6 +695,7 @@ public class Play extends GameState {
 
     @Override
     public void dispose() {
+        music = null;
 
     }
 
@@ -667,12 +703,28 @@ public class Play extends GameState {
     //***************************** Left in in case we decide to reenable
 
     public void pause(){
-        if(paused) {
-            paused = false;
-            music.play();
-        } else {
+        if(!paused) {
             paused = true;
             music.pause();
+            sb.begin();
+            continueButton.render(sb);
+            //fontGenerator.getSmallMenuFont().draw(sb, "PAUSED", 100, 150);
+            backToMenuButton.render(sb);
+            sb.end();
+            Stage stage = new Stage(new ExtendViewport(320, 240, cam));
+            stage.addActor(backToMenuButton.getButton());
+            stage.addActor(continueButton.getButton());
+            Gdx.input.setInputProcessor(stage);
+        }
+        else {
+            //paused = false;
+            //music.play();
+        }
+    }
+
+    public void backToMenu(){
+        if(paused){
+            gsm.setState(new Menu(gsm));
         }
     }
 

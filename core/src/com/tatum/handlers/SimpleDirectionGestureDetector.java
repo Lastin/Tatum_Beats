@@ -42,8 +42,10 @@ public class SimpleDirectionGestureDetector extends GestureDetector {
 
         @Override
         public boolean tap(float velocityX, float velocityY, int count, int button) {
-            if(count == 2){
+            if(count == 2) {
                 play.pause();
+            } else if (count  == 3) {
+                play.backToMenu();
             }
             return super.tap(velocityX, velocityY, count, button);
         }

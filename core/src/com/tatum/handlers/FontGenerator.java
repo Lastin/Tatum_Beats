@@ -20,6 +20,7 @@ public class FontGenerator {
     public final BitmapFont listFont = makeFont(36, Color.BLACK);
     public final BitmapFont underListFont = makeFont(20, Color.BLACK);
     public final BitmapFont loadingFont = makeFont(70, Color.WHITE);
+    public final BitmapFont tipFont = makeFont(60, Color.BLACK);
     //colours
     public final Color royalBlue = new Color(0, 0.714f, 1, 1);
     public final Color red = Color.valueOf("FF7878");
@@ -42,6 +43,16 @@ public class FontGenerator {
     public BitmapFont getMenuFont(){
         customFont.setScale(0.5f);
         return customFont;
+    }
+
+    public BitmapFont getTipFont(){
+        tipFont.setScale(0.5f);
+        return tipFont;
+    }
+
+    public BitmapFont getSmallMenuFont(){
+        customFontSmall.setScale(0.5f);
+        return customFontSmall;
     }
 
     public BitmapFont getScoreFont(){

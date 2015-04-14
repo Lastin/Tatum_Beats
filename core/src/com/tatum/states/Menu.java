@@ -45,6 +45,7 @@ public class Menu extends GameState {
     private boolean generating = false;
     private boolean uploading = false;
     private boolean done = false;
+    private boolean showTip = false;
 
     private MusicItem uploadingText;
     private MusicItem loadingText;
@@ -150,6 +151,7 @@ public class Menu extends GameState {
                 selectSong.getButton().setDisabled(true);
                 playButton.getButton().setDisabled(true);
                 scoresButton.getButton().setDisabled(true); // disables button during loading
+                System.gc();
                 Thread thread = new Thread() {
                     public void run(){
                         uploading = true; // notify render that we are uploading
@@ -164,9 +166,10 @@ public class Menu extends GameState {
                             generating=true; // notify render we are now generating map
                             final TatumMap map = levelGenerator.makeMap(trackLoader.getTrackData());
                             final PaceMaker paceMaker = new PaceMaker(trackLoader.getTrackData(), map.getTiledMap());
-                            sleep(1000);    // generate map and pacemaker which deals with keeping map in time with song
                             generating = false;
                             done = true;    // let render know we are done with generation
+                            showTip = true;
+                            sleep(3000);    // generate map and pacemaker which deals with keeping map in time with song
                             Gdx.app.postRunnable(new Runnable() {
                                 @Override
                                 public void run() {
@@ -193,6 +196,7 @@ public class Menu extends GameState {
         scoresButton.getButton().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 gsm.setState(new HighScoreList(gsm, fontGenerator, bg)); // if Highscore is clicked change to highscore
+                scoresButton.getButton().setDisabled(true);
             }
         });
         stage = new Stage(new ExtendViewport(320, 240, cam));
@@ -286,6 +290,15 @@ public class Menu extends GameState {
         }
         if(generating) {
             generatingText.render();
+        } else if (showTip){
+            //render tip
+            sb.begin();
+            float width = fontGenerator.tipFont.getBounds("Double tap to").width;
+            fontGenerator.tipFont.draw(sb, "Double tap to", game.width/2 - width/2, 200);
+            width = fontGenerator.getTipFont().getBounds("pause").width;
+            fontGenerator.tipFont.draw(sb, "pause", game.width/2 - width/2, 195 - fontGenerator.getTipFont().getBounds("Double tap to").height);
+            sb.draw(resources.getTexture("tap"), game.width/2 - 25, 100, 50, 50);
+            sb.end();
         }
         //redners the corrent loading message according to the stage the loading process is at
 

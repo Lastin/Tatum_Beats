@@ -32,7 +32,6 @@ public class InputProcessor extends InputAdapter {
 
     //Used methods
     public boolean touchDown(int x, int y, int pointer, int button) {
-        System.out.println("down");
         Input.x = x;
         Input.y = y;
         Input.down = true;
