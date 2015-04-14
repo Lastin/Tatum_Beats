@@ -23,6 +23,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.sun.prism.image.ViewPort;
 import com.tatum.Game;
 import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
@@ -90,6 +94,12 @@ public class Play extends GameState {
     private MusicItem Album;
     float titleFade = 0.1f;
     float titleTimer =0;
+    //font values, because fade is eddited and others stay the same
+    private float fontRed = 0;
+    private float fontGreen = 0;
+    private float fontBlue = 0;
+    private Color fontColor = new Color(fontRed, fontGreen, fontBlue, titleFade);
+    //
     private boolean rotate;
     //paceMaker
     private final PaceMaker paceMaker;
@@ -450,6 +460,22 @@ public class Play extends GameState {
         temp = resources.getTexture("punk");
         bgTheme.put("punk",new TextureRegion(temp,0,0,427,240));
         //add all backgrounds to hashmap
+        System.out.println(theme);
+        //set font colour
+        if(theme.equals("metal")){
+            fontRed = 1;
+            fontGreen = 0;
+            fontBlue = 0;
+        } else if(theme.equals("rock")){
+            fontRed = 1;
+            fontGreen = 64/255f;
+            fontBlue = 0;
+        } else if(theme.equals("electronic")){
+            fontRed = 210/255f;
+            fontGreen = 28/255f;
+            fontBlue = 1;
+        }
+
 
         if((theme.equals("jazz"))||(theme.equals("asian"))){
             Background[] backgrounds = new Background[1];
@@ -476,16 +502,10 @@ public class Play extends GameState {
 
     @Override
     public void render() {
-        if(paused){
-            return;
-        }
         sb.setColor(sbColor, sbColor, sbColor, shaderVal);
         // camera follow player
         cam.setPosition(player.getPosition().x * PPM + game.getWidth() / 4, game.getHeight() / 3);
         cam.update();
-        if(rotate){
-            //turned off
-        }
 
         sb.setProjectionMatrix(hudCam.combined);
 
@@ -532,11 +552,11 @@ public class Play extends GameState {
 
         if(music.getPosition()<5) {
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
-                SongName.getFont().setColor(0, 0, 0, titleFade);
+                SongName.getFont().setColor(fontColor);
                 SongName.render();
-                ArtistName.getFont().setColor(0, 0, 0, titleFade);
+                ArtistName.getFont().setColor(fontColor);
                 ArtistName.render();
-                Album.getFont().setColor(0, 0, 0, titleFade);
+                Album.getFont().setColor(fontColor);
                 Album.render();
             }
             if(titleFade<1f&&(music.getPosition()>titleTimer+0.1)) {
@@ -545,29 +565,42 @@ public class Play extends GameState {
                 if(titleFade>1f){
                     titleFade=1f;
                 }
+                fontColor = new Color(fontRed, fontGreen, fontBlue, titleFade);
             }
         } // draws the fade in song meta data
 
         else if(music.getPosition()>5 && titleFade>0){
             //  sb.setColor(255f,0f,0f,titleFade);
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
-                SongName.getFont().setColor(0, 0, 0, titleFade);
+                SongName.getFont().setColor(fontColor);
                 SongName.render();
-                ArtistName.getFont().setColor(0, 0, 0, titleFade);
+                ArtistName.getFont().setColor(fontColor);
                 ArtistName.render();
-                Album.getFont().setColor(0, 0, 0, titleFade);
+                Album.getFont().setColor(fontColor);
                 Album.render();
             }
-            if((music.getPosition()>titleTimer+0.1))
+            if((music.getPosition()>titleTimer+0.1)){
                 titleFade -= 0.03;
+                fontColor = new Color(fontRed, fontGreen, fontBlue, titleFade);
+            }
+
         }   // draw the song meta data fade out
         else{
             //don't render song meta data after set time
+        }
+        if(paused){
+            sb.begin();
+            continueButton.render(sb);
+            backToMenuButton.render(sb);
+            sb.end();
         }
     }
 
     @Override
     public void update(float deltaTime){
+        if(paused){
+            return;
+        }
         handleInput();
         //flash
         if(paceMaker.hitSecondSection()){
@@ -704,27 +737,12 @@ public class Play extends GameState {
 
     public void pause(){
         if(!paused) {
-            paused = true;
             music.pause();
-            sb.begin();
-            continueButton.render(sb);
-            //fontGenerator.getSmallMenuFont().draw(sb, "PAUSED", 100, 150);
-            backToMenuButton.render(sb);
-            sb.end();
-            Stage stage = new Stage(new ExtendViewport(320, 240, cam));
+            paused = true;
+            Stage stage = new Stage(new StretchViewport(320, 240));
             stage.addActor(backToMenuButton.getButton());
             stage.addActor(continueButton.getButton());
             Gdx.input.setInputProcessor(stage);
-        }
-        else {
-            //paused = false;
-            //music.play();
-        }
-    }
-
-    public void backToMenu(){
-        if(paused){
-            gsm.setState(new Menu(gsm));
         }
     }
 
