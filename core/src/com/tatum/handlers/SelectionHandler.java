@@ -44,18 +44,15 @@ public class SelectionHandler {
         prunedChildrenNames = new ArrayList<String>();
         for(int i =0;i<children.length;i++){
             if(children[i].isDirectory()){ //if the child is a file we can add it to the pruned array
-                prunedChildren.add(children[i]);
-                prunedChildrenNames.add(children[i].name());
-
+                String name = children[i].name();
+                if(name.charAt(0) != '.'){
+                    prunedChildren.add(children[i]);
+                    prunedChildrenNames.add(children[i].name());
+                }
             }else { // else we check if the file is one of the accepted extentions
-                String extention = children[i].name().substring(children[i].name().length()-4); // get last 4 characters
-
-                for (int j = 0; j < 4; j++) {
-                    if(extention.equals(legalFormats[j])){ //if so we can add it to the pruned array
-                        prunedChildren.add(children[i]);
-                        prunedChildrenNames.add(children[i].name());
-
-                    }
+                if(isLegalFormat(children[i].name())){
+                    prunedChildren.add(children[i]);
+                    prunedChildrenNames.add(children[i].name());
                 }
             }
         }
@@ -119,5 +116,15 @@ public class SelectionHandler {
     public String getChildFullPath(String child){ //get the full path for a given child
         int position = findChild(child);
         return prunedChildren.get(position).path();
+    }
+
+    public boolean isLegalFormat(String name){
+        String extention = name.substring(name.length()-4); // get last 4 characters
+        for(String format : legalFormats){
+            if(format.equals(extention)){
+                return true;
+            }
+        }
+        return false;
     }
 }

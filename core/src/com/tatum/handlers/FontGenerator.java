@@ -11,6 +11,14 @@ public class FontGenerator {
 
     //this class is used to create different fonts to write draw strings to the screen
 
+    //colours
+    public final Color royalBlue = new Color(0, 0.714f, 1, 1);
+    public final Color red = Color.valueOf("FF7878");
+    public final Color yellow = Color.valueOf("F1D974");
+    public final Color green = Color.valueOf("68F367");
+    public final Color darkGreen = Color.valueOf("00A30E");
+    public final Color brightGray = Color.valueOf("787878");
+
     //standard ones used throughout the project for testing and drawing
     public final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
     public final BitmapFont customFont = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
@@ -18,14 +26,11 @@ public class FontGenerator {
     public final BitmapFont scoreFont = new BitmapFont(Gdx.files.internal("res/fonts/scoreFont.fnt"), Gdx.files.internal("res/fonts/scoreFont.png"), false);
     public final BitmapFont titleFont = makeFont(20, Color.BLACK);
     public final BitmapFont listFont = makeFont(36, Color.BLACK);
+    public final BitmapFont listFolderFont = makeFont(36, brightGray);
+    public final BitmapFont listLegalFormatFont = makeFont(36, darkGreen);
     public final BitmapFont underListFont = makeFont(20, Color.BLACK);
     public final BitmapFont loadingFont = makeFont(70, Color.WHITE);
     public final BitmapFont tipFont = makeFont(60, Color.BLACK);
-    //colours
-    public final Color royalBlue = new Color(0, 0.714f, 1, 1);
-    public final Color red = Color.valueOf("FF7878");
-    public final Color yellow = Color.valueOf("F1D974");
-    public final Color green = Color.valueOf("68F367");
 
     public FontGenerator(){
 

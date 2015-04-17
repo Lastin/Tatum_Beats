@@ -2,6 +2,7 @@ package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -190,9 +191,15 @@ public class Select extends GameState {
                 musicItems= new ArrayList<MusicItem>();
                 int bufferFromCeil = 75;
                 for(int i =0;i<5;i++){
-
+                    BitmapFont font = fontGenerator.listFont;
                     String name = names.get(listPosition[i]);
-                    musicItems.add(new MusicItem(sb,fontGenerator.listFont,name,cam,10,game.getHeight()-bufferFromCeil));
+                    if(selectionHandler.isDir(name)){
+                        font = fontGenerator.listFolderFont;
+                    } else if(selectionHandler.isLegalFormat(name)){
+                        font = fontGenerator.listLegalFormatFont;
+                    }
+
+                    musicItems.add(new MusicItem(sb,font,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=25;
                 }   //create file text items for current list position - space evening down the screen
             }catch (IndexOutOfBoundsException e){
