@@ -74,7 +74,7 @@ public class Menu extends GameState {
     private float titleXPos;
     private boolean increasing = true;
     private boolean jumpy = true;
-    private int[] colVals = {makeRand(), makeRand(), makeRand()}; //array of colours used
+    private int[] colVals = {255, makeRand(), 0}; //array of colours used
     private int modCol = 1; //currently incremented colour
     private boolean incCol = true; //increment or decrement colour value
 
