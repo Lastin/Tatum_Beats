@@ -1,6 +1,7 @@
 package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -69,7 +70,7 @@ public class Select extends GameState {
         listPosition= new int[5];
         setListPosition("start");
         setMusicItems();
-
+        setToMusicFolder();
         cam.setToOrtho(false, game.getWidth(), game.getHeight());
         world = new World(new Vector2(0, -9.8f * 5), true);
         b2dRenderer = new Box2DDebugRenderer();
@@ -143,6 +144,19 @@ public class Select extends GameState {
         }
     }
 
+    private void setToMusicFolder(){
+        ArrayList<String> names = selectionHandler.getPrunedNames();
+        for(String each : names){
+            if(each.equals("Music")){
+                FileHandle musicFolder = selectionHandler.getChild("Music");
+                if(musicFolder.list().length != 0){
+                    selectionHandler = new SelectionHandler(selectionHandler.getChild("Music"));
+                    setMusicItems();
+                }
+            }
+        }
+    }
+
     @Override
     public void update(float dt) {
         world.step(dt / 5, 8, 3);
@@ -198,7 +212,6 @@ public class Select extends GameState {
                     } else if(selectionHandler.isLegalFormat(name)){
                         font = fontGenerator.listLegalFormatFont;
                     }
-
                     musicItems.add(new MusicItem(sb,font,name,cam,10,game.getHeight()-bufferFromCeil));
                     bufferFromCeil+=25;
                 }   //create file text items for current list position - space evening down the screen
