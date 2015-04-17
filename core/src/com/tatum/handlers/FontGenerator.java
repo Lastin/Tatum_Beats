@@ -2,6 +2,7 @@ package com.tatum.handlers;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -21,8 +22,11 @@ public class FontGenerator {
 
     //standard ones used throughout the project for testing and drawing
     public final FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("res/fonts/LiberationSans-Bold.ttf"));
-    public final BitmapFont customFont = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
-    public final BitmapFont customFontSmall = new BitmapFont(Gdx.files.internal("res/fonts/customFont.fnt"), Gdx.files.internal("res/fonts/customFont.png"), false);
+    private final FileHandle customFNT = Gdx.files.internal("res/fonts/customFont.fnt");
+    private final FileHandle customPNG = Gdx.files.internal("res/fonts/customFont.png");
+    public final BitmapFont customFont = new BitmapFont(customFNT, customPNG, false);
+    public final BitmapFont customFontSmall = new BitmapFont(customFNT, customPNG, false);
+    public final BitmapFont customTitleFont = new BitmapFont(Gdx.files.internal("res/fonts/titleFont.fnt"), Gdx.files.internal("res/fonts/titleFont.png"), false);
     public final BitmapFont scoreFont = new BitmapFont(Gdx.files.internal("res/fonts/scoreFont.fnt"), Gdx.files.internal("res/fonts/scoreFont.png"), false);
     public final BitmapFont titleFont = makeFont(20, Color.BLACK);
     public final BitmapFont listFont = makeFont(36, Color.BLACK);
@@ -44,6 +48,11 @@ public class FontGenerator {
         font.setColor(color);
         font.setScale(0.5f);
         return font;
+    }
+
+    public BitmapFont getCustomTitleFont(){
+        customTitleFont.setScale(0.5f);
+        return customTitleFont;
     }
 
     public BitmapFont getMenuFont(){

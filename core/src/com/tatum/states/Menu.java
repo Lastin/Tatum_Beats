@@ -1,6 +1,7 @@
 package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -24,6 +25,8 @@ import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.TrackLoader;
 import com.tatum.handlers.MusicItem;
 
+import java.util.Random;
+
 import static com.tatum.handlers.B2DVars.PPM;
 
 public class Menu extends GameState {
@@ -39,6 +42,8 @@ public class Menu extends GameState {
     private Animation p1Animation;
     private Animation p2Animation;
     private Animation p3Animation;
+
+    private BitmapFont gameTitleFont;
 
     private LevelGenerator levelGenerator;
 
@@ -66,6 +71,12 @@ public class Menu extends GameState {
 
     private FontGenerator fontGenerator;
     private boolean expert = false;
+    private float titleXPos;
+    private boolean increasing = true;
+    private boolean jumpy = true;
+    private int[] colVals = {255, 0, 0}; //array of colours used
+    private int modCol = 1; //currently incremented colour
+    private boolean incCol = true; //increment or decrement colour value
 
     public Menu(GameStateManager gsm) {
         super(gsm);
@@ -95,12 +106,12 @@ public class Menu extends GameState {
         b2dRenderer = new Box2DDebugRenderer();
         createLoadings();
         time = System.nanoTime()/1000000000;
-        playButton.getButton().setDisabled(true);
+        initialiseTitle();
     }
     public Menu(GameStateManager gsm, String Path,boolean expert){
         this(gsm);
         musicSelectionPath = Path;
-    } // menu when a song has been slected
+    } // menu when a song has been selected
     public Menu(GameStateManager gsm, String Path,Background bg, boolean expert){
         super(gsm);
 
@@ -128,11 +139,17 @@ public class Menu extends GameState {
         playButton.getButton().setDisabled(true);
 
         this.expert = expert;
+        initialiseTitle();
     } // song has been selected, and background is passed
     public Menu(GameStateManager gsm,Background bg){
         this(gsm);
         this.bg =bg;
     } // no song but background passed
+
+    private void initialiseTitle(){
+        gameTitleFont = fontGenerator.getCustomTitleFont();
+        titleXPos = game.width/2 - gameTitleFont.getBounds("TATUM BEATS").width/2;
+    }
 
     private void initialiseButtons(){
         Texture myStyle = resources.getTexture("sprites");
@@ -141,6 +158,7 @@ public class Menu extends GameState {
         String selectButtonText = "CHANGE SONG";
         if(musicSelectionPath==null) {
             selectButtonText = "SELECT SONG";
+            playButton.getButton().setTouchable(Touchable.disabled);
         }
         selectSong = new MenuButton(fontGenerator, selectButtonText, 160, 130);
         scoresButton = new MenuButton(fontGenerator, "HIGHSCORES", 160, 100);
@@ -154,9 +172,8 @@ public class Menu extends GameState {
                 selectSong.getButton().setTouchable(Touchable.disabled);
                 playButton.getButton().setTouchable(Touchable.disabled);
                 scoresButton.getButton().setTouchable(Touchable.disabled); // disables button during loading
-
                 System.gc();
-                Thread thread = new Thread() {
+                final Thread thread = new Thread() {
                     public void run(){
                         uploading = true; // notify render that we are uploading
                         try{
@@ -252,23 +269,54 @@ public class Menu extends GameState {
         else{
             timeChange=false;
         }
+        if(incCol){
+            if(colVals[modCol] < 255){
+                colVals[modCol]++;
+            } else {
+                if(--modCol < 0){
+                    modCol = 2;
+                }
+                incCol = false;
+            }
+        } else {
+            if(colVals[modCol] > 1){
+                colVals[modCol]--;
+            } else {
+                if(--modCol < 0){
+                    modCol = 2;
+                }
+                incCol = true;
+            }
+        }
+        //System.out.printf("[%d][%d][%d]\n", colVals[0], colVals[1], colVals[2]);
+        /*if(!jumpy) return;
+        if(titleYPos > 240){
+            increasing = false;
+        } else if(titleYPos < 233){
+            increasing = true;
+        }
+        if(increasing){
+            titleYPos += .40f;
+        } else {
+            titleYPos -= .25f;
+        }*/
     }   //updates all items
     @Override
     public void render() {
         sb.setProjectionMatrix(cam.combined);
         bg.render(sb);
+        sb.begin();
         if(!uploading&& !loading && !generating && !done) {
-            sb.begin();
             selectSong.render(sb);
             scoresButton.render(sb);
-            sb.end();
+            float titleYPos = 235;
+            if(musicSelectionPath!=null){
+                playButton.render(sb);
+                titleYPos = 245;
+            }
+            gameTitleFont.setColor(colVals[0], colVals[1], colVals[2], 1);
+            gameTitleFont.draw(sb, "TATUM BEATS", titleXPos, titleYPos);
         } // renders all buttons as long as play hasn't been pressed
-        if(!uploading&& !loading && !generating && !done&&musicSelectionPath!=null) {
-            sb.begin();
-            playButton.render(sb);
-            sb.end();
-        } // renders all buttons as long as play hasn't been pressed
-        sb.begin();
         sb.draw(p1Animation.getFrame(), 100, 31);
         sb.draw(p2Animation.getFrame(), 140, 31);
         sb.draw(p3Animation.getFrame(), 180, 31);
