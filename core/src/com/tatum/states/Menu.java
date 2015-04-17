@@ -138,12 +138,11 @@ public class Menu extends GameState {
         Texture myStyle = resources.getTexture("sprites");
         //create menu buttons
         playButton = new MenuButton(fontGenerator, "PLAY", 160, 160);
+        String selectButtonText = "CHANGE SONG";
         if(musicSelectionPath==null) {
-            selectSong = new MenuButton(fontGenerator, "SELECT SONG", 160, 130);
-
+            selectButtonText = "SELECT SONG";
         }
-        else
-            selectSong = new MenuButton(fontGenerator, "CHANGE SONG", 160, 130);
+        selectSong = new MenuButton(fontGenerator, selectButtonText, 160, 130);
         scoresButton = new MenuButton(fontGenerator, "HIGHSCORES", 160, 100);
         //set action on playButton, running in a separate thread
         playButton.getButton().addListener(new ClickListener() {
@@ -193,6 +192,7 @@ public class Menu extends GameState {
                                 sleep(4000);
                             } catch (InterruptedException interruptedE) {
                             }
+                            selectSong.getButton().setText("SELECT SONG");
                             selectSong.getButton().setTouchable(Touchable.enabled);
                             scoresButton.getButton().setTouchable(Touchable.enabled);
                             generatingError = false;
