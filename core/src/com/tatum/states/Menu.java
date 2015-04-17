@@ -74,7 +74,7 @@ public class Menu extends GameState {
     private float titleXPos;
     private boolean increasing = true;
     private boolean jumpy = true;
-    private int[] colVals = {255, 0, 0}; //array of colours used
+    private int[] colVals = {makeRand(), makeRand(), makeRand()}; //array of colours used
     private int modCol = 1; //currently incremented colour
     private boolean incCol = true; //increment or decrement colour value
 
@@ -246,6 +246,11 @@ public class Menu extends GameState {
         loadingText =  new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.yellow),"Loading",cam,91,148);
         generatingText = new MusicItem(sb, fontGenerator.makeFont(70, fontGenerator.green),"Generating",cam,67,148);
         // create loading messages
+    }
+
+    private static int makeRand(){
+        Random rand = new Random();
+        return rand.nextInt(254)+1;
     }
 
     @Override
