@@ -2,12 +2,15 @@ package com.tatum.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.tatum.handlers.Animation;
@@ -46,6 +49,7 @@ public class Menu extends GameState {
     private boolean uploading = false;
     private boolean done = false;
     private boolean showTip = false;
+    private boolean generatingError = false;
 
     private MusicItem uploadingText;
     private MusicItem loadingText;
@@ -148,9 +152,10 @@ public class Menu extends GameState {
                     gsm.setState(new Select(gsm,bg));
                     return; // if no song is selected, swap to select state
                 }
-                selectSong.getButton().setDisabled(true);
-                playButton.getButton().setDisabled(true);
-                scoresButton.getButton().setDisabled(true); // disables button during loading
+                selectSong.getButton().setTouchable(Touchable.disabled);
+                playButton.getButton().setTouchable(Touchable.disabled);
+                scoresButton.getButton().setTouchable(Touchable.disabled); // disables button during loading
+
                 System.gc();
                 Thread thread = new Thread() {
                     public void run(){
@@ -177,10 +182,22 @@ public class Menu extends GameState {
                                 }
                             }); // set state to play - done in separate thread as loading can take a while
                         } catch (Exception e) {
+                            // somethign broke in the upload, allows the user to try again
+                            musicSelectionPath = null;
+                            uploading = false;
                             loading = false;
                             generating = false;
-                            done = false;   // somethign broke in the upload, allows the user to try again
-                            e.printStackTrace();
+                            done = true;
+                            generatingError = true;
+                            try {
+                                sleep(4000);
+                            } catch (InterruptedException interruptedE) {
+                            }
+                            selectSong.getButton().setTouchable(Touchable.enabled);
+                            scoresButton.getButton().setTouchable(Touchable.enabled);
+                            generatingError = false;
+                            done = false;
+                            //e.printStackTrace();
                         }
                     }
                 };
@@ -300,6 +317,21 @@ public class Menu extends GameState {
             width = fontGenerator.getTipFont().getBounds("pause").width;
             fontGenerator.getTipFont().draw(sb, "pause", game.width/2 - width/2, 195 - fontGenerator.getTipFont().getBounds("Double tap to").height);
             sb.draw(resources.getTexture("tap"), game.width/2 - 25, 100, 50, 50);
+            sb.end();
+        } else if (generatingError) {
+            String[] info = {
+                    "Selected track",
+                    "is invalid. It cannot be",
+                    "used to generate level."
+            };
+            sb.begin();
+            BitmapFont font = fontGenerator.errorFont;
+            TextBounds textDims = font.getBounds(info[0]);
+            font.draw(sb, info[0], game.width / 2 - textDims.width / 2, 210);
+            textDims = font.getBounds(info[1]);
+            font.draw(sb, info[1], game.width/2 - textDims.width/2, 180);
+            textDims = font.getBounds(info[2]);
+            font.draw(sb, info[2], game.width/2 - textDims.width/2, 150);
             sb.end();
         }
         //redners the corrent loading message according to the stage the loading process is at
