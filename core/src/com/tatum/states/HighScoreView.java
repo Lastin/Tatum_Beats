@@ -137,9 +137,9 @@ public class HighScoreView extends GameState{
         if((artistName.length()>1))
             shareButton.render();
         if(Album!=null&&ArtistName!=null&&TrackName!=null) { // checks if the setArtistSong() method is finished
-            ArtistName.render();
-            Album.render();
-            TrackName.render();
+            ArtistName.renderFull();
+            Album.renderFull();
+            TrackName.renderFull();
         }
         if(Score!=null){
             Score.render();

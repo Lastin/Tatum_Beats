@@ -553,11 +553,11 @@ public class Play extends GameState {
         if(music.getPosition()<5) {
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
                 SongName.getFont().setColor(fontColor);
-                SongName.render();
+                SongName.renderFull();
                 ArtistName.getFont().setColor(fontColor);
-                ArtistName.render();
+                ArtistName.renderFull();
                 Album.getFont().setColor(fontColor);
-                Album.render();
+                Album.renderFull();
             }
             if(titleFade<1f&&(music.getPosition()>titleTimer+0.1)) {
                 titleFade += 0.05;
@@ -573,11 +573,11 @@ public class Play extends GameState {
             //  sb.setColor(255f,0f,0f,titleFade);
             if(ArtistName!=null&&SongName!=null&&Album!=null) {
                 SongName.getFont().setColor(fontColor);
-                SongName.render();
+                SongName.renderFull();
                 ArtistName.getFont().setColor(fontColor);
-                ArtistName.render();
+                ArtistName.renderFull();
                 Album.getFont().setColor(fontColor);
-                Album.render();
+                Album.renderFull();
             }
             if((music.getPosition()>titleTimer+0.1)){
                 titleFade -= 0.03;

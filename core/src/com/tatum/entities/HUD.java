@@ -87,14 +87,14 @@ public class HUD {
     public void render(SpriteBatch sb) {
         sb.begin();
         instructor.render(sb);
-        //fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), game.getWidth()-170,game.getHeight()-10); //render the Current highscore for the song
-        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), 10,game.getHeight()-10); //renders the users current score and multiplier
+        fontGenerator.getScoreFont().draw(sb, "HIGHSCORE: " + player.getHighScore(), 10, game.getHeight()-7); //render the Current highscore for the song
+        fontGenerator.getScoreFont().draw(sb, "SCORE: " + player.getScore()+" x "+player.getMultiplyer(), 10,game.getHeight()-20); //renders the users current score and multiplier
         //fontGenerator.getScoreFont().draw(sb, "SCORE: " + "100000"+" x "+"100", 10,game.getHeight()-10); //renders the users current score and multiplier
         int space = 0;
         for(int i = 0;i<player.getStep();i++){
             if(i>4)
                 break;
-            sb.draw(blockSprites[0], 35 + space, game.getHeight() - 30);
+            sb.draw(blockSprites[0], 35 + space, game.getHeight() - 35);
             space+=15;
         } // renders the blocks that represent how many beats till an increase in multiplier
         if(debug) { // debug info, no longer used
