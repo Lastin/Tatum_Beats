@@ -26,7 +26,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.sun.prism.image.ViewPort;
 import com.tatum.Game;
 import com.tatum.entities.B2DSprite;
 import com.tatum.entities.Bat;
