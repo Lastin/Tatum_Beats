@@ -35,7 +35,7 @@ public class FontGenerator {
     public final BitmapFont underListFont = makeFont(20, Color.BLACK);
     public final BitmapFont loadingFont = makeFont(70, Color.WHITE);
     public final BitmapFont tipFont = makeFont(60, Color.BLACK);
-    public final BitmapFont errorFont = makeFont(50, Color.RED);
+    public final BitmapFont errorFont = makeFont(45, Color.RED);
 
     public FontGenerator(){
 

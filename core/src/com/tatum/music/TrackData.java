@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,14 +92,15 @@ public class TrackData {
         fileUploader = new FileUploaderGDX(trackPath);
 
     } // update track incase song is changed
-    public void upload(){
-        try {
-            fileUploader.uploadGDX();
+    public void upload() throws EchoNestException, IOException{
+        fileUploader.uploadGDX();
+        /*try {
+
         } catch (EchoNestException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     } // wrapper for fileUploader upload method
     public void initilize() {
         try {

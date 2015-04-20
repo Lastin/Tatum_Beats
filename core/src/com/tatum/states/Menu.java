@@ -13,7 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.echonest.api.v4.EchoNestException;
 import com.tatum.handlers.Animation;
 import com.tatum.handlers.Background;
 import com.tatum.handlers.FontGenerator;
@@ -25,6 +27,8 @@ import com.tatum.handlers.TatumMap;
 import com.tatum.handlers.TrackLoader;
 import com.tatum.handlers.MusicItem;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Random;
 
 import static com.tatum.handlers.B2DVars.PPM;
@@ -77,6 +81,11 @@ public class Menu extends GameState {
     private int[] colVals = {255, makeRand(), 0}; //array of colours used
     private int modCol = 1; //currently incremented colour
     private boolean incCol = true; //increment or decrement colour value
+    String[] errorInfo = {
+            "Selected track",
+            "is invalid. It cannot be",
+            "used to generate level."
+    };
 
     public Menu(GameStateManager gsm) {
         super(gsm);
@@ -197,8 +206,20 @@ public class Menu extends GameState {
                                     gsm.setState(new Play(gsm, map, trackLoader.getMusic(), paceMaker, musicSelectionPath, trackLoader.getTrackData(),expert));
                                 }
                             }); // set state to play - done in separate thread as loading can take a while
-                        } catch (Exception e) {
-                            // somethign broke in the upload, allows the user to try again
+                        }
+                        catch (Exception e) {
+                            if(e instanceof GdxRuntimeException){
+                                // invalid track has been selected
+                                errorInfo[0] = "Selected track";
+                                errorInfo[1] = "is invalid. It cannot be";
+                                errorInfo[2] = "used to generate level.";
+                            }
+                            else if(e instanceof EchoNestException){
+                                // error when uploading, allows the user to try again
+                                errorInfo[0] = "Echo Nest error! Check";
+                                errorInfo[1] = "your internet connection";
+                                errorInfo[2] = "or try a different song.";
+                            }
                             musicSelectionPath = null;
                             uploading = false;
                             loading = false;
@@ -207,8 +228,7 @@ public class Menu extends GameState {
                             generatingError = true;
                             try {
                                 sleep(4000);
-                            } catch (InterruptedException interruptedE) {
-                            }
+                            } catch (InterruptedException interruptedE) {}
                             selectSong.getButton().setText("SELECT SONG");
                             selectSong.getButton().setTouchable(Touchable.enabled);
                             scoresButton.getButton().setTouchable(Touchable.enabled);
@@ -372,19 +392,14 @@ public class Menu extends GameState {
             sb.draw(resources.getTexture("tap"), game.width/2 - 25, 100, 50, 50);
             sb.end();
         } else if (generatingError) {
-            String[] info = {
-                    "Selected track",
-                    "is invalid. It cannot be",
-                    "used to generate level."
-            };
             sb.begin();
             BitmapFont font = fontGenerator.errorFont;
-            TextBounds textDims = font.getBounds(info[0]);
-            font.draw(sb, info[0], game.width / 2 - textDims.width / 2, 210);
-            textDims = font.getBounds(info[1]);
-            font.draw(sb, info[1], game.width/2 - textDims.width/2, 180);
-            textDims = font.getBounds(info[2]);
-            font.draw(sb, info[2], game.width/2 - textDims.width/2, 150);
+            TextBounds textDims = font.getBounds(errorInfo[0]);
+            font.draw(sb, errorInfo[0], game.width / 2 - textDims.width / 2, 210);
+            textDims = font.getBounds(errorInfo[1]);
+            font.draw(sb, errorInfo[1], game.width/2 - textDims.width/2, 180);
+            textDims = font.getBounds(errorInfo[2]);
+            font.draw(sb, errorInfo[2], game.width/2 - textDims.width/2, 150);
             sb.end();
         }
         //redners the corrent loading message according to the stage the loading process is at
